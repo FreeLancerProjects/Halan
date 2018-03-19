@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">حالا</string>
+    <string name="driver">السائق</string>
+    <string name="client">العميل</string>
+    <string name="txt_login">تسجيل الدخول</string>
+    <string name="user_name">إسم المستخدم</string>
+    <string name="password">كلمة السر</string>
+    <string name="forget_pass">نسيت كلمة المرور</string>
+    <string name="new_account">حساب جديد</string>
+    <string name="txt_register">تسجيل</string>
+    <string name="retype_pass">إعادة كلمة السر</string>
+    <string name="txt_email">الإيميل</string>
+    <string name="phone">رقم الجوال</string>
+    <string name="city">المدينة</string>
+    <string name="identity">رقم الهوية</string>
+    <string name="vehicle">رقم المركبة</string>
+    <string name="next">التالي</string>
+    <string name="car_color">لون السيارة</string>
+    <string name="car_model">موديل السيارة</string>
+    <string name="photo_car_form">صورة استمارة السيارة</string>
+    <string name="license_photo">صورة الرخصة</string>
+    <string name="front_back_image">صورة للسيارة من الخلف والامام</string>
+    <string name="enter_username">أدخل إسم المستخدم</string>
+    <string name="enter_password">أدخل كلمة السر</string>
+    <string name="choose_image">اختار صورة</string>
+    <string name="enter_phone">أدخل رقم الجوال</string>
+    <string name="enter_email">أدخل البريد الإلكتروني</string>
+    <string name="inv_email">البريد الإلكتروني غير صالح</string>
+    <string name="inv_phone">رقم الجوال غير صالح</string>
+</resources>

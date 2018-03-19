@@ -1,3 +1,30 @@
 <resources>
-    <string name="app_name">Halan</string>
+    <string name="app_name">7alan</string>
+    <string name="driver">Driver</string>
+    <string name="client">Client</string>
+    <string name="txt_login">Login</string>
+    <string name="user_name">Username</string>
+    <string name="password">Password</string>
+    <string name="forget_pass">Forget password</string>
+    <string name="new_account">Create an account</string>
+    <string name="txt_register">Register</string>
+    <string name="retype_pass">Re_type password</string>
+    <string name="txt_email">E-mail address</string>
+    <string name="phone">Phone number</string>
+    <string name="city">City</string>
+    <string name="identity">Identity number</string>
+    <string name="vehicle">Vehicle number</string>
+    <string name="next">Next</string>
+    <string name="car_color">Car color</string>
+    <string name="car_model">Car model</string>
+    <string name="photo_car_form">picture of the car form</string>
+    <string name="license_photo">License photo</string>
+    <string name="front_back_image">A picture of the car from the back and front</string>
+    <string name="enter_username">Enter username</string>
+    <string name="enter_password">Enter password</string>
+    <string name="choose_image">Choose photo</string>
+    <string name="enter_phone">Enter phone number</string>
+    <string name="enter_email">Enter email address</string>
+    <string name="inv_email">invalid email address</string>
+    <string name="inv_phone">invalid phone number</string>
 </resources>
