@@ -1,29 +1,43 @@
 package com.semicolon.halan.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.lamudi.phonefield.PhoneInputLayout;
+import com.semicolon.halan.Models.UserModel;
 import com.semicolon.halan.R;
+import com.semicolon.halan.Services.Api;
+import com.semicolon.halan.Services.Services;
+import com.semicolon.halan.SingleTone.Users;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Activity_Client_Register extends AppCompatActivity {
     private CircleImageView c_image;
@@ -34,14 +48,21 @@ public class Activity_Client_Register extends AppCompatActivity {
     private final int IMG_REQ = 100;
     private String enCodedImage;
     private Bitmap bitmap;
-    private boolean isValidPhonenumber=false;
+    private ProgressDialog dialog;
+    private Users users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client_register);
         initView();
+        users = Users.getInstance();
+
+        CreateProgressDialog();
+
     }
+
+
 
     private void initView() {
         c_image = findViewById(R.id.image);
@@ -87,6 +108,7 @@ public class Activity_Client_Register extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                //sendCodeValidation("");
                 String mUser_name = c_user_name.getText().toString();
                 String mPhone = c_phone.getPhoneNumber();
                 String mPassword1 = c_password.getText().toString();
@@ -129,7 +151,7 @@ public class Activity_Client_Register extends AppCompatActivity {
                 {
                     c_password.setError(null);
                     c_re_password.setText(null);
-                    Toast.makeText(Activity_Client_Register.this, "كلمة السر غير متطابقة", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Activity_Client_Register.this, R.string.pass_notmatch, Toast.LENGTH_LONG).show();
                 }else if (TextUtils.isEmpty(mEmail))
                 {
                     c_email.setError(getString(R.string.enter_email));
@@ -147,7 +169,10 @@ public class Activity_Client_Register extends AppCompatActivity {
 
                 }else
                     {
-                        Toast.makeText(Activity_Client_Register.this, "register ok", Toast.LENGTH_SHORT).show();
+
+                        saveToServerDB(mUser_name,mPassword1,mEmail,mPhone);
+                        //sendCodeValidation("");
+
                     }
 
 
@@ -159,8 +184,27 @@ public class Activity_Client_Register extends AppCompatActivity {
 
     }
 
+    private void CreateProgressDialog() {
+        ProgressBar bar = new ProgressBar(this);
+        Drawable drawable = bar.getIndeterminateDrawable().mutate();
+        drawable.setColorFilter(ContextCompat.getColor(this,R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+        dialog = new ProgressDialog(this);
+        dialog.setMessage(getString(R.string.waitreg));
+        dialog.setIndeterminateDrawable(drawable);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(false);
+    }
+
+    private void sendCodeValidation(String Phonenumber)
+    {
+
+        //saveToServerDB();
+
+    }
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==IMG_REQ && resultCode == RESULT_OK && data!=null)
         {
@@ -175,6 +219,62 @@ public class Activity_Client_Register extends AppCompatActivity {
         }
     }
 
+    private void saveToServerDB(String user_name,String pass,String email,String phone) {
+        enCode(bitmap);
+        dialog.show();
+        Services services = Api.getClient().create(Services.class);
+        Call<UserModel> userCall = services.userSignUp(user_name,pass,phone,email, FirebaseInstanceId.getInstance().getToken(),enCodedImage);
+        userCall.enqueue(new Callback<UserModel>() {
+            @Override
+            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+
+
+
+                if (response.isSuccessful()) {
+
+                    //Toast.makeText(Activity_Client_Register.this, ""+enCodedImage, Toast.LENGTH_SHORT).show();
+
+                    UserModel userModel = response.body();
+                    if (response.body().getSuccess()==1)
+                    {
+                        users.setUserData(userModel);
+                        dialog.dismiss();
+
+                        Intent intent = new Intent(Activity_Client_Register.this,HomeActivity.class);
+                        startActivity(intent);
+                        finish();
+
+                    }else
+                        {
+                            dialog.dismiss();
+
+                            Toast.makeText(Activity_Client_Register.this, R.string.regfailed, Toast.LENGTH_LONG).show();
+                        }
+                   /*
+                    Intent intent = new Intent(Activity_Client_Register.this, Activity_Client_Login.class);
+                    startActivity(intent);
+                    finish();*/
+
+
+                }else
+                {
+                    dialog.dismiss();
+
+                    Toast.makeText(Activity_Client_Register.this,getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<UserModel> call, Throwable t) {
+                dialog.dismiss();
+
+                Toast.makeText(Activity_Client_Register.this, "" +getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+                Log.d("onFailure", t.toString());
+            }
+        });
+    }
     private String enCode(Bitmap bitmap)
     {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -185,4 +285,6 @@ public class Activity_Client_Register extends AppCompatActivity {
 
         return enCodedImage;
     }
+
+    //Api/Client/Profile/1
 }

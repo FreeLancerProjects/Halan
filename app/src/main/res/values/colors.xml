@@ -11,6 +11,8 @@
     <color name="black">#000000</color>
     <color name="press_color">#E8F5E9</color>
     <color name="press_green">#A5D6A7</color>
+    <color name="offGreen">#1B5E20</color>
+    <color name="whitegreen">#C8E6C9</color>
 
 
 </resources>

@@ -27,4 +27,29 @@
     <string name="enter_email">أدخل البريد الإلكتروني</string>
     <string name="inv_email">البريد الإلكتروني غير صالح</string>
     <string name="inv_phone">رقم الجوال غير صالح</string>
+    <string name="enter_code">أدخل كود التفعيل</string>
+    <string name="confirm">موافق</string>
+    <string name="plz_enter_code">أدخل الكود من فضلك</string>
+    <string name="error_code">تحقق من الكود</string>
+    <string name="wait_for_codevalidation">جاري ارسال الكود التحقق من رقم الجوال</string>
+    <string name="login">تسجيل الدخول...</string>
+    <string name="faild">فشل</string>
+    <string name="something_haywire">حدث خطأ تحقق من الإتصال بالإنترنت</string>
+    <string name="chk_uname_password">تحقق من إسم المستخدم وكلمة المرور</string>
+    <string name="pass_notmatch">كلمة السر غير متطابقة</string>
+    <string name="regfailed">عفوا لم يتم إنشاء حساب. من فضلك حاول مرة أخرى.</string>
+    <string name="waitreg">جار إنشاء حساب جديد...</string>
+    <string name="navigation_drawer_open">فتح</string>
+    <string name="navigation_drawer_close">إغلاق</string>
+    <string name="home">الصفحة الرئيسية</string>
+    <string name="register">تسجيل الدخول</string>
+    <string name="notification">الاشعارات</string>
+    <string name="orders">طلباتي</string>
+    <string name="pay">السداد</string>
+    <string name="contact_us">اتصل بنا</string>
+    <string name="share">مشاركة التطبيق</string>
+    <string name="send_report">إرسال شكوى لللإدارة</string>
+    <string name="rules">الشروط والأحكام</string>
+    <string name="logout">خروج</string>
+
 </resources>
