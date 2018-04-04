@@ -1,13 +1,9 @@
-package com.semicolon.halan.Activities;
+package com.semicolon.Halan.Activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Button;
-import android.widget.EditText;
 
-import com.semicolon.halan.R;
-
-import de.hdodenhof.circleimageview.CircleImageView;
+import com.semicolon.Halan.R;
 
 public class Activity_Driver_Register extends AppCompatActivity {
 

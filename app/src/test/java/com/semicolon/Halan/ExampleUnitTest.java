@@ -1,4 +1,4 @@
-package com.semicolon.halan;
+package com.semicolon.Halan;
 
 import org.junit.Test;
 

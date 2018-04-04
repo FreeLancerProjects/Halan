@@ -1,4 +1,4 @@
-package com.semicolon.halan;
+package com.semicolon.Halan;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

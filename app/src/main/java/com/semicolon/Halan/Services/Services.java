@@ -1,6 +1,6 @@
-package com.semicolon.halan.Services;
+package com.semicolon.Halan.Services;
 
-import com.semicolon.halan.Models.UserModel;
+import com.semicolon.Halan.Models.UserModel;
 
 import retrofit2.Call;
 import retrofit2.http.Field;

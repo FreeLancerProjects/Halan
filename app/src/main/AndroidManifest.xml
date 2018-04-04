@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.semicolon.halan">
+    package="com.semicolon.Halan">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -16,27 +16,27 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".Services.MyFirebaseMessagingService">
+        <service android:name="com.semicolon.Halan.Services.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <activity android:name=".Activities.Activity_Client_Login">
+        <activity android:name="com.semicolon.Halan.Activities.Activity_Client_Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.Activity_Client_Register" />
-        <activity android:name=".Activities.Activity_Driver_Register" />
-        <activity android:name=".Activities.Activity_Driver_Register2" />
+        <activity android:name="com.semicolon.Halan.Activities.Activity_Client_Register" />
+        <activity android:name="com.semicolon.Halan.Activities.Activity_Driver_Register" />
+        <activity android:name="com.semicolon.Halan.Activities.Activity_Driver_Register2" />
         <activity
-            android:name=".Activities.Activity_PhoneCodeValidation"
+            android:name="com.semicolon.Halan.Activities.Activity_PhoneCodeValidation"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".Activities.HomeActivity"
+            android:name="com.semicolon.Halan.Activities.HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme"></activity>
     </application>

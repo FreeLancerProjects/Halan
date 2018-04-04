@@ -1,4 +1,4 @@
-package com.semicolon.halan.Models;
+package com.semicolon.Halan.Models;
 
 /**
  * Created by Elashry on 30/03/2018.

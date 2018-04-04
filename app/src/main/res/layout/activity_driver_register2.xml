@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.semicolon.halan.Activities.Activity_Driver_Register"
+    tools:context="com.semicolon.Halan.Activities.Activity_Driver_Register"
     android:orientation="vertical"
     >
     <android.support.design.widget.AppBarLayout

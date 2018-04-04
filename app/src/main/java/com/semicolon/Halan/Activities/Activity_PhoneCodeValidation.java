@@ -1,4 +1,4 @@
-package com.semicolon.halan.Activities;
+package com.semicolon.Halan.Activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.semicolon.halan.R;
+import com.semicolon.Halan.R;
 
 public class Activity_PhoneCodeValidation extends AppCompatActivity {
     private ImageView back;

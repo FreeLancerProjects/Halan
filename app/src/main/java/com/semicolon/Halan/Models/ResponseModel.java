@@ -1,4 +1,4 @@
-package com.semicolon.halan.Models;
+package com.semicolon.Halan.Models;
 
 /**
  * Created by Delta on 03/04/2018.

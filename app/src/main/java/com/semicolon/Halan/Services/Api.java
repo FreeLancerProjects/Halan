@@ -1,4 +1,4 @@
-package com.semicolon.halan.Services;
+package com.semicolon.Halan.Services;
 
 import java.util.concurrent.TimeUnit;
 

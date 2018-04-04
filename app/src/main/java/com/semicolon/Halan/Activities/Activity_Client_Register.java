@@ -1,4 +1,4 @@
-package com.semicolon.halan.Activities;
+package com.semicolon.Halan.Activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -24,11 +24,11 @@ import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.lamudi.phonefield.PhoneInputLayout;
-import com.semicolon.halan.Models.UserModel;
-import com.semicolon.halan.R;
-import com.semicolon.halan.Services.Api;
-import com.semicolon.halan.Services.Services;
-import com.semicolon.halan.SingleTone.Users;
+import com.semicolon.Halan.Models.UserModel;
+import com.semicolon.Halan.R;
+import com.semicolon.Halan.Services.Api;
+import com.semicolon.Halan.Services.Services;
+import com.semicolon.Halan.SingleTone.Users;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;

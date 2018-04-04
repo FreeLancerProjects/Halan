@@ -1,6 +1,6 @@
-package com.semicolon.halan.SingleTone;
+package com.semicolon.Halan.SingleTone;
 
-import com.semicolon.halan.Models.UserModel;
+import com.semicolon.Halan.Models.UserModel;
 
 /**
  * Created by Delta on 03/04/2018.

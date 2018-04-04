@@ -1,35 +1,97 @@
 {
   "project_info": {
-    "project_number": "271350982688",
-    "firebase_url": "https://alan-227d6.firebaseio.com",
-    "project_id": "alan-227d6",
-    "storage_bucket": "alan-227d6.appspot.com"
+    "project_number": "320810774296",
+    "firebase_url": "https://semicolon-3dbe7.firebaseio.com",
+    "project_id": "semicolon-3dbe7",
+    "storage_bucket": "semicolon-3dbe7.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:271350982688:android:ee5c6870d29ab1ae",
+        "mobilesdk_app_id": "1:320810774296:android:82ae1bd68e6d5a65",
         "android_client_info": {
-          "package_name": "com.semicolon.halan"
+          "package_name": "com.SemiColon.Hmt.elengaz"
         }
       },
       "oauth_client": [
         {
-          "client_id": "271350982688-s3nki3oeprblg9ovnf14651j1i849osv.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.semicolon.halan",
-            "certificate_hash": "6616577a7e310a6aae058246a826c73910eff6d4"
-          }
-        },
-        {
-          "client_id": "271350982688-tloh9i41mkme00t5iujuf83mha8j3bk7.apps.googleusercontent.com",
+          "client_id": "320810774296-ehbklh60e3ipag1cko9gurbu2pbbpptu.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB71VY50YcEzjm39CMlhEPgGOQbTkv52-k"
+          "current_key": "AIzaSyAq5mcB1sJkUNfkenfO9v0I79bqHnWlEoc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320810774296:android:bfefd7a05c0b855e",
+        "android_client_info": {
+          "package_name": "com.SemiColon.Hmtelengaz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320810774296-ehbklh60e3ipag1cko9gurbu2pbbpptu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAq5mcB1sJkUNfkenfO9v0I79bqHnWlEoc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320810774296:android:fcd31a5346a93945",
+        "android_client_info": {
+          "package_name": "com.semicolon.Halan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320810774296-0ca7ttfvcugjhjvk63ktevirdbr5j56p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.semicolon.Halan",
+            "certificate_hash": "6616577a7e310a6aae058246a826c73910eff6d4"
+          }
+        },
+        {
+          "client_id": "320810774296-ehbklh60e3ipag1cko9gurbu2pbbpptu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAq5mcB1sJkUNfkenfO9v0I79bqHnWlEoc"
         }
       ],
       "services": {
@@ -40,8 +102,15 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "271350982688-tloh9i41mkme00t5iujuf83mha8j3bk7.apps.googleusercontent.com",
+              "client_id": "320810774296-ehbklh60e3ipag1cko9gurbu2pbbpptu.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "320810774296-l16a5r8tk0uumn4oh7b29u988vpv941q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.SemiColon.Hmtelengaz"
+              }
             }
           ]
         },

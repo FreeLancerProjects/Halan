@@ -1,4 +1,4 @@
-package com.semicolon.halan.Activities;
+package com.semicolon.Halan.Activities;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -16,10 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.semicolon.halan.Models.UserModel;
-import com.semicolon.halan.R;
-import com.semicolon.halan.Services.Tags;
-import com.semicolon.halan.SingleTone.Users;
+import com.semicolon.Halan.Models.UserModel;
+import com.semicolon.Halan.R;
+import com.semicolon.Halan.Services.Tags;
+import com.semicolon.Halan.SingleTone.Users;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
