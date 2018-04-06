@@ -196,14 +196,14 @@ public class HomeActivity extends AppCompatActivity
         builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.logout));
         builder.setCancelable(false);
-        builder.setPositiveButton("نعم", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Logout();
             }
         });
 
-        builder.setNegativeButton("إلغاء", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 AlertDialog dialog = builder.create();
