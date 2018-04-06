@@ -1,4 +1,5 @@
 <resources>
+    <string name="google_maps_key">AIzaSyAxCNQF6B9ASTpLbdLMXy5v6-O9Zb-g6z4</string>
     <string name="app_name">7alan</string>
     <string name="driver">Driver</string>
     <string name="client">Client</string>
@@ -55,5 +56,6 @@
     <string name="send_report">Send Report</string>
     <string name="rules">Rules</string>
     <string name="logout">Logout</string>
+    <string name="search_plc_details">Enter places in details</string>
 
 </resources>

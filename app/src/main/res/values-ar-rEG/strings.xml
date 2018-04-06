@@ -1,4 +1,5 @@
 <resources>
+    <string name="google_maps_key">AIzaSyAxCNQF6B9ASTpLbdLMXy5v6-O9Zb-g6z4</string>
     <string name="app_name">حالا</string>
     <string name="driver">السائق</string>
     <string name="client">العميل</string>
@@ -51,5 +52,6 @@
     <string name="send_report">إرسال شكوى لللإدارة</string>
     <string name="rules">الشروط والأحكام</string>
     <string name="logout">خروج</string>
+    <string name="search_plc_details">أدخل المكان الذي تريد ان تبحث عنه بالتفصيل</string>
 
 </resources>
