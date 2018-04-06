@@ -151,7 +151,6 @@ public class PlaceAutocompleteAdapter
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             e.printStackTrace();
         }
-
         try {
             AutocompletePredictionBufferResponse autocompletePredictions = results.getResult();
 
