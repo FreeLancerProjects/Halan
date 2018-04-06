@@ -10,7 +10,7 @@
     <string name="new_account">حساب جديد</string>
     <string name="txt_register">تسجيل</string>
     <string name="retype_pass">إعادة كلمة السر</string>
-    <string name="txt_email">الإيميل</string>
+    <string name="txt_email">البريد الالكترونى</string>
     <string name="phone">رقم الجوال</string>
     <string name="city">المدينة</string>
     <string name="identity">رقم الهوية</string>
@@ -53,5 +53,11 @@
     <string name="rules">الشروط والأحكام</string>
     <string name="logout">خروج</string>
     <string name="search_plc_details">أدخل المكان الذي تريد ان تبحث عنه بالتفصيل</string>
+    <string name="enter_city">enter city</string>
+    <string name="enter_identity_number">enter identity number</string>
+    <string name="enter_vehicle_number">enter vehicle number</string>
+    <string name="enter_car_color">enter car color</string>
+    <string name="enter_car_model">enter car model</string>
+    <string name="profile_page">الصفحه الشخصيه</string>
 
 </resources>

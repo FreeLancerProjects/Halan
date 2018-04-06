@@ -6,6 +6,7 @@ import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 /**
  * Created by Delta on 25/03/2018.
@@ -31,5 +32,18 @@ public interface Services {
                                @Field("user_pass") String user_pass
     );
 
+
+    @FormUrlEncoded
+    @POST("Api/DriverRegistration/{user_id}")
+    Call<UserModel> driverSignIn(@Path("user_id") String user_id,
+                                 @Field("user_city") String user_city ,
+                                 @Field("user_national_num") String user_national_num ,
+                                 @Field("user_car_model") String user_car_model ,
+                                 @Field("user_car_color") String user_car_color ,
+                                 @Field("user_car_form") String user_car_form ,
+                                 @Field("user_car_license") String user_car_license  ,
+                                 @Field("user_car_photo") String user_car_photo,
+                                 @Field("user_google_lat") String user_google_lat,
+                                 @Field("user_google_long") String user_google_long);
 
 }

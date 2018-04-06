@@ -57,5 +57,11 @@
     <string name="rules">Rules</string>
     <string name="logout">Logout</string>
     <string name="search_plc_details">Enter places in details</string>
+    <string name="enter_city">enter city</string>
+    <string name="enter_identity_number">enter identity number</string>
+    <string name="enter_vehicle_number">enter vehicle number</string>
+    <string name="enter_car_color">enter car color</string>
+    <string name="enter_car_model">enter car model</string>
+    <string name="profile_page">الصفحه الشخصيه</string>
 
 </resources>

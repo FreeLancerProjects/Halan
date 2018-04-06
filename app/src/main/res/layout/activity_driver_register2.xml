@@ -47,28 +47,6 @@
             >
 
 
-                <EditText
-                    android:id="@+id/car_color"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:hint="@string/car_color"
-                    android:paddingRight="10dp"
-                    android:paddingLeft="10dp"
-                    android:textColorHint="@color/gray2"
-                    android:textColor="@color/gray3"
-                    android:textSize="12sp"
-                    android:maxLines="1"
-                    android:scrollHorizontally="true"
-                    android:textStyle="bold"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/client_login_container"
-                    android:layout_marginBottom="15dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    />
-
-
-
 
                 <EditText
                     android:id="@+id/car_model"
@@ -80,6 +58,7 @@
                     android:textColorHint="@color/gray2"
                     android:textColor="@color/gray3"
                     android:textSize="12sp"
+                    android:layout_marginTop="20dp"
                     android:maxLines="1"
                     android:scrollHorizontally="true"
                     android:textStyle="bold"
@@ -124,6 +103,7 @@
 
                     />
                 <ImageView
+                    android:id="@+id/img_photo_car_form"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
@@ -169,6 +149,7 @@
 
                     />
                 <ImageView
+                    android:id="@+id/img_license_photo"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
@@ -214,6 +195,7 @@
 
                     />
                 <ImageView
+                    android:id="@+id/img_front_back_image"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
@@ -250,7 +232,7 @@
 
 
             <Button
-                android:id="@+id/nextBtn"
+                android:id="@+id/regiser_Btn"
                 android:layout_width="match_parent"
                 android:layout_height="43dp"
                 android:background="@drawable/green_btn_bg"
