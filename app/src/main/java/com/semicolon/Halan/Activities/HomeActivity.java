@@ -146,7 +146,7 @@ public class HomeActivity extends AppCompatActivity
                 locContainer.setVisibility(View.GONE);
                 costContainer.setVisibility(View.VISIBLE);
 
-                distance.setText(String.valueOf(Math.round(dist))+" كيلو متر");
+                distance.setText(String.valueOf(Math.round(dist))+" "+getString(R.string.km));
             }
         });
         //////////////////////////////////////////////////////////
@@ -426,7 +426,7 @@ public class HomeActivity extends AppCompatActivity
                 .color(Color.BLACK)
                 );
                 locContainer.setVisibility(View.VISIBLE);
-                txt_order_from.setText(place.getAddress());
+                txt_order_from.setText(place.getName()+","+place.getAddress());
                 Geocoder geocoder = new Geocoder(HomeActivity.this);
                 List<Address> addressList = geocoder.getFromLocation(mylatLng.latitude,mylatLng.longitude,1);
                 if (addressList.size()>0)
@@ -434,13 +434,14 @@ public class HomeActivity extends AppCompatActivity
                     txt_order_to.setText(addressList.get(0).getAddressLine(0));
                 }
 
+
                 dist = distance(mylatLng.latitude,mylatLng.longitude,latLng.latitude,latLng.longitude);
 
 
             }
             catch (NullPointerException e)
             {
-                Toast.makeText(HomeActivity.this, "can't find location", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.this, R.string.cfl, Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
                 e.printStackTrace();
             }

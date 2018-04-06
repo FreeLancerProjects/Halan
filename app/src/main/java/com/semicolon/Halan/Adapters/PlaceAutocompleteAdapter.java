@@ -2,32 +2,33 @@
         package com.semicolon.Halan.Adapters;
 
         import android.content.Context;
-        import android.graphics.Typeface;
-        import android.text.style.CharacterStyle;
-        import android.text.style.StyleSpan;
-        import android.util.Log;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.ArrayAdapter;
-        import android.widget.Filter;
-        import android.widget.Filterable;
-        import android.widget.TextView;
-        import android.widget.Toast;
+import android.graphics.Typeface;
+import android.text.style.CharacterStyle;
+import android.text.style.StyleSpan;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.TextView;
+import android.widget.Toast;
 
-        import com.google.android.gms.common.data.DataBufferUtils;
-        import com.google.android.gms.location.places.AutocompleteFilter;
-        import com.google.android.gms.location.places.AutocompletePrediction;
-        import com.google.android.gms.location.places.AutocompletePredictionBufferResponse;
-        import com.google.android.gms.location.places.GeoDataClient;
-        import com.google.android.gms.maps.model.LatLngBounds;
-        import com.google.android.gms.tasks.RuntimeExecutionException;
-        import com.google.android.gms.tasks.Task;
-        import com.google.android.gms.tasks.Tasks;
+import com.google.android.gms.common.data.DataBufferUtils;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.AutocompletePredictionBufferResponse;
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.tasks.RuntimeExecutionException;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+        import com.semicolon.Halan.R;
 
         import java.util.ArrayList;
-        import java.util.concurrent.ExecutionException;
-        import java.util.concurrent.TimeUnit;
-        import java.util.concurrent.TimeoutException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 public class PlaceAutocompleteAdapter
         extends ArrayAdapter<AutocompletePrediction> implements Filterable {
 
@@ -161,7 +162,7 @@ public class PlaceAutocompleteAdapter
             return DataBufferUtils.freezeAndClose(autocompletePredictions);
         } catch (RuntimeExecutionException e) {
             // If the query did not complete successfully return null
-            Toast.makeText(getContext(), "Error contacting API: " + e.toString(),
+            Toast.makeText(getContext(), R.string.connection,
                     Toast.LENGTH_SHORT).show();
             Log.e("tags", "Error getting autocomplete prediction API call", e);
             return null;
