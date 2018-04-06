@@ -59,9 +59,10 @@
     <string name="enter_car_color">أدخل لون السياره</string>
     <string name="enter_car_model">أدخل موديل السياره</string>
     <string name="profile_page">الصفحه الشخصيه</string>
-    <string name="km">كيلومتر</string>
     <string name="connection">تحقق من الاتصال بالانترنت</string>
     <string name="cfl">عفوا لم يتم تحديد المكان</string>
-
-
+    <string name="rate">تقييم السواق</string>
+    <string name="enter_rate">ادخل التقييم</string>
+    <string name="Add_rate">تقييم</string>
+    <string name="km">كيلومتر</string>
 </resources>

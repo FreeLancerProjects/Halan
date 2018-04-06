@@ -38,6 +38,7 @@
                     android:textColor="@color/white"
                     android:layout_centerHorizontal="true"
                     android:textSize="22sp"
+                    android:textStyle="bold"
                     android:text="@string/profile_page"/>
             </RelativeLayout>
 
@@ -59,7 +60,7 @@
         android:gravity="center"
         android:textColor="@color/black"
         android:textStyle="bold"
-        android:textSize="22dp"
+        android:textSize="22sp"
         android:drawableLeft="@drawable/ic_edit"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
@@ -79,7 +80,7 @@
             android:gravity="right"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:textSize="22dp"
+            android:textSize="22sp"
             android:drawableLeft="@drawable/ic_edit"
             android:paddingRight="20dp"
             android:text="@string/txt_email"/>
@@ -88,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:textSize="22dp"
+            android:textSize="22sp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:text="elashry@gmail.com"/>
@@ -109,7 +110,7 @@
             android:gravity="right"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:textSize="22dp"
+            android:textSize="22sp"
             android:drawableLeft="@drawable/ic_edit"
             android:paddingRight="20dp"
             android:text="@string/phone"/>
@@ -118,7 +119,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:textSize="22dp"
+            android:textSize="22sp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:text="0109965454555"/>

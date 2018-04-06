@@ -63,7 +63,11 @@
     <string name="enter_car_color">enter car color</string>
     <string name="enter_car_model">enter car model</string>
     <string name="profile_page">profile page</string>
-    <string name="km">Km</string>
     <string name="connection">check network connection</string>
     <string name="cfl">can\'t find location</string>
+    <string name="rate">Driver Rate</string>
+    <string name="enter_rate">enter rate</string>
+    <string name="Add_rate">rate</string>
+    <string name="km">Km</string>
+
 </resources>
