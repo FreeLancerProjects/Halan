@@ -365,6 +365,14 @@ public class HomeActivity extends AppCompatActivity
             case R.id.logout:
                 builder.show();
                 break;
+            case R.id.contact:
+                Intent intent1=new Intent(this,ContactUsActivity.class);
+                startActivity(intent1);
+                break;
+            case R.id.pay:
+                Intent intent2=new Intent(this,PayActivity.class);
+                startActivity(intent2);
+                break;
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
