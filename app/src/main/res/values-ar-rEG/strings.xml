@@ -17,7 +17,7 @@
     <string name="vehicle">رقم المركبة</string>
     <string name="next">التالي</string>
     <string name="car_color">لون السيارة</string>
-    <string name="car_model">موديل السيارة</string>
+    <string name="car_model">نوع السيارة</string>
     <string name="photo_car_form">صورة استمارة السيارة</string>
     <string name="license_photo">صورة الرخصة</string>
     <string name="front_back_image">صورة للسيارة من الخلف والامام</string>
@@ -65,4 +65,16 @@
     <string name="enter_rate">ادخل التقييم</string>
     <string name="Add_rate">تقييم</string>
     <string name="km">كيلومتر</string>
+    <string name="Subject">الموضوع</string>
+    <string name="message">الرساله</string>
+    <string name="call">اتصال</string>
+    <string name="send">ارسال</string>
+    <string name="transfer_money">مبلغ التحويل</string>
+    <string name="date">تاريخ التحويل</string>
+    <string name="bank">بنك التحويل</string>
+    <string name="code">كود الخصم</string>
+    <string name="order_detail">تفاصيل الطلب</string>
+    <string name="car_number">رقم السياره</string>
+    <string name="time">وقت التسليم</string>
+    <string name="close">إغلاق</string>
 </resources>

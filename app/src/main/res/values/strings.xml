@@ -69,5 +69,17 @@
     <string name="enter_rate">enter rate</string>
     <string name="Add_rate">rate</string>
     <string name="km">Km</string>
+    <string name="Subject">Subject</string>
+    <string name="message">message</string>
+    <string name="call">call</string>
+    <string name="send">send</string>
+    <string name="transfer_money"> transfer_money</string>
+    <string name="date"> trans date</string>
+    <string name="bank"> trans bank</string>
+    <string name="code"> discount code</string>
+    <string name="order_detail"> order detail</string>
+    <string name="car_number"> car number</string>
+    <string name="time">trans time</string>
+    <string name="close">close</string>
 
 </resources>
