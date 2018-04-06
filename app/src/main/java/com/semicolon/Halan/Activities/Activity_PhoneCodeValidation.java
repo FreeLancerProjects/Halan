@@ -44,7 +44,6 @@ public class Activity_PhoneCodeValidation extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String code = code_txt.getText().toString();
-
                 if (TextUtils.isEmpty(code))
                 {
                     Toast.makeText(Activity_PhoneCodeValidation.this, R.string.plz_enter_code, Toast.LENGTH_LONG).show();
