@@ -2,6 +2,7 @@ package com.semicolon.Halan.Activities;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -292,6 +293,10 @@ public class HomeActivity extends AppCompatActivity
         {
             case R.id.home:
                 Toast.makeText(this, "home", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.register:
+                Intent intent=new Intent(this,Activity_Driver_Register.class);
+                startActivity(intent);
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);

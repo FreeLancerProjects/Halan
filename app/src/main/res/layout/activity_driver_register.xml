@@ -32,97 +32,55 @@
                 />
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
-    <ScrollView
+    <ScrollView android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true"
+    android:scrollbars="none"
+    android:background="@drawable/screen_gradient"
+
+
+    >
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:fitsSystemWindows="true"
-        android:scrollbars="none"
         >
-        <LinearLayout
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="10dp"
+        app:cardBackgroundColor="@color/white"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+
+        >
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-
-            >
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/image"
-                android:layout_width="65dp"
-                android:layout_height="65dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="5dp"
-                app:civ_border_color="@color/colorPrimary"
-                app:civ_border_width="1.5px"
-                android:src="@drawable/user_profile"
-                android:layout_marginTop="5dp"
-
-                />
-            <EditText
-                android:id="@+id/user_name"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:hint="@string/user_name"
-                android:paddingRight="10dp"
-                android:paddingLeft="10dp"
-                android:textColorHint="@color/gray2"
-                android:textColor="@color/gray3"
-                android:textSize="12sp"
-                android:maxLines="1"
-                android:scrollHorizontally="true"
-                android:textStyle="bold"
-                android:background="@drawable/client_login_container"
-                android:layout_marginBottom="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-
-                />
-
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:inputType="textPassword"
-                android:hint="@string/password"
-                android:paddingRight="10dp"
-                android:paddingLeft="10dp"
-                android:textColorHint="@color/gray2"
-                android:textColor="@color/gray3"
-                android:textSize="12sp"
-                android:maxLines="1"
-                android:scrollHorizontally="true"
-                android:textStyle="bold"
-                android:background="@drawable/client_login_container"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
+            android:layout_height="60dp"
+            android:background="@drawable/client_login_tv"
+            android:layout_marginBottom="10dp"
+            android:text="@string/txt_register"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="15sp"
 
 
 
-                />
-            <EditText
-                android:id="@+id/retype_password"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:inputType="textPassword"
-                android:hint="@string/retype_pass"
-                android:paddingRight="10dp"
-                android:paddingLeft="10dp"
-                android:textColorHint="@color/gray2"
-                android:textColor="@color/gray3"
-                android:textSize="12sp"
-                android:maxLines="1"
-                android:scrollHorizontally="true"
-                android:textStyle="bold"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:background="@drawable/client_login_container"
+            />
 
 
-
-
-                />
             <EditText
                 android:id="@+id/phone"
                 android:inputType="phone"
@@ -213,6 +171,10 @@
                 android:layout_marginRight="15dp"
                 />
 
-        </LinearLayout>
+    </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+
+    </RelativeLayout>
     </ScrollView>
 </LinearLayout>
