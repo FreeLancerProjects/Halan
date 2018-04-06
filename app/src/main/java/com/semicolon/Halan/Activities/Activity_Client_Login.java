@@ -2,6 +2,7 @@ package com.semicolon.Halan.Activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -20,7 +21,9 @@ import android.widget.Toast;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
+import com.semicolon.Halan.Services.Preferences;
 import com.semicolon.Halan.Services.Services;
+import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
 
 import java.util.Locale;
@@ -36,6 +39,7 @@ public class Activity_Client_Login extends AppCompatActivity {
     private TextView forget_password,newAccount;
     private ProgressDialog pDialog;
     private Users users;
+    private Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +48,21 @@ public class Activity_Client_Login extends AppCompatActivity {
         Calligrapher calligrapher=new Calligrapher(this);
         calligrapher.setFont(this,"JannaLT-Regular.ttf",true);
         users = Users.getInstance();
+        preferences = new Preferences(this);
+        SharedPreferences pref = getSharedPreferences("user",MODE_PRIVATE);
+        String session = pref.getString("session","");
+        if (!TextUtils.isEmpty(session)||session!=null)
+        {
+            if (session.equals(Tags.login))
+            {
+                UserModel userModel =preferences.getUserData();
+                users.setUserData(userModel);
+                Intent intent = new Intent(Activity_Client_Login.this,HomeActivity.class);
+                startActivity(intent);
+                finish();
+
+            }
+        }
         initView();
     }
 
@@ -146,6 +165,7 @@ public class Activity_Client_Login extends AppCompatActivity {
                     UserModel userModel = response.body();
                     if (userModel.getSuccess()==1) {
 
+                        preferences.CreatePref(userModel);
                         users.setUserData(userModel);
                         pDialog.dismiss();
                         Intent intent = new Intent(Activity_Client_Login.this,HomeActivity.class);

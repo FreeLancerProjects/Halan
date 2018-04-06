@@ -6,26 +6,27 @@ package com.semicolon.Halan.Models;
 
 public class UserModel {
 
-    private String user_id;
-    private String user_type;
-    private String user_name;
-    private String user_pass;
-    private String user_phone;
-    private String user_email;
-    private String user_token_id;
-    private String user_photo;
-    private String user_city;
+    private String user_id          ;
+    private String user_type        ;
+    private String user_name        ;
+    private String user_phone       ;
+    private String user_email       ;
+    private String user_token_id    ;
+    private String user_photo       ;
+    private String user_city        ;
     private String user_national_num;
-    private String user_car_num;
-    private String user_car_model;
-    private String user_car_color;
-    private String user_car_license;
-    private String user_car_form;
-    private String user_car_photo;
+    private String user_car_num     ;
+    private String user_car_model   ;
+    private String user_car_color   ;
+    private String user_car_license ;
+    private String user_car_form    ;
+    private String user_car_photo   ;
     private String user_confirm_code;
     private String date_registration;
-    private String user_google_lat;
-    private String user_google_long;
+    private String user_google_lat  ;
+    private String user_google_long ;
+    private String user_pass        ;
+
     private int success;
 
     public UserModel() {

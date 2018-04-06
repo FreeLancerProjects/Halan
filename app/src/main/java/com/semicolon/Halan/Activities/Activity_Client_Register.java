@@ -27,6 +27,7 @@ import com.lamudi.phonefield.PhoneInputLayout;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
+import com.semicolon.Halan.Services.Preferences;
 import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.SingleTone.Users;
 
@@ -50,6 +51,8 @@ public class Activity_Client_Register extends AppCompatActivity {
     private Bitmap bitmap;
     private ProgressDialog dialog;
     private Users users;
+    private Preferences preferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,7 @@ public class Activity_Client_Register extends AppCompatActivity {
         setContentView(R.layout.activity_client_register);
         initView();
         users = Users.getInstance();
+        preferences = new Preferences(this);
 
         CreateProgressDialog();
 
@@ -237,6 +241,7 @@ public class Activity_Client_Register extends AppCompatActivity {
                     UserModel userModel = response.body();
                     if (response.body().getSuccess()==1)
                     {
+                        preferences.CreatePref(userModel);
                         users.setUserData(userModel);
                         dialog.dismiss();
 

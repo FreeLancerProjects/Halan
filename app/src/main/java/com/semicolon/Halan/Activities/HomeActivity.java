@@ -1,7 +1,9 @@
 package com.semicolon.Halan.Activities;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -63,6 +65,7 @@ import com.google.android.gms.tasks.Task;
 import com.semicolon.Halan.Adapters.PlaceAutocompleteAdapter;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
+import com.semicolon.Halan.Services.Preferences;
 import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
 import com.squareup.picasso.Picasso;
@@ -103,6 +106,8 @@ public class HomeActivity extends AppCompatActivity
     private EditText txt_order;
     private TextView txt_order_from,txt_order_to,cost,distance;
     private double dist;
+    private Preferences preferences;
+    private AlertDialog.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +117,8 @@ public class HomeActivity extends AppCompatActivity
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         initView();
+        CreateAlertDialog();
+        preferences = new Preferences(this);
         if (IsServicesOk()) {
             checkPermission();
         }
@@ -184,7 +191,28 @@ public class HomeActivity extends AppCompatActivity
 
 
     }
+    private void CreateAlertDialog()
+    {
+        builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.logout));
+        builder.setCancelable(false);
+        builder.setPositiveButton("نعم", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Logout();
+            }
+        });
 
+        builder.setNegativeButton("إلغاء", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                AlertDialog dialog = builder.create();
+                dialog.dismiss();
+            }
+        });
+
+        builder.create();
+    }
     private void UpdateUI(UserModel userModel) {
 
         target = new Target() {
@@ -334,9 +362,19 @@ public class HomeActivity extends AppCompatActivity
                 Intent intent=new Intent(this,Activity_Driver_Register.class);
                 startActivity(intent);
                 break;
+            case R.id.logout:
+                builder.show();
+                break;
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void Logout() {
+        preferences.ClearPref();
+        Intent intent = new Intent(HomeActivity.this,Activity_Client_Login.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override

@@ -9,4 +9,7 @@ public class Tags {
     public static final String ImgPath  = "http://fekraapp.semicolonsoft.com/hala/uploads/images/";
     public static final String Driver="1";
     public static final String Client="2";
+    public static final String login="login";
+    public static final String logout="logout";
+
 }
