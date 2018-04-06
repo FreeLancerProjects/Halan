@@ -54,10 +54,10 @@
     <string name="logout">خروج</string>
     <string name="search_plc_details">أدخل المكان الذي تريد ان تبحث عنه بالتفصيل</string>
     <string name="enter_city">enter city</string>
-    <string name="enter_identity_number">enter identity number</string>
-    <string name="enter_vehicle_number">enter vehicle number</string>
-    <string name="enter_car_color">enter car color</string>
-    <string name="enter_car_model">enter car model</string>
+    <string name="enter_identity_number">أدخل رقم الهويه</string>
+    <string name="enter_vehicle_number">أدخل رفم السياره</string>
+    <string name="enter_car_color">أدخل لون السياره</string>
+    <string name="enter_car_model">أدخل موديل السياره</string>
     <string name="profile_page">الصفحه الشخصيه</string>
 
 </resources>

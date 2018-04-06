@@ -62,6 +62,6 @@
     <string name="enter_vehicle_number">enter vehicle number</string>
     <string name="enter_car_color">enter car color</string>
     <string name="enter_car_model">enter car model</string>
-    <string name="profile_page">الصفحه الشخصيه</string>
+    <string name="profile_page">profile page</string>
 
 </resources>
