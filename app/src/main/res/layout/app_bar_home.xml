@@ -33,9 +33,11 @@
 
     </android.support.design.widget.AppBarLayout>
     <RelativeLayout
+        android:id="@+id/search_container"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/colorPrimary"
+
         >
         <AutoCompleteTextView
             android:id="@+id/search"

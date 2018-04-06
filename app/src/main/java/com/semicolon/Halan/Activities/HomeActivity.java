@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +30,10 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,6 +68,9 @@ import com.semicolon.Halan.SingleTone.Users;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.IOException;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.anwarshahriar.calligrapher.Calligrapher;
 
@@ -87,8 +96,13 @@ public class HomeActivity extends AppCompatActivity
             new LatLng(-33.858754, 151.229596));
     private PlaceAutocompleteAdapter adapter;
     private GoogleApiClient apiClient;
-
     private LatLng mylatLng;
+    private FrameLayout costContainer;
+    private LinearLayout locContainer;
+    private Button nextBtn,sendBtn;
+    private EditText txt_order;
+    private TextView txt_order_from,txt_order_to,cost,distance;
+    private double dist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +128,28 @@ public class HomeActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         nav_view = findViewById(R.id.nav_view);
+        //////////////////////////////////////////////////////////
+        costContainer = findViewById(R.id.costContainer);
+        locContainer  = findViewById(R.id.locContainer);
+        txt_order     = findViewById(R.id.txt_order);
+        txt_order_from= findViewById(R.id.txt_order_from);
+        txt_order_to  = findViewById(R.id.txt_order_to);
+        distance      = findViewById(R.id.distance);
+        nextBtn       = findViewById(R.id.nextBtn);
+        sendBtn       = findViewById(R.id.sendBtn);
+        locContainer.setVisibility(View.GONE);
+        costContainer.setVisibility(View.GONE);
+
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                locContainer.setVisibility(View.GONE);
+                costContainer.setVisibility(View.VISIBLE);
+
+                distance.setText(String.valueOf(Math.round(dist))+" كيلو متر");
+            }
+        });
+        //////////////////////////////////////////////////////////
 
         View view = nav_view.getHeaderView(0);
         userImage = view.findViewById(R.id.userImage);
@@ -323,12 +359,27 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        int vis1=locContainer.getVisibility();
+        int vis2=costContainer.getVisibility();
         DrawerLayout drawer =findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        } else if (vis1==0){
+            locContainer.setVisibility(View.GONE);
+        }else if (vis2==0)
+        {
+            costContainer.setVisibility(View.GONE);
+            locContainer.setVisibility(View.VISIBLE);
+        }else if (vis1==8)
+            {
+                super.onBackPressed();
+
+            }
+            else
+                {
+                    super.onBackPressed();
+
+                }
     }
 
     private void HideKeyBoard()
@@ -339,7 +390,9 @@ public class HomeActivity extends AppCompatActivity
     private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+            costContainer.setVisibility(View.GONE);
+            locContainer.setVisibility(View.GONE);
+            mMap.clear();
             AutocompletePrediction item = adapter.getItem(i);
             String place_id = item.getPlaceId();
             PendingResult<PlaceBuffer> bufferPendingResult = Places.GeoDataApi.getPlaceById(apiClient,place_id);
@@ -361,9 +414,7 @@ public class HomeActivity extends AppCompatActivity
             {
                 HideKeyBoard();
                 LatLng latLng = place.getLatLng();
-
-                mMap.clear();
-
+                AddMarker(mylatLng);
                 mMap.addMarker(
                         new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.g_map)).position(new LatLng(place.getViewport().getCenter().latitude,place.getViewport().getCenter().longitude))
 
@@ -374,13 +425,24 @@ public class HomeActivity extends AppCompatActivity
                 .width(5)
                 .color(Color.BLACK)
                 );
+                locContainer.setVisibility(View.VISIBLE);
+                txt_order_from.setText(place.getAddress());
+                Geocoder geocoder = new Geocoder(HomeActivity.this);
+                List<Address> addressList = geocoder.getFromLocation(mylatLng.latitude,mylatLng.longitude,1);
+                if (addressList.size()>0)
+                {
+                    txt_order_to.setText(addressList.get(0).getAddressLine(0));
+                }
 
+                dist = distance(mylatLng.latitude,mylatLng.longitude,latLng.latitude,latLng.longitude);
 
 
             }
             catch (NullPointerException e)
             {
                 Toast.makeText(HomeActivity.this, "can't find location", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
 
@@ -390,6 +452,28 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+
+    private double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1))
+                * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1))
+                * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        return (dist);
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
     }
 
 }
