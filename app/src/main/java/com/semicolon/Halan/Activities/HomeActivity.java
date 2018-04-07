@@ -162,6 +162,13 @@ public class HomeActivity extends AppCompatActivity
         userImage = view.findViewById(R.id.userImage);
         nav_view.setNavigationItemSelectedListener(this);
 
+        userImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(HomeActivity.this,UserProfileActivity.class);
+                startActivity(intent);
+            }
+        });
         search_view = findViewById(R.id.search);
         search_view.setOnItemClickListener(itemClickListener);
         GeoDataClient geoDataClient = Places.getGeoDataClient(this,null);

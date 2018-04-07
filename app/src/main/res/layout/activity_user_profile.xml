@@ -6,40 +6,43 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.semicolon.Halan.Activities.UserProfileActivity">
+
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
 
         >
+
         <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             app:contentInsetEnd="0dp"
-            app:contentInsetRight="0dp"
             app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            >
+            app:contentInsetRight="0dp"
+            app:contentInsetStart="0dp">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
-                    android:src="@drawable/white_back"
                     android:padding="12dp"
-                    />
+                    android:src="@drawable/white_back" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:textColor="@color/white"
                     android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:text="@string/profile_page"
+                    android:textColor="@color/white"
                     android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:text="@string/profile_page"/>
+                    android:textStyle="bold" />
             </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>
@@ -50,78 +53,78 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_margin="5dp"
-        android:src="@drawable/profile_img"
-        />
+        android:scaleType="fitXY"
+        android:src="@drawable/profile_img" />
 
     <TextView
         android:id="@+id/user_name"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:gravity="center"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="22sp"
         android:drawableLeft="@drawable/ic_edit"
+        android:gravity="center"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:text="محمد على محمد"/>
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="5dp"
         android:layout_margin="5dp"
         android:background="@drawable/client_login_container"
-        >
+        android:orientation="vertical"
+        android:padding="5dp">
+
         <TextView
             android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="22sp"
             android:drawableLeft="@drawable/ic_edit"
+            android:gravity="right"
             android:paddingRight="20dp"
-            android:text="@string/txt_email"/>
+            android:text="@string/txt_email"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/txt_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:textSize="22sp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="elashry@gmail.com"/>
+            android:textSize="14sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="5dp"
         android:layout_margin="5dp"
         android:background="@drawable/client_login_container"
-        >
+        android:orientation="vertical"
+        android:padding="5dp">
+
         <TextView
             android:id="@+id/phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="22sp"
             android:drawableLeft="@drawable/ic_edit"
+            android:gravity="right"
             android:paddingRight="20dp"
-            android:text="@string/phone"/>
+            android:text="@string/phone"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/txt_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:textSize="22sp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="0109965454555"/>
+            android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>
