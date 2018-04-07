@@ -115,7 +115,7 @@ public class HomeActivity extends AppCompatActivity
     private Button nextBtn,sendBtn;
     private EditText txt_order;
     private TextView txt_order_from,txt_order_to,cost,distance;
-    private String dist,durat;
+    private double dist;
     private Preferences preferences;
     private AlertDialog.Builder builder;
 
@@ -163,7 +163,7 @@ public class HomeActivity extends AppCompatActivity
                 locContainer.setVisibility(View.GONE);
                 costContainer.setVisibility(View.VISIBLE);
 
-                String[] dis = dist.split(" ");
+                String[] dis = String.valueOf(dist).split(" ");
                 distance.setText(String.valueOf(Math.round(Double.parseDouble(dis[0])))+" "+getString(R.string.km));
             }
         });
@@ -430,18 +430,24 @@ public class HomeActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else if (vis1==0){
             locContainer.setVisibility(View.GONE);
+            search_view.setText("");
+            mMap.clear();
+            AddMarker(mylatLng);
+
         }else if (vis2==0)
         {
             costContainer.setVisibility(View.GONE);
             locContainer.setVisibility(View.VISIBLE);
         }else if (vis1==8)
             {
+
                 super.onBackPressed();
 
             }
             else
                 {
                     super.onBackPressed();
+
 
                 }
     }
@@ -529,8 +535,15 @@ public class HomeActivity extends AppCompatActivity
                     Log.e("p3",""+placeModel.getRoutes().get(0).getLegs().get(0).getSteps().get(0).getStart_location().getLat());
                     Log.e("p4",""+placeModel.getRoutes().get(0).getLegs().get(0).getSteps().get(0).getEnd_location().getLat());
 
-                    dist = placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText();
-                    durat = placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText();
+                    try {
+                        String spilit_dist [] =placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText().split(" ");
+                                dist = Double.parseDouble(spilit_dist[0]);
+
+                    }catch (NullPointerException e)
+                    {
+                        dist = distance(mylatLng.latitude,mylatLng.longitude,latLng.latitude,latLng.longitude);
+                    }
+                   // durat = placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText();
                     List<String> polylines = new ArrayList<>();
                     List<StepsModel> stepsModelList =placeModel.getRoutes().get(0).getLegs().get(0).getSteps();
 
