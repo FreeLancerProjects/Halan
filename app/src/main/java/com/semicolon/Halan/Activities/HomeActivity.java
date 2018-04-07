@@ -59,13 +59,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.maps.android.PolyUtil;
 import com.semicolon.Halan.Adapters.PlaceAutocompleteAdapter;
 import com.semicolon.Halan.Models.PlaceModel;
-import com.semicolon.Halan.Models.RouteModel;
 import com.semicolon.Halan.Models.StepsModel;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
@@ -116,7 +115,7 @@ public class HomeActivity extends AppCompatActivity
     private Button nextBtn,sendBtn;
     private EditText txt_order;
     private TextView txt_order_from,txt_order_to,cost,distance;
-    private double dist;
+    private String dist,durat;
     private Preferences preferences;
     private AlertDialog.Builder builder;
 
@@ -164,7 +163,8 @@ public class HomeActivity extends AppCompatActivity
                 locContainer.setVisibility(View.GONE);
                 costContainer.setVisibility(View.VISIBLE);
 
-                distance.setText(String.valueOf(Math.round(dist))+" "+getString(R.string.km));
+                String[] dis = dist.split(" ");
+                distance.setText(String.valueOf(Math.round(Double.parseDouble(dis[0])))+" "+getString(R.string.km));
             }
         });
         //////////////////////////////////////////////////////////
@@ -529,13 +529,37 @@ public class HomeActivity extends AppCompatActivity
                     Log.e("p3",""+placeModel.getRoutes().get(0).getLegs().get(0).getSteps().get(0).getStart_location().getLat());
                     Log.e("p4",""+placeModel.getRoutes().get(0).getLegs().get(0).getSteps().get(0).getEnd_location().getLat());
 
-                    PolylineOptions options = new PolylineOptions();
+                    dist = placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText();
+                    durat = placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText();
+                    List<String> polylines = new ArrayList<>();
+                    List<StepsModel> stepsModelList =placeModel.getRoutes().get(0).getLegs().get(0).getSteps();
+
+                    for (int i=0;i<stepsModelList.size();i++)
+                    {
+                        polylines.add(stepsModelList.get(i).getPolyline().getPoints());
+                    }
+
+
+                    for (int i=0;i<polylines.size();i++)
+                    {
+                        PolylineOptions options = new PolylineOptions();
+                        options.width(5);
+                        options.color(Color.BLACK);
+                        options.addAll(PolyUtil.decode(polylines.get(i)));
+                        options.geodesic(true);
+                        mMap.addPolyline(options);
+                        Log.e("polyline",""+PolyUtil.decode(polylines.get(i)));
+
+                    }
+
+
+                    /*PolylineOptions options = new PolylineOptions();
                     options.width(5);
                     options.color(Color.BLACK);
                     mMap.addPolyline(options);
-                    options.add(mylatLng);
+                    options.add(mylatLng);*/
 
-                    List<StepsModel> stepsModelList = placeModel.getRoutes().get(0).getLegs().get(0).getSteps();
+                   /* List<StepsModel> stepsModelList = placeModel.getRoutes().get(0).getLegs().get(0).getSteps();
 
                     for (int i=0;i<stepsModelList.size();i++)
                     {
@@ -546,7 +570,7 @@ public class HomeActivity extends AppCompatActivity
                     }
                     options.add(latLng);
                     mMap.addPolyline(options);
-
+*/
 
 
 
@@ -589,40 +613,4 @@ public class HomeActivity extends AppCompatActivity
         return (rad * 180.0 / Math.PI);
     }
 
-    private ArrayList<LatLng> decodePoly(String encoded) {
-
-        Log.i("Location", "String received: "+encoded);
-        ArrayList<LatLng> poly = new ArrayList<LatLng>();
-        int index = 0, len = encoded.length();
-        int lat = 0, lng = 0;
-
-        while (index < len) {
-            int b, shift = 0, result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lat += dlat;
-
-            shift = 0;
-            result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lng += dlng;
-
-            LatLng p = new LatLng((int) (((double) lat /1E5)* 1E6), (int) (((double) lng/1E5   * 1E6)));
-            poly.add(p);
-        }
-
-        for(int i=0;i<poly.size();i++){
-            Log.i("Location", "Point sent: Latitude: "+poly.get(i).latitude+" Longitude: "+poly.get(i).longitude);
-        }
-        return poly;
-    }
 }

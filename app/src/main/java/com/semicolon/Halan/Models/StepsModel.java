@@ -15,12 +15,15 @@ public class StepsModel implements Serializable {
     @SerializedName("end_location")
     private EndLoc end_location;
 
+    @SerializedName("polyline")
+    private PolylineModel polyline;
     public StepsModel() {
     }
 
-    public StepsModel(StartLoc start_location, EndLoc end_location) {
+    public StepsModel(StartLoc start_location, EndLoc end_location, PolylineModel polyline) {
         this.start_location = start_location;
         this.end_location = end_location;
+        this.polyline = polyline;
     }
 
     public StartLoc getStart_location() {
@@ -37,6 +40,14 @@ public class StepsModel implements Serializable {
 
     public void setEnd_location(EndLoc end_location) {
         this.end_location = end_location;
+    }
+
+    public PolylineModel getPolyline() {
+        return polyline;
+    }
+
+    public void setPolyline(PolylineModel polyline) {
+        this.polyline = polyline;
     }
 
     public class StartLoc
