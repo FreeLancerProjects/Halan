@@ -25,6 +25,7 @@ import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
 import com.semicolon.Halan.Services.Services;
+import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
 
 import java.io.ByteArrayOutputStream;
@@ -151,7 +152,7 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
             enCode1(bitmap1);
             enCode2(bitmap2);
             enCode3(bitmap3);
-        Services services= Api.getClient().create(Services.class);
+        Services services= Api.getClient(Tags.BASE_URL).create(Services.class);
         Call<UserModel> call=services.driverSignIn(userModel.getUser_id(),city,identety,car_model,car_color,enCodedImage1,enCodedImage2,enCodedImage3,"","");
         call.enqueue(new Callback<UserModel>() {
             @Override

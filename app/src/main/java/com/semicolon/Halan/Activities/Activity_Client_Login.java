@@ -153,7 +153,7 @@ public class Activity_Client_Login extends AppCompatActivity {
         final String upass = password.getText().toString();
 
 
-        Services service = Api.getClient().create(Services.class);
+        Services service = Api.getClient(Tags.BASE_URL).create(Services.class);
         Call<UserModel> userCall = service.userSignIn(uname, upass);
 
         userCall.enqueue(new Callback<UserModel>() {

@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Api {
 
     private static Retrofit retrofit = null;
-    public static Retrofit getClient() {
+    public static Retrofit getClient(String BaseUrl) {
         if (retrofit==null) {
             OkHttpClient client =new OkHttpClient.Builder()
                     .connectTimeout(1, TimeUnit.MINUTES)
@@ -22,7 +22,7 @@ public class Api {
                     .build();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl(Tags.BASE_URL)
+                    .baseUrl(BaseUrl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(client)
                     .build();

@@ -9,21 +9,96 @@ import java.io.Serializable;
  */
 
 public class StepsModel implements Serializable {
-    @SerializedName("polyline")
-    PolylineModel polyline;
+
+    @SerializedName("start_location")
+    private StartLoc start_location;
+    @SerializedName("end_location")
+    private EndLoc end_location;
 
     public StepsModel() {
     }
 
-    public StepsModel(PolylineModel polyline) {
-        this.polyline = polyline;
+    public StepsModel(StartLoc start_location, EndLoc end_location) {
+        this.start_location = start_location;
+        this.end_location = end_location;
     }
 
-    public PolylineModel getPolyline() {
-        return polyline;
+    public StartLoc getStart_location() {
+        return start_location;
     }
 
-    public void setPolyline(PolylineModel polyline) {
-        this.polyline = polyline;
+    public void setStart_location(StartLoc start_location) {
+        this.start_location = start_location;
+    }
+
+    public EndLoc getEnd_location() {
+        return end_location;
+    }
+
+    public void setEnd_location(EndLoc end_location) {
+        this.end_location = end_location;
+    }
+
+    public class StartLoc
+    {
+        @SerializedName("lat")
+        private double lat;
+        @SerializedName("lng")
+        private double lng;
+
+        public StartLoc() {
+        }
+
+        public StartLoc(double lat, double lng) {
+            this.lat = lat;
+            this.lng = lng;
+        }
+
+        public double getLat() {
+            return lat;
+        }
+
+        public void setLat(double lat) {
+            this.lat = lat;
+        }
+
+        public double getLng() {
+            return lng;
+        }
+
+        public void setLng(double lng) {
+            this.lng = lng;
+        }
+    }
+    public class EndLoc
+    {
+        @SerializedName("lat")
+        private double lat;
+        @SerializedName("lng")
+        private double lng;
+
+        public EndLoc() {
+        }
+
+        public EndLoc(double lat, double lng) {
+            this.lat = lat;
+            this.lng = lng;
+        }
+
+        public double getLat() {
+            return lat;
+        }
+
+        public void setLat(double lat) {
+            this.lat = lat;
+        }
+
+        public double getLng() {
+            return lng;
+        }
+
+        public void setLng(double lng) {
+            this.lng = lng;
+        }
     }
 }

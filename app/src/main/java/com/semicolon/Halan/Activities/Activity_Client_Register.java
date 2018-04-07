@@ -29,6 +29,7 @@ import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
 import com.semicolon.Halan.Services.Preferences;
 import com.semicolon.Halan.Services.Services;
+import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
 
 import java.io.ByteArrayOutputStream;
@@ -226,7 +227,7 @@ public class Activity_Client_Register extends AppCompatActivity {
     private void saveToServerDB(String user_name,String pass,String email,String phone) {
         enCode(bitmap);
         dialog.show();
-        Services services = Api.getClient().create(Services.class);
+        Services services = Api.getClient(Tags.BASE_URL).create(Services.class);
         Call<UserModel> userCall = services.userSignUp(user_name,pass,phone,email, FirebaseInstanceId.getInstance().getToken(),enCodedImage);
         userCall.enqueue(new Callback<UserModel>() {
             @Override

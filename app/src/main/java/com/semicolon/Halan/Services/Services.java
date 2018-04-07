@@ -9,6 +9,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by Delta on 25/03/2018.
@@ -57,12 +58,8 @@ public interface Services {
     );
 
 
-    @GET("https://maps.googleapis.com/maps/api/directions/json?origin={origin_lat},{origin_lng}&destination={dist_lat},{dist_lng}&key={api_key}")
-    Call<PlaceModel> getDirection(@Path("origin_lat") double origin_lat,
-                                  @Path("origin_lng") double origin_lng,
-                                  @Path("origin_lat") double dist_lat,
-                                  @Path("origin_lng") double dist_lng,
-                                  @Path("api_key") String api_key
-                                  );
+    @GET("/maps/api/directions/json")
+    Call<PlaceModel> getDirection(@Query("origin") String origin,
+                                  @Query("destination") String dist);
 
 }

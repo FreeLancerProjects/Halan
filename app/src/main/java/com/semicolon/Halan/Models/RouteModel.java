@@ -11,14 +11,25 @@ import java.util.List;
 
 public class RouteModel implements Serializable{
 
+    @SerializedName("overview_polyline")
+    PolylineModel overview_polyline;
     @SerializedName("legs")
     List<LegsModel> legs;
 
     public RouteModel() {
     }
 
-    public RouteModel(List<LegsModel> legs) {
+    public RouteModel(PolylineModel overview_polyline, List<LegsModel> legs) {
+        this.overview_polyline = overview_polyline;
         this.legs = legs;
+    }
+
+    public PolylineModel getOverview_polyline() {
+        return overview_polyline;
+    }
+
+    public void setOverview_polyline(PolylineModel overview_polyline) {
+        this.overview_polyline = overview_polyline;
     }
 
     public List<LegsModel> getLegs() {

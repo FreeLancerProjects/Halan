@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 
 public class PolylineObject implements Serializable {
-    @SerializedName("polyline")
+    @SerializedName("overview_polyline")
     PolylineModel polyline;
 
     public PolylineObject() {
