@@ -1,10 +1,12 @@
 package com.semicolon.Halan.Services;
 
+import com.semicolon.Halan.Models.PlaceModel;
 import com.semicolon.Halan.Models.UserModel;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -45,5 +47,13 @@ public interface Services {
                                  @Field("user_car_photo") String user_car_photo,
                                  @Field("user_google_lat") String user_google_lat,
                                  @Field("user_google_long") String user_google_long);
+
+    @GET("https://maps.googleapis.com/maps/api/directions/json?origin={origin_lat},{origin_lng}&destination={dist_lat},{dist_lng}&key={api_key}")
+    Call<PlaceModel> getDirection(@Path("origin_lat") double origin_lat,
+                                  @Path("origin_lng") double origin_lng,
+                                  @Path("origin_lat") double dist_lat,
+                                  @Path("origin_lng") double dist_lng,
+                                  @Path("api_key") String api_key
+                                  );
 
 }
