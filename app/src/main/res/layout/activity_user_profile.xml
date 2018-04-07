@@ -22,18 +22,15 @@
             app:contentInsetLeft="0dp"
             app:contentInsetRight="0dp"
             app:contentInsetStart="0dp">
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
                     android:padding="12dp"
                     android:src="@drawable/white_back" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -55,19 +52,27 @@
         android:layout_margin="5dp"
         android:scaleType="fitXY"
         android:src="@drawable/profile_img" />
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <TextView
         android:id="@+id/user_name"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:drawableLeft="@drawable/ic_edit"
         android:gravity="center"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold" />
-
+        <ImageView
+            android:paddingLeft="20dp"
+            android:id="@+id/img_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_edit"/>
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -75,18 +80,25 @@
         android:background="@drawable/client_login_container"
         android:orientation="vertical"
         android:padding="5dp">
-
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <TextView
-            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_edit"
             android:gravity="right"
             android:paddingRight="20dp"
             android:text="@string/txt_email"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/img_email"
+                android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_edit"/>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/txt_email"
@@ -96,6 +108,7 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:textSize="14sp" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -105,19 +118,27 @@
         android:background="@drawable/client_login_container"
         android:orientation="vertical"
         android:padding="5dp">
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
         <TextView
-            android:id="@+id/phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_edit"
             android:gravity="right"
             android:paddingRight="20dp"
+            android:layout_alignParentRight="true"
             android:text="@string/phone"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
 
+    <ImageView
+        android:id="@+id/img_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/ic_edit"/>
+</RelativeLayout>
         <TextView
             android:id="@+id/txt_phone"
             android:layout_width="match_parent"

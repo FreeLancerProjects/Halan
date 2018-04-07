@@ -16,7 +16,7 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
 
     Users users;
     private UserModel userModel;
-    private ImageView imageView;
+    private ImageView imageView,edtname,edtemail,edtphone;
     TextView name,email,phone;
 
     @Override

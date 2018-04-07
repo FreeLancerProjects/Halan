@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Halan.iml" filepath="$PROJECT_DIR$/Halan.iml" />
+      <module fileurl="file://E:\android\projects\Halan\Halan.iml" filepath="E:\android\projects\Halan\Halan.iml" />
       <module fileurl="file://E:\Emad\Al_Atheer_Projects\FL\Halan\Halan.iml" filepath="E:\Emad\Al_Atheer_Projects\FL\Halan\Halan.iml" />
       <module fileurl="file://D:\Courses\work_android\FreeLancer\Halan\.idea\Halan.iml" filepath="D:\Courses\work_android\FreeLancer\Halan\.idea\Halan.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />

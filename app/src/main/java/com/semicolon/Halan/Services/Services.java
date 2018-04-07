@@ -48,6 +48,15 @@ public interface Services {
                                  @Field("user_google_lat") String user_google_lat,
                                  @Field("user_google_long") String user_google_long);
 
+    @FormUrlEncoded
+    @POST("Api/UpdateClient/{user_id}")
+    Call<UserModel> UpdateClient(@Field("user_name") String user_name,
+                                 @Field("user_phone") String user_phone,
+                                 @Field("user_email") String user_email,
+                                 @Field("user_photo") String user_photo
+    );
+
+
     @GET("https://maps.googleapis.com/maps/api/directions/json?origin={origin_lat},{origin_lng}&destination={dist_lat},{dist_lng}&key={api_key}")
     Call<PlaceModel> getDirection(@Path("origin_lat") double origin_lat,
                                   @Path("origin_lng") double origin_lng,
