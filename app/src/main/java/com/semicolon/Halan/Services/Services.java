@@ -51,7 +51,8 @@ public interface Services {
 
     @FormUrlEncoded
     @POST("Api/UpdateClient/{user_id}")
-    Call<UserModel> UpdateClient(@Field("user_name") String user_name,
+    Call<UserModel> UpdateClient(@Path("user_id") String user_id,
+                                 @Field("user_name") String user_name,
                                  @Field("user_phone") String user_phone,
                                  @Field("user_email") String user_email,
                                  @Field("user_photo") String user_photo

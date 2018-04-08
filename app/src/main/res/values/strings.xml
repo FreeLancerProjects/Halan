@@ -83,5 +83,11 @@
     <string name="close">close</string>
     <string name="yes">Ok</string>
     <string name="cancel">Cancel</string>
+    <string name="enter_new_username">ادخل اسم المستخدم الجديد</string>
+    <string name="update_username">update username</string>
+    <string name="enter_new_phone">enter new phone number</string>
+    <string name="update_phone">update phone</string>
+    <string name="update_email">update  email</string>
+    <string name="enter_new_email">enter new email</string>
 
 </resources>
