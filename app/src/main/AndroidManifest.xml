@@ -29,6 +29,11 @@
             </intent-filter>
         </service>
 
+        <service android:name=".Services.MyFirebaseInstanceIdServices">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
         <activity android:name=".Activities.Activity_Client_Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

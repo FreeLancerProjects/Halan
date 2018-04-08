@@ -36,6 +36,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -110,11 +111,12 @@ public class HomeActivity extends AppCompatActivity
     private PlaceAutocompleteAdapter adapter;
     private GoogleApiClient apiClient;
     private LatLng mylatLng;
-    private FrameLayout costContainer;
+    private FrameLayout costContainer,driver_orderContainer;
     private LinearLayout locContainer;
-    private Button nextBtn,sendBtn;
+    private RelativeLayout search_container;
+    private Button nextBtn,sendBtn,accept,refuse;
     private EditText txt_order;
-    private TextView txt_order_from,txt_order_to,cost,distance;
+    private TextView txt_order_from,txt_order_to,cost,distance,driver_txt_order_from,driver_txt_order_to,driver_order_details,driver_client_phone,driver_cost;
     private double dist;
     private Preferences preferences;
     private AlertDialog.Builder builder;
@@ -126,6 +128,8 @@ public class HomeActivity extends AppCompatActivity
         Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        Users users = Users.getInstance();
+        users.getUserData(this);
         initView();
         CreateAlertDialog();
         preferences = new Preferences(this);
@@ -145,7 +149,9 @@ public class HomeActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         nav_view = findViewById(R.id.nav_view);
-        //////////////////////////////////////////////////////////
+        ///////////////////////client///////////////////////////////////
+
+        search_container = findViewById(R.id.search_container);
         costContainer = findViewById(R.id.costContainer);
         locContainer  = findViewById(R.id.locContainer);
         txt_order     = findViewById(R.id.txt_order);
@@ -167,8 +173,16 @@ public class HomeActivity extends AppCompatActivity
                 distance.setText(String.valueOf(Math.round(Double.parseDouble(dis[0])))+" "+getString(R.string.km));
             }
         });
+        ////////////////////////driver//////////////////////////////////
+        driver_orderContainer = findViewById(R.id.driver_orderContainer);
+        driver_txt_order_from = findViewById(R.id.driver_txt_order_from);
+        driver_txt_order_to   = findViewById(R.id.driver_txt_order_to);
+        driver_order_details  = findViewById(R.id.driver_order_details);
+        driver_client_phone   = findViewById(R.id.driver_client_phone);
+        driver_cost           = findViewById(R.id.driver_cost);
+        accept                = findViewById(R.id.accept);
+        refuse                = findViewById(R.id.refuse);
         //////////////////////////////////////////////////////////
-
         View view = nav_view.getHeaderView(0);
         userImage = view.findViewById(R.id.userImage);
         nav_view.setNavigationItemSelectedListener(this);
@@ -200,6 +214,20 @@ public class HomeActivity extends AppCompatActivity
             }
         });
 
+        if (userModel.getUser_type().equals(Tags.Driver))
+        {
+            search_container.setVisibility(View.GONE);
+            costContainer.setVisibility(View.GONE);
+            locContainer.setVisibility(View.GONE);
+            driver_orderContainer.setVisibility(View.VISIBLE);
+
+        }else if (userModel.getUser_type().equals(Tags.Client))
+            {
+                search_container.setVisibility(View.VISIBLE);
+                driver_orderContainer.setVisibility(View.GONE);
+                costContainer.setVisibility(View.GONE);
+                locContainer.setVisibility(View.GONE);
+            }
         apiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -315,7 +343,8 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    private void getDeviceLocation() {
+    private void getDeviceLocation()
+    {
        try
        {
            if (permission_granted)
@@ -350,8 +379,6 @@ public class HomeActivity extends AppCompatActivity
 
        }
     }
-
-
     private void AddMarker(LatLng latLng)
     {
         mMap.addMarker(
@@ -413,13 +440,6 @@ public class HomeActivity extends AppCompatActivity
 
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Users users = Users.getInstance();
-        users.getUserData(this);
-    }
-
 
     @Override
     public void onBackPressed() {
@@ -448,6 +468,7 @@ public class HomeActivity extends AppCompatActivity
                 {
                     super.onBackPressed();
 
+                    
 
                 }
     }

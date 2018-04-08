@@ -38,6 +38,7 @@
         android:layout_height="60dp"
         android:background="@color/colorPrimary"
 
+
         >
         <AutoCompleteTextView
             android:id="@+id/search"
