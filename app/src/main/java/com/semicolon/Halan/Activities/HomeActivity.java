@@ -103,6 +103,7 @@ public class HomeActivity extends AppCompatActivity
     private NavigationView nav_view;
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
+    private Toolbar toolbar;
     private UserModel userModel;
     private CircleImageView userImage;
     private Target target;
@@ -128,16 +129,18 @@ public class HomeActivity extends AppCompatActivity
     private double dist;
     private Preferences preferences;
     private AlertDialog.Builder builder,builder2;
+    private Users users;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         EventBus.getDefault().register(this);
-        Users users = Users.getInstance();
+        users = Users.getInstance();
         users.getUserData(this);
         UpdateToken();
         initView();
@@ -147,9 +150,9 @@ public class HomeActivity extends AppCompatActivity
         }
 
     }
-
-    private void initView() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
+    private void initView()
+    {
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         drawer = findViewById(R.id.drawer_layout);
@@ -266,7 +269,6 @@ public class HomeActivity extends AppCompatActivity
             }
         });
 
-        builder.create();
     }
     private void CreateAlertDialog2(String msg)
     {
@@ -276,20 +278,26 @@ public class HomeActivity extends AppCompatActivity
         builder2.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                AlertDialog dialog = builder.create();
+                AlertDialog dialog = builder2.create();
                 dialog.dismiss();
             }
         });
 
 
-        builder.create();
     }
     private void UpdateUI(UserModel userModel) {
 
         target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                userImage.setImageBitmap(bitmap);
+                try {
+
+                    userImage.setImageBitmap(bitmap);
+
+                }catch (NullPointerException e)
+                {
+                    Log.e("home error",e.getMessage());
+                }
             }
 
             @Override
@@ -305,6 +313,12 @@ public class HomeActivity extends AppCompatActivity
         if (userModel.getUser_photo() != null || !userModel.getUser_photo().equals("0") || TextUtils.isEmpty(userModel.getUser_photo())) {
             Picasso.with(this).load(Uri.parse(Tags.ImgPath + userModel.getUser_photo())).placeholder(R.drawable.user_profile).into(target);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        users.getUserData(this);
     }
 
     private void initMap() {
@@ -426,7 +440,6 @@ public class HomeActivity extends AppCompatActivity
         switch (id)
         {
             case R.id.home:
-                Toast.makeText(this, "home", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.register:
                 if (userModel.getUser_type().equals(Tags.Client))
@@ -436,7 +449,7 @@ public class HomeActivity extends AppCompatActivity
                 }else
                     {
                         CreateAlertDialog2(getString(R.string.already_driver));
-                        builder.show();
+                        builder2.show();
                     }
 
                 break;
@@ -458,7 +471,7 @@ public class HomeActivity extends AppCompatActivity
                 }else
                     {
                         CreateAlertDialog2(getString(R.string.serv_aval_drivers));
-                        builder.show();
+                        builder2.show();
                     }
 
                 break;
