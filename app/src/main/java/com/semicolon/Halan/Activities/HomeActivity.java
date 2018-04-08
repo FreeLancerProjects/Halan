@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -63,10 +64,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.maps.android.PolyUtil;
 import com.semicolon.Halan.Adapters.PlaceAutocompleteAdapter;
 import com.semicolon.Halan.Models.PlaceModel;
+import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.StepsModel;
+import com.semicolon.Halan.Models.TokenModel;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
@@ -76,6 +80,10 @@ import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -128,8 +136,10 @@ public class HomeActivity extends AppCompatActivity
         Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        EventBus.getDefault().register(this);
         Users users = Users.getInstance();
         users.getUserData(this);
+        UpdateToken();
         initView();
         CreateAlertDialog();
         preferences = new Preferences(this);
@@ -439,7 +449,81 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
+    private void UpdateToken() {
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("user",MODE_PRIVATE);
+        final String user_id = preferences.getString("user_id","");
+        final String token   = FirebaseInstanceId.getInstance().getToken();
+        Log.e("token home",token);
+        Log.e("id home",user_id);
 
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.Update_token(user_id, token);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful())
+                {
+                    if (response.body().getSuccess()==1)
+                    {
+                        Log.e("updated","token updated successfully");
+                    }else
+                    {
+                        Log.e("failed","token updated failed");
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                Log.e("Error",t.getMessage());
+
+            }
+        });
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Token_Refereshed(TokenModel tokenModel)
+    {
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("user",MODE_PRIVATE);
+        final String user_id = preferences.getString("user_id","");
+        final String token   = tokenModel.getToken();
+        String session = preferences.getString("session","");
+
+        if (!TextUtils.isEmpty(session)||session!=null)
+        {
+            if (session.equals(Tags.login))
+            {
+                Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+                Services services = retrofit.create(Services.class);
+                Call<ResponseModel> call = services.Update_token(user_id, token);
+                call.enqueue(new Callback<ResponseModel>() {
+                    @Override
+                    public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                        if (response.isSuccessful())
+                        {
+                            if (response.body().getSuccess()==1)
+                            {
+                                Log.e("updated","token updated successfully");
+                            }else
+                            {
+                                Log.e("failed","token updated failed");
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseModel> call, Throwable t) {
+                        Log.e("Error",t.getMessage());
+
+                    }
+                });
+            }
+        }
+
+
+    }
 
     @Override
     public void onBackPressed() {

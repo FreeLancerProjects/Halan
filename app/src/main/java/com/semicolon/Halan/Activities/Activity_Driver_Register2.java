@@ -21,9 +21,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
+import com.semicolon.Halan.Services.Preferences;
 import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
@@ -41,6 +44,7 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
     private EditText e_car_model;
     private TextView t_photo_car_form,t_license_photo,t_front_back_image;
     private ImageView photo_car_form,license_photo,front_back_image;
+    private Preferences preferences;
     private Button register;
     private final int IMG_REQ1 = 100;
     private final int IMG_REQ2 = 200;
@@ -51,18 +55,23 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
     private UserModel userModel;
     private Users users;
     private ProgressDialog dialog;
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_register2);
-
-
+        preferences = new Preferences(getApplicationContext());
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         initView();
         getDataFromIntent();
+        CheckPermission();
         users=Users.getInstance();
         users.getUserData(this);
 
+    }
+
+    private void CheckPermission() {
     }
 
     private void initView() {
@@ -163,6 +172,7 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
                     UserModel userModel=response.body();
                     if (response.body().getSuccess()==1){
                         Log.e("mmmm",userModel.getUser_id()+city+identety+car_model+car_color+enCodedImage1+enCodedImage2+enCodedImage3);
+                        preferences.CreatePref(userModel);
                         users.setUserData(userModel);
                         dialog.dismiss();
                         finish();

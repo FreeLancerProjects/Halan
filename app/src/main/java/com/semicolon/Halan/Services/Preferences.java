@@ -2,6 +2,7 @@ package com.semicolon.Halan.Services;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.semicolon.Halan.Models.UserModel;
 
@@ -73,13 +74,32 @@ public class Preferences {
     public void ClearPref()
     {
         SharedPreferences pref = context.getSharedPreferences("user",Context.MODE_PRIVATE);
+        String user_id = pref.getString("user_id","");
+
         SharedPreferences.Editor editor = pref.edit();
-        editor.clear();
+        editor.putString("user_id",user_id);
+        editor.putString("user_type","");
+        editor.putString("user_name","");
+        editor.putString("user_phone","");
+        editor.putString("user_email","");
+        editor.putString("user_token_id","");
+        editor.putString("user_photo","");
+        editor.putString("user_city","");
+        editor.putString("user_national_num","");
+        editor.putString("user_car_num","");
+        editor.putString("user_car_model","");
+        editor.putString("user_car_color","");
+        editor.putString("user_car_license","");
+        editor.putString("user_car_form","");
+        editor.putString("user_car_photo","");
+        editor.putString("user_confirm_code","");
+        editor.putString("date_registration","");
+        editor.putString("user_google_lat","");
+        editor.putString("user_google_long","");
+        editor.putString("session",Tags.logout);
         editor.apply();
-        SharedPreferences pref2 = context.getSharedPreferences("user",Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor2 = pref2.edit();
-        editor2.putString("session",Tags.logout);
-        editor2.apply();
+        Log.e("spref_user_id",user_id);
+
 
     }
     public UserModel getUserData()

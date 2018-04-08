@@ -48,7 +48,7 @@ public class Activity_Client_Login extends AppCompatActivity {
         Calligrapher calligrapher=new Calligrapher(this);
         calligrapher.setFont(this,"JannaLT-Regular.ttf",true);
         users = Users.getInstance();
-        preferences = new Preferences(this);
+        preferences = new Preferences(getApplicationContext());
         SharedPreferences pref = getSharedPreferences("user",MODE_PRIVATE);
         String session = pref.getString("session","");
         if (!TextUtils.isEmpty(session)||session!=null)
@@ -163,6 +163,7 @@ public class Activity_Client_Login extends AppCompatActivity {
                 if (response.isSuccessful()) {
 
                     UserModel userModel = response.body();
+                    Log.e("id",userModel.getUser_id());
                     if (userModel.getSuccess()==1) {
 
                         preferences.CreatePref(userModel);
@@ -193,4 +194,6 @@ public class Activity_Client_Login extends AppCompatActivity {
             }
         });
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.semicolon.Halan.Services;
 
 import com.semicolon.Halan.Models.PlaceModel;
+import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.UserModel;
 
 import retrofit2.Call;
@@ -62,5 +63,8 @@ public interface Services {
     @GET("/maps/api/directions/json")
     Call<PlaceModel> getDirection(@Query("origin") String origin,
                                   @Query("destination") String dist);
-
+    @FormUrlEncoded
+    @POST("Api/UpdateTokenId/{user_id}")
+    Call<ResponseModel>Update_token(@Path("user_id")String user_id,
+                                    @Field("user_token_id") String token);
 }

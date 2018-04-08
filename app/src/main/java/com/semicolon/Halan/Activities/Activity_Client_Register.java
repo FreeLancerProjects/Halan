@@ -61,7 +61,7 @@ public class Activity_Client_Register extends AppCompatActivity {
         setContentView(R.layout.activity_client_register);
         initView();
         users = Users.getInstance();
-        preferences = new Preferences(this);
+        preferences = new Preferences(getApplicationContext());
 
         CreateProgressDialog();
 
