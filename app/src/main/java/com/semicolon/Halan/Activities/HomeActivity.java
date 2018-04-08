@@ -452,6 +452,7 @@ public class HomeActivity extends AppCompatActivity
             case R.id.pay:
                 if (userModel.getUser_type().equals(Tags.Driver))
                 {
+
                     Intent intent2=new Intent(this,PayActivity.class);
                     startActivity(intent2);
                 }else
