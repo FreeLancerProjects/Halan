@@ -56,7 +56,9 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
 
         initView();
         users=Users.getInstance();
+        preferences=new Preferences(this);
         users.getUserData(this);
+
     }
 
     @Override
@@ -109,8 +111,7 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
                 startActivityForResult(intent.createChooser(intent,getString(R.string.choose_image)),IMG_REQ);
-
-                sendDataToServer();
+              //  sendImageToServer();
                 break;
 
         }
@@ -129,17 +130,19 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                 {
                     if (response.body().getSuccess()==1){
 
-                        preferences.UpdatePref(userModel);
-                        users.setUserData(userModel);
+                        preferences.UpdatePref(response.body());
+                        users.setUserData(response.body());
+                     //   Toast.makeText(UserProfileActivity.this, ""+userModel.getUser_name(), Toast.LENGTH_SHORT).show();
+                     //   Log.e("name",userModel.getUser_name());
                         Toast.makeText(UserProfileActivity.this, "Data Sent Succesfuly", Toast.LENGTH_SHORT).show();
                     }
                     else
                     {
-                        Toast.makeText(UserProfileActivity.this, "", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UserProfileActivity.this, "error", Toast.LENGTH_SHORT).show();
 
                     }
                 }else {
-                    Toast.makeText(UserProfileActivity.this, "bb"+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserProfileActivity.this, ""+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -147,13 +150,51 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
             @Override
             public void onFailure(Call<UserModel> call, Throwable t) {
                 Log.e("mmmmm",t.getMessage()+"");
-                Toast.makeText(UserProfileActivity.this, "cc"+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+                Toast.makeText(UserProfileActivity.this, ""+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
 
             }
         });
 
     }
+    private void sendImageToServer()
+    {
+        enCode(bitmap);
 
+        Services services= Api.getClient(Tags.BASE_URL).create(Services.class);
+        Call<UserModel> call=services.UpdateClient(userModel.getUser_id(),name.getText().toString(),phone.getText().toString(),email.getText().toString(),enCodedImage);
+        call.enqueue(new Callback<UserModel>() {
+            @Override
+            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                if (response.isSuccessful())
+                {
+                    if (response.body().getSuccess()==1){
+
+                        preferences.UpdatePref(response.body());
+                        users.setUserData(response.body());
+                       // Toast.makeText(UserProfileActivity.this, ""+userModel.getUser_name(), Toast.LENGTH_SHORT).show();
+                      //  Log.e("name",userModel.getUser_name());
+                        Toast.makeText(UserProfileActivity.this, "Data Sent Succesfuly", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(UserProfileActivity.this, "error", Toast.LENGTH_SHORT).show();
+
+                    }
+                }else {
+                    Toast.makeText(UserProfileActivity.this, ""+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserModel> call, Throwable t) {
+                Log.e("mmmmm",t.getMessage()+"");
+                Toast.makeText(UserProfileActivity.this, ""+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+    }
     private void updateName()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileActivity.this);
@@ -246,6 +287,7 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                 bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
                 imageView.setImageBitmap(bitmap);
                enCode(bitmap);
+               sendImageToServer();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -262,4 +304,8 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
         return enCodedImage;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

@@ -28,6 +28,7 @@ public class UserModel {
     private String user_pass        ;
 
     private int success;
+    private String our_phone_number;
 
     public UserModel() {
     }
@@ -54,6 +55,14 @@ public class UserModel {
         this.user_google_lat = user_google_lat;
         this.user_google_long = user_google_long;
         this.success = success;
+    }
+
+    public String getOur_phone_number() {
+        return our_phone_number;
+    }
+
+    public void setOur_phone_number(String our_phone_number) {
+        this.our_phone_number = our_phone_number;
     }
 
     public String getUser_id() {

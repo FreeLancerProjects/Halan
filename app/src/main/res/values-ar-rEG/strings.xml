@@ -88,4 +88,6 @@
     <string name="loc_notfounded">عفوا لم يتم تحديد مكانك</string>
     <string name="already_driver">تم تسجيل دخولك كسائق مسبقا</string>
     <string name="serv_aval_drivers">عفوا هذه الخدمة متاحة للسائقين فقط</string>
+    <string name="enter_subject">enter subject</string>
+    <string name="enter_message">enter your message</string>
 </resources>

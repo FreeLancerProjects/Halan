@@ -46,7 +46,7 @@
                         android:layout_centerHorizontal="true"
                         android:textStyle="bold"
                         android:textSize="22sp"
-                        android:text="@string/contact_us"/>
+                        android:text="@string/pay"/>
                 </RelativeLayout>
 
             </android.support.v7.widget.Toolbar>
@@ -55,7 +55,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:layout_margin="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="40dp"
             android:background="@drawable/client_login_container"
             android:layout_height="wrap_content">
             <TextView
@@ -63,13 +65,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/transfer_money"
                 android:padding="10dp"
-                android:textSize="18dp"
+                android:textSize="14sp"
                 android:textColor="@color/black"/>
             <EditText
+                android:id="@+id/edt_trans_money"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:textSize="18dp"
+                android:textSize="14sp"
                 android:inputType="number"
                 android:textColor="@color/black"/>
         </LinearLayout>
@@ -84,13 +87,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/date"
                 android:padding="5dp"
-                android:textSize="18dp"
+                android:textSize="14sp"
                 android:textColor="@color/black"/>
             <EditText
+                android:id="@+id/edt_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:textSize="18dp"
+                android:textSize="14sp"
                 android:textColor="@color/black"/>
         </LinearLayout>
         <LinearLayout
@@ -104,13 +108,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/bank"
                 android:padding="5dp"
-                android:textSize="18dp"
+                android:textSize="14sp"
                 android:textColor="@color/black"/>
             <EditText
+                android:id="@+id/edt_bank"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:textSize="18dp"
+                android:textSize="14sp"
                 android:textColor="@color/black"/>
         </LinearLayout>
 
@@ -125,24 +130,26 @@
                 android:layout_height="wrap_content"
                 android:text="@string/code"
                 android:padding="5dp"
-                android:textSize="18dp"
+                android:textSize="14sp"
                 android:textColor="@color/black"/>
             <EditText
+                android:id="@+id/edt_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:textSize="18dp"
+                android:textSize="14sp"
                 android:textColor="@color/black"/>
         </LinearLayout>
 
 
     </LinearLayout>
         <Button
+            android:id="@+id/btn_send"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/gray3"
             android:textColor="@color/white"
-            android:textSize="22sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:layout_alignParentBottom="true"
             android:text="@string/send"/>

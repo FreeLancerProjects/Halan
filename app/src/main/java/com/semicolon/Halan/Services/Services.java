@@ -67,4 +67,25 @@ public interface Services {
     @POST("Api/UpdateTokenId/{user_id}")
     Call<ResponseModel>Update_token(@Path("user_id")String user_id,
                                     @Field("user_token_id") String token);
+
+
+    @FormUrlEncoded
+    @POST("Api/DriverPayment")
+    Call<UserModel> DriverPayment(@Field("user_id") String user_id,
+                                           @Field("amount") String amount,
+                                           @Field("date") String date,
+                                           @Field("bank") String bank,
+                                           @Field("code") String code
+    );
+
+    @FormUrlEncoded
+    @POST("Api/ContactUs")
+    Call<UserModel> ContactUs (@Field("name") String name,
+                                  @Field("email") String email,
+                                  @Field("subject") String subject,
+                                  @Field("message") String message
+    );
+
+    @GET("Api/ContactUs")
+    Call<UserModel> getNumber ();
 }

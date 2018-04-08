@@ -92,5 +92,7 @@
     <string name="loc_notfounded">can\'t find location</string>
     <string name="already_driver">You are already signed in as a driver</string>
     <string name="serv_aval_drivers">Sorry this service is available to drivers only</string>
+    <string name="enter_subject">enter subject</string>
+    <string name="enter_message">enter your message</string>
 
 </resources>
