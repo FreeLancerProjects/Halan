@@ -127,7 +127,7 @@ public class HomeActivity extends AppCompatActivity
     private TextView txt_order_from,txt_order_to,cost,distance,driver_txt_order_from,driver_txt_order_to,driver_order_details,driver_client_phone,driver_cost;
     private double dist;
     private Preferences preferences;
-    private AlertDialog.Builder builder;
+    private AlertDialog.Builder builder,builder2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +141,6 @@ public class HomeActivity extends AppCompatActivity
         users.getUserData(this);
         UpdateToken();
         initView();
-        CreateAlertDialog();
         preferences = new Preferences(this);
         if (IsServicesOk()) {
             checkPermission();
@@ -269,6 +268,22 @@ public class HomeActivity extends AppCompatActivity
 
         builder.create();
     }
+    private void CreateAlertDialog2(String msg)
+    {
+        builder2 = new AlertDialog.Builder(this);
+        builder2.setMessage(msg);
+        builder2.setCancelable(false);
+        builder2.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                AlertDialog dialog = builder.create();
+                dialog.dismiss();
+            }
+        });
+
+
+        builder.create();
+    }
     private void UpdateUI(UserModel userModel) {
 
         target = new Target() {
@@ -374,7 +389,7 @@ public class HomeActivity extends AppCompatActivity
                                AddMarker(mylatLng);
                            }catch (NullPointerException e)
                            {
-                               Toast.makeText(HomeActivity.this, "can't find location", Toast.LENGTH_SHORT).show();
+                               Toast.makeText(HomeActivity.this, R.string.loc_notfounded, Toast.LENGTH_SHORT).show();
 
                            }
 
@@ -414,10 +429,20 @@ public class HomeActivity extends AppCompatActivity
                 Toast.makeText(this, "home", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.register:
-                Intent intent=new Intent(this,Activity_Driver_Register.class);
-                startActivity(intent);
+                if (userModel.getUser_type().equals(Tags.Client))
+                {
+                    Intent intent=new Intent(this,Activity_Driver_Register.class);
+                    startActivity(intent);
+                }else
+                    {
+                        CreateAlertDialog2(getString(R.string.already_driver));
+                        builder.show();
+                    }
+
                 break;
             case R.id.logout:
+                CreateAlertDialog();
+
                 builder.show();
                 break;
             case R.id.contact:
@@ -425,8 +450,16 @@ public class HomeActivity extends AppCompatActivity
                 startActivity(intent1);
                 break;
             case R.id.pay:
-                Intent intent2=new Intent(this,PayActivity.class);
-                startActivity(intent2);
+                if (userModel.getUser_type().equals(Tags.Driver))
+                {
+                    Intent intent2=new Intent(this,PayActivity.class);
+                    startActivity(intent2);
+                }else
+                    {
+                        CreateAlertDialog2(getString(R.string.serv_aval_drivers));
+                        builder.show();
+                    }
+
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
@@ -453,34 +486,36 @@ public class HomeActivity extends AppCompatActivity
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("user",MODE_PRIVATE);
         final String user_id = preferences.getString("user_id","");
         final String token   = FirebaseInstanceId.getInstance().getToken();
-        Log.e("token home",token);
-        Log.e("id home",user_id);
-
-        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
-        Services services = retrofit.create(Services.class);
-        Call<ResponseModel> call = services.Update_token(user_id, token);
-        call.enqueue(new Callback<ResponseModel>() {
-            @Override
-            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
-                if (response.isSuccessful())
-                {
-                    if (response.body().getSuccess()==1)
+        if (!TextUtils.isEmpty(token)||token!=null)
+        {
+            Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+            Services services = retrofit.create(Services.class);
+            Call<ResponseModel> call = services.Update_token(user_id, token);
+            call.enqueue(new Callback<ResponseModel>() {
+                @Override
+                public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                    if (response.isSuccessful())
                     {
-                        Log.e("updated","token updated successfully");
-                    }else
-                    {
-                        Log.e("failed","token updated failed");
+                        if (response.body().getSuccess()==1)
+                        {
+                            Log.e("updated","token updated successfully");
+                        }else
+                        {
+                            Log.e("failed","token updated failed");
 
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseModel> call, Throwable t) {
-                Log.e("Error",t.getMessage());
+                @Override
+                public void onFailure(Call<ResponseModel> call, Throwable t) {
+                    Log.e("Error",t.getMessage());
 
-            }
-        });
+                }
+            });
+        }
+
+
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void Token_Refereshed(TokenModel tokenModel)

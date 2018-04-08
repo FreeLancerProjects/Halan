@@ -89,5 +89,8 @@
     <string name="update_phone">update phone</string>
     <string name="update_email">update  email</string>
     <string name="enter_new_email">enter new email</string>
+    <string name="loc_notfounded">can\'t find location</string>
+    <string name="already_driver">You are already signed in as a driver</string>
+    <string name="serv_aval_drivers">Sorry this service is available to drivers only</string>
 
 </resources>

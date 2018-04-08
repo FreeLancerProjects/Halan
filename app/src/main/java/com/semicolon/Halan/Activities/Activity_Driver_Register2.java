@@ -1,13 +1,18 @@
 package com.semicolon.Halan.Activities;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -23,6 +28,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
@@ -56,6 +64,11 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
     private Users users;
     private ProgressDialog dialog;
     private FusedLocationProviderClient fusedLocationProviderClient;
+    private String Fine_Loc = Manifest.permission.ACCESS_FINE_LOCATION;
+    private String Coarse_Loc = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private LatLng myLatLng=null;
+    private boolean isGranted = false;
+    private final int per_req = 1300;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +85,23 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
     }
 
     private void CheckPermission() {
+        String [] premissions = new String[]{Fine_Loc,Coarse_Loc};
+
+        if (ContextCompat.checkSelfPermission(this,Fine_Loc)== PackageManager.PERMISSION_GRANTED)
+        {
+            if (ContextCompat.checkSelfPermission(this,Coarse_Loc)== PackageManager.PERMISSION_GRANTED)
+            {
+                isGranted = true;
+                getDeviceLocation();
+            }else
+                {
+                    ActivityCompat.requestPermissions(Activity_Driver_Register2.this,premissions,per_req);
+                }
+        }else
+            {
+                ActivityCompat.requestPermissions(Activity_Driver_Register2.this,premissions,per_req);
+
+            }
     }
 
     private void initView() {
@@ -94,6 +124,39 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
 
     }
 
+    private void getDeviceLocation()
+    {
+        if (isGranted)
+        {
+            try {
+                Task<Location> task = fusedLocationProviderClient.getLastLocation();
+                task.addOnCompleteListener(new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful())
+                        {
+                            Location location = task.getResult();
+                            if (location!=null)
+                            {
+                                LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
+                                getLatLng(latLng);
+                            }
+                        }
+                    }
+                });
+            }catch (SecurityException e)
+            {
+
+            }catch (NullPointerException e)
+            {
+                Toast.makeText(this, R.string.loc_notfounded, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    private void getLatLng(LatLng latLng)
+    {
+        myLatLng = latLng;
+    }
     private void getDataFromIntent() {
 
         Intent intent=getIntent();
@@ -161,8 +224,13 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
             enCode1(bitmap1);
             enCode2(bitmap2);
             enCode3(bitmap3);
-        Services services= Api.getClient(Tags.BASE_URL).create(Services.class);
-        Call<UserModel> call=services.driverSignIn(userModel.getUser_id(),city,identety,car_model,car_color,enCodedImage1,enCodedImage2,enCodedImage3,"","");
+            String lat = String.valueOf(myLatLng.latitude);
+            String lng = String.valueOf(myLatLng.longitude);
+            Log.e("latLng",""+myLatLng.latitude);
+            Log.e("latLng",""+myLatLng.longitude);
+
+            Services services= Api.getClient(Tags.BASE_URL).create(Services.class);
+        Call<UserModel> call=services.driverSignIn(userModel.getUser_id(),city,identety,car_model,car_color,enCodedImage1,enCodedImage2,enCodedImage3,lat,lng);
         call.enqueue(new Callback<UserModel>() {
             @Override
             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
@@ -254,6 +322,32 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
             }
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        isGranted = false;
+        switch (requestCode)
+        {
+            case per_req:
+                if (grantResults.length>0)
+                {
+                    for (int i=0;i<grantResults.length;i++)
+                    {
+                        if (grantResults[i]!=PackageManager.PERMISSION_GRANTED)
+                        {
+                            return;
+                        }
+                    }
+
+                }
+                isGranted = true;
+                getDeviceLocation();
+                break;
+
+        }
+    }
+
     private String enCode1(Bitmap bitmap)
     {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
