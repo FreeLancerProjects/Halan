@@ -88,4 +88,10 @@ public interface Services {
 
     @GET("Api/ContactUs")
     Call<UserModel> getNumber ();
+
+    @FormUrlEncoded
+    @POST("Api/UpdateLocation/{driver_id}")
+    Call<ResponseModel> UpdateDriver_Locaion(@Path("driver_id")String driver_id,
+                                             @Field("user_google_lat") String lat,
+                                             @Field("user_google_long") String lng);
 }

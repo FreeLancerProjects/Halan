@@ -67,6 +67,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.maps.android.PolyUtil;
 import com.semicolon.Halan.Adapters.PlaceAutocompleteAdapter;
+import com.semicolon.Halan.Models.LocationUpdateModel;
 import com.semicolon.Halan.Models.PlaceModel;
 import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.StepsModel;
@@ -77,6 +78,7 @@ import com.semicolon.Halan.Services.Api;
 import com.semicolon.Halan.Services.Preferences;
 import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
+import com.semicolon.Halan.Services.UpdateDriver_Location;
 import com.semicolon.Halan.SingleTone.Users;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -149,6 +151,11 @@ public class HomeActivity extends AppCompatActivity
             checkPermission();
         }
 
+        if (userModel.getUser_type().equals(Tags.Driver))
+        {
+            Intent intent = new Intent(this, UpdateDriver_Location.class);
+            startService(intent);
+        }
     }
     private void initView()
     {
@@ -491,7 +498,6 @@ public class HomeActivity extends AppCompatActivity
     public void UserDataSuccess(UserModel userModel1) {
         this.userModel = userModel1;
         UpdateUI(userModel);
-        Log.e("userimage",userModel.getUser_photo());
 
     }
 
@@ -573,6 +579,44 @@ public class HomeActivity extends AppCompatActivity
 
 
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void UpdateDriverLocation(LocationUpdateModel locationUpdateModel)
+    {
+        Log.e("lat",""+locationUpdateModel.getLat());
+        UpdateLocation(locationUpdateModel);
+    }
+
+    private void UpdateLocation(LocationUpdateModel locationUpdateModel) {
+        String lat = String.valueOf(locationUpdateModel.getLat());
+        String lng = String.valueOf(locationUpdateModel.getLng());
+
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.UpdateDriver_Locaion(userModel.getUser_id(), lat, lng);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful())
+                {
+                    if (response.body().getSuccess()==1)
+                    {
+                        Log.e("latlng","LatLng Updated successfully");
+                    }else
+                        {
+                            Log.e("latlng","Failed");
+
+                        }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                Log.e("Error",t.getMessage());
+            }
+        });
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -780,4 +824,13 @@ public class HomeActivity extends AppCompatActivity
         return (rad * 180.0 / Math.PI);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (userModel.getUser_type().equals(Tags.Driver))
+        {
+            Intent intent = new Intent(this, UpdateDriver_Location.class);
+            startService(intent);
+        }
+    }
 }
