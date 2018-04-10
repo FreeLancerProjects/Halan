@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
+    android:id="@+id/card_order"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
@@ -10,6 +11,7 @@
     android:orientation="vertical"
     android:layout_height="wrap_content">
     <TextView
+        android:id="@+id/txt_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -28,6 +30,7 @@
             >
 
             <TextView
+                android:id="@+id/txt_market_location"
                 android:text="متجر اكلات سريعه"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
@@ -39,6 +42,7 @@
                 android:textSize="18sp"
                 />
             <TextView
+                android:id="@+id/txt_client_location"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:background="@color/white"
@@ -105,6 +109,7 @@
             android:layout_gravity="center"
             android:layout_height="wrap_content" />
         <TextView
+            android:id="@+id/txt_cost"
             android:layout_width="wrap_content"
             android:text="50 ريال"
             android:textSize="18sp"
