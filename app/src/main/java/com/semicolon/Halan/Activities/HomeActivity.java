@@ -495,6 +495,10 @@ public class HomeActivity extends AppCompatActivity
                     }
 
                 break;
+            case R.id.orders:
+                Intent intent2=new Intent(this,MyOrdersActivity.class);
+                startActivity(intent2);
+                break;
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
