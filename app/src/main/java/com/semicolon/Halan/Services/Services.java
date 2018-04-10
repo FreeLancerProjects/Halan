@@ -1,8 +1,11 @@
 package com.semicolon.Halan.Services;
 
+import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.Models.PlaceModel;
 import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.UserModel;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -96,4 +99,13 @@ public interface Services {
     Call<ResponseModel> UpdateDriver_Locaion(@Path("driver_id")String driver_id,
                                              @Field("user_google_lat") String lat,
                                              @Field("user_google_long") String lng);
+
+    @GET("Api/ViewDriverOrders/1")
+    Call<List<MyOrderModel>> getCurrentOrders ();
+
+    @GET("Api/ViewDriverOrders/4")
+    Call<List<MyOrderModel>> getPreviousOrders ();
+
+    @GET("Api/ViewDriverOrders/2")
+    Call<List<MyOrderModel>> getCanceledOrders ();
 }
