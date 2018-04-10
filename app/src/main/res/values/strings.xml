@@ -94,5 +94,6 @@
     <string name="serv_aval_drivers">Sorry this service is available to drivers only</string>
     <string name="enter_subject">enter subject</string>
     <string name="enter_message">enter your message</string>
+    <string name="title_activity_driver_orders">DriverOrdersActivity</string>
 
 </resources>

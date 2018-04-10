@@ -40,6 +40,7 @@ public class Activity_Client_Login extends AppCompatActivity {
     private ProgressDialog pDialog;
     private Users users;
     private Preferences preferences;
+    private String session,user_type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +51,31 @@ public class Activity_Client_Login extends AppCompatActivity {
         users = Users.getInstance();
         preferences = new Preferences(getApplicationContext());
         SharedPreferences pref = getSharedPreferences("user",MODE_PRIVATE);
-        String session = pref.getString("session","");
+        session = pref.getString("session","");
+        user_type = pref.getString("user_type","");
         if (!TextUtils.isEmpty(session)||session!=null)
         {
             if (session.equals(Tags.login))
             {
-                UserModel userModel =preferences.getUserData();
-                users.setUserData(userModel);
-                Intent intent = new Intent(Activity_Client_Login.this,HomeActivity.class);
-                startActivity(intent);
-                finish();
+                if (!TextUtils.isEmpty(user_type) || user_type!=null)
+                {
+                    if (user_type.equals(Tags.Client))
+                    {
+                        UserModel userModel =preferences.getUserData();
+                        users.setUserData(userModel);
+                        Intent intent = new Intent(Activity_Client_Login.this,HomeActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }else if (user_type.equals(Tags.Driver))
+                    {
+                        UserModel userModel =preferences.getUserData();
+                        users.setUserData(userModel);
+                        Intent intent = new Intent(Activity_Client_Login.this,DriverOrdersActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+
 
             }
         }
@@ -166,12 +182,25 @@ public class Activity_Client_Login extends AppCompatActivity {
                     Log.e("id",userModel.getUser_id());
                     if (userModel.getSuccess()==1) {
 
-                        preferences.CreatePref(userModel);
-                        users.setUserData(userModel);
-                        pDialog.dismiss();
-                        Intent intent = new Intent(Activity_Client_Login.this,HomeActivity.class);
-                        startActivity(intent);
-                        finish();
+                        String user_type = userModel.getUser_type();
+                        if (user_type.equals(Tags.Client))
+                        {
+                            preferences.CreatePref(userModel);
+                            users.setUserData(userModel);
+                            pDialog.dismiss();
+                            Intent intent = new Intent(Activity_Client_Login.this,HomeActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }else if (user_type.equals(Tags.Driver))
+                        {
+                            preferences.CreatePref(userModel);
+                            users.setUserData(userModel);
+                            pDialog.dismiss();
+                            Intent intent = new Intent(Activity_Client_Login.this,DriverOrdersActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+
                        
 
                     } else {

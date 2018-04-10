@@ -2,7 +2,6 @@ package com.semicolon.Halan.Services;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.semicolon.Halan.Models.UserModel;
 
@@ -74,10 +73,8 @@ public class Preferences {
     public void ClearPref()
     {
         SharedPreferences pref = context.getSharedPreferences("user",Context.MODE_PRIVATE);
-        String user_id = pref.getString("user_id","");
-
         SharedPreferences.Editor editor = pref.edit();
-        editor.putString("user_id",user_id);
+        editor.putString("user_id","");
         editor.putString("user_type","");
         editor.putString("user_name","");
         editor.putString("user_phone","");
@@ -98,7 +95,6 @@ public class Preferences {
         editor.putString("user_google_long","");
         editor.putString("session",Tags.logout);
         editor.apply();
-        Log.e("spref_user_id",user_id);
 
 
     }

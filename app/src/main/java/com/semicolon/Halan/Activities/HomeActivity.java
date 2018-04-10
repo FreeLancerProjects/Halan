@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -61,16 +60,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.maps.android.PolyUtil;
 import com.semicolon.Halan.Adapters.PlaceAutocompleteAdapter;
-import com.semicolon.Halan.Models.LocationUpdateModel;
 import com.semicolon.Halan.Models.PlaceModel;
 import com.semicolon.Halan.Models.ResponseModel;
-import com.semicolon.Halan.Models.StepsModel;
 import com.semicolon.Halan.Models.TokenModel;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
@@ -78,7 +73,6 @@ import com.semicolon.Halan.Services.Api;
 import com.semicolon.Halan.Services.Preferences;
 import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
-import com.semicolon.Halan.Services.UpdateDriver_Location;
 import com.semicolon.Halan.SingleTone.Users;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -88,7 +82,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -122,16 +115,17 @@ public class HomeActivity extends AppCompatActivity
     private PlaceAutocompleteAdapter adapter;
     private GoogleApiClient apiClient;
     private LatLng mylatLng;
-    private FrameLayout costContainer,driver_orderContainer;
+    private FrameLayout costContainer;
     private LinearLayout locContainer;
     private RelativeLayout search_container;
-    private Button nextBtn,sendBtn,accept,refuse;
+    private Button nextBtn,sendBtn;
     private EditText txt_order;
-    private TextView txt_order_from,txt_order_to,cost,distance,driver_txt_order_from,driver_txt_order_to,driver_order_details,driver_client_phone,driver_cost;
+    private TextView txt_order_from,txt_order_to,cost,distance;
     private double dist;
     private Preferences preferences;
     private AlertDialog.Builder builder,builder2;
     private Users users;
+    private LinearLayout profileContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -140,21 +134,54 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        initView();
         EventBus.getDefault().register(this);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         users = Users.getInstance();
         users.getUserData(this);
         UpdateToken();
-        initView();
         preferences = new Preferences(this);
         if (IsServicesOk()) {
             checkPermission();
         }
+    }
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        users.getUserData(this);
 
-        if (userModel.getUser_type().equals(Tags.Driver))
+    }
+    @Override
+    public void onBackPressed()
+    {
+        int vis1=locContainer.getVisibility();
+        int vis2=costContainer.getVisibility();
+        DrawerLayout drawer =findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else if (vis1==0){
+            locContainer.setVisibility(View.GONE);
+            search_view.setText("");
+            mMap.clear();
+            AddMarker(mylatLng);
+
+        }else if (vis2==0)
         {
-            Intent intent = new Intent(this, UpdateDriver_Location.class);
-            startService(intent);
+            costContainer.setVisibility(View.GONE);
+            locContainer.setVisibility(View.VISIBLE);
+        }else if (vis1==8)
+        {
+
+            super.onBackPressed();
+
+        }
+        else
+        {
+            super.onBackPressed();
+
+
+
         }
     }
     private void initView()
@@ -192,21 +219,14 @@ public class HomeActivity extends AppCompatActivity
                 distance.setText(String.valueOf(Math.round(Double.parseDouble(dis[0])))+" "+getString(R.string.km));
             }
         });
-        ////////////////////////driver//////////////////////////////////
-        driver_orderContainer = findViewById(R.id.driver_orderContainer);
-        driver_txt_order_from = findViewById(R.id.driver_txt_order_from);
-        driver_txt_order_to   = findViewById(R.id.driver_txt_order_to);
-        driver_order_details  = findViewById(R.id.driver_order_details);
-        driver_client_phone   = findViewById(R.id.driver_client_phone);
-        driver_cost           = findViewById(R.id.driver_cost);
-        accept                = findViewById(R.id.accept);
-        refuse                = findViewById(R.id.refuse);
+
         //////////////////////////////////////////////////////////
         View view = nav_view.getHeaderView(0);
+        profileContainer = view.findViewById(R.id.profileContainer);
         userImage = view.findViewById(R.id.userImage);
         nav_view.setNavigationItemSelectedListener(this);
 
-        userImage.setOnClickListener(new View.OnClickListener() {
+        profileContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(HomeActivity.this,UserProfileActivity.class);
@@ -233,7 +253,7 @@ public class HomeActivity extends AppCompatActivity
             }
         });
 
-        if (userModel.getUser_type().equals(Tags.Driver))
+        /*if (userModel.getUser_type().equals(Tags.Driver))
         {
             search_container.setVisibility(View.GONE);
             costContainer.setVisibility(View.GONE);
@@ -246,7 +266,7 @@ public class HomeActivity extends AppCompatActivity
                 driver_orderContainer.setVisibility(View.GONE);
                 costContainer.setVisibility(View.GONE);
                 locContainer.setVisibility(View.GONE);
-            }
+            }*/
         apiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -292,7 +312,8 @@ public class HomeActivity extends AppCompatActivity
 
 
     }
-    private void UpdateUI(UserModel userModel) {
+    private void UpdateUI(UserModel userModel)
+    {
 
         target = new Target() {
             @Override
@@ -303,7 +324,7 @@ public class HomeActivity extends AppCompatActivity
 
                 }catch (NullPointerException e)
                 {
-                    Log.e("home error",e.getMessage());
+
                 }
             }
 
@@ -321,19 +342,8 @@ public class HomeActivity extends AppCompatActivity
             Picasso.with(this).load(Uri.parse(Tags.ImgPath + userModel.getUser_photo())).placeholder(R.drawable.user_profile).into(target);
         }
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        users.getUserData(this);
-    }
-
-    private void initMap() {
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-    }
-
-    private boolean IsServicesOk() {
+    private boolean IsServicesOk()
+    {
         int availablity = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
 
         if (availablity == ConnectionResult.SUCCESS) {
@@ -344,8 +354,8 @@ public class HomeActivity extends AppCompatActivity
         }
         return false;
     }
-
-    private void checkPermission() {
+    private void checkPermission()
+    {
         String[] permissions = new String[]{fine_location, coarse_location};
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(), fine_location) == PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(this.getApplicationContext(), coarse_location) == PackageManager.PERMISSION_GRANTED) {
@@ -360,9 +370,14 @@ public class HomeActivity extends AppCompatActivity
 
         }
     }
-
+    private void initMap()
+    {
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         permission_granted = false;
         if (requestCode == per_req) {
@@ -379,16 +394,14 @@ public class HomeActivity extends AppCompatActivity
         }
 
     }
-
-
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(GoogleMap googleMap)
+    {
         if (googleMap != null) {
             mMap = googleMap;
                 getDeviceLocation();
         }
     }
-
     private void getDeviceLocation()
     {
        try
@@ -433,15 +446,15 @@ public class HomeActivity extends AppCompatActivity
         );
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,11f));
     }
-
      @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+     {
         return super.onOptionsItemSelected(item);
     }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(MenuItem item)
+    {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         switch (id)
@@ -486,23 +499,22 @@ public class HomeActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    private void Logout() {
+    private void Logout()
+    {
         preferences.ClearPref();
         Intent intent = new Intent(HomeActivity.this,Activity_Client_Login.class);
         startActivity(intent);
         finish();
     }
-
     @Override
-    public void UserDataSuccess(UserModel userModel1) {
+    public void UserDataSuccess(UserModel userModel1)
+    {
         this.userModel = userModel1;
         UpdateUI(userModel);
 
     }
-
-
-    private void UpdateToken() {
+    private void UpdateToken()
+    {
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("user",MODE_PRIVATE);
         final String user_id = preferences.getString("user_id","");
         final String token   = FirebaseInstanceId.getInstance().getToken();
@@ -579,77 +591,6 @@ public class HomeActivity extends AppCompatActivity
 
 
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void UpdateDriverLocation(LocationUpdateModel locationUpdateModel)
-    {
-        Log.e("lat",""+locationUpdateModel.getLat());
-        UpdateLocation(locationUpdateModel);
-    }
-
-    private void UpdateLocation(LocationUpdateModel locationUpdateModel) {
-        String lat = String.valueOf(locationUpdateModel.getLat());
-        String lng = String.valueOf(locationUpdateModel.getLng());
-
-        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
-        Services services = retrofit.create(Services.class);
-        Call<ResponseModel> call = services.UpdateDriver_Locaion(userModel.getUser_id(), lat, lng);
-        call.enqueue(new Callback<ResponseModel>() {
-            @Override
-            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
-                if (response.isSuccessful())
-                {
-                    if (response.body().getSuccess()==1)
-                    {
-                        Log.e("latlng","LatLng Updated successfully");
-                    }else
-                        {
-                            Log.e("latlng","Failed");
-
-                        }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseModel> call, Throwable t) {
-                Log.e("Error",t.getMessage());
-            }
-        });
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        int vis1=locContainer.getVisibility();
-        int vis2=costContainer.getVisibility();
-        DrawerLayout drawer =findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else if (vis1==0){
-            locContainer.setVisibility(View.GONE);
-            search_view.setText("");
-            mMap.clear();
-            AddMarker(mylatLng);
-
-        }else if (vis2==0)
-        {
-            costContainer.setVisibility(View.GONE);
-            locContainer.setVisibility(View.VISIBLE);
-        }else if (vis1==8)
-            {
-
-                super.onBackPressed();
-
-            }
-            else
-                {
-                    super.onBackPressed();
-
-                    
-
-                }
-    }
-
     private void HideKeyBoard()
     {
         InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -718,32 +659,36 @@ public class HomeActivity extends AppCompatActivity
     private void getDirection(final LatLng latLng) {
         Retrofit retrofit = Api.getClient(Tags.Map_BaseUrl);
         Services services = retrofit.create(Services.class);
-
-        String origin = String.valueOf(mylatLng.latitude)+","+String.valueOf(mylatLng.longitude);
-        String dest   = String.valueOf(latLng.latitude)+","+String.valueOf(latLng.longitude);
-        Call<PlaceModel> call = services.getDirection(origin,dest);
+        String Origin = String.valueOf(mylatLng.latitude)+","+String.valueOf(mylatLng.longitude);
+        String Dest   = String.valueOf(latLng.latitude)+","+String.valueOf(latLng.longitude);
+        Log.e("origin",Origin);
+        Log.e("dest",Dest);
+        String server_key="AIzaSyDZQnx0ZrSv6H8AtVeMFPEJn8MCChrAC4M";
+        Call<PlaceModel> call = services.getDirection(Origin,Dest,server_key);
         call.enqueue(new Callback<PlaceModel>() {
             @Override
             public void onResponse(Call<PlaceModel> call, Response<PlaceModel> response) {
                 if (response.isSuccessful())
                 {
                     PlaceModel placeModel = response.body();
-                    Log.e("pl",placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText());
+
+                   /* Log.e("pl",placeModel.getRoutes().get(0).getLegs().get(0).getSteps().get(0).g);
                     Log.e("p2",placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText());
-                    Log.e("p3",""+placeModel.getRoutes().get(0).getLegs().get(0).getSteps().get(0).getStart_location().getLat());
+                   */ /*Log.e("p3",""+placeModel.getRoutes().get(0).getLegs().get(0).getSteps().get(0).getPolyline()..getLat());
                     Log.e("p4",""+placeModel.getRoutes().get(0).getLegs().get(0).getSteps().get(0).getEnd_location().getLat());
-
-                    try {
-                        String spilit_dist [] =placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText().split(" ");
-                                dist = Double.parseDouble(spilit_dist[0]);
-
+                  */  try {
+                        //String spilit_dist [] =placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText().split(" ");
+                               // dist = Double.parseDouble(spilit_dist[0]);
+                        Toast.makeText(HomeActivity.this, "dist1"+dist, Toast.LENGTH_SHORT).show();
                     }catch (NullPointerException e)
                     {
                         dist = distance(mylatLng.latitude,mylatLng.longitude,latLng.latitude,latLng.longitude);
+                        Toast.makeText(HomeActivity.this, "dist2"+dist, Toast.LENGTH_SHORT).show();
+
                     }
                    // durat = placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText();
-                    List<String> polylines = new ArrayList<>();
-                    List<StepsModel> stepsModelList =placeModel.getRoutes().get(0).getLegs().get(0).getSteps();
+                   /* List<String> polylines = new ArrayList<>();
+                    List<PlaceModel.Steps> stepsModelList =placeModel.getRoutes().get(0).getLegs().get(0).getSteps();
 
                     for (int i=0;i<stepsModelList.size();i++)
                     {
@@ -762,7 +707,7 @@ public class HomeActivity extends AppCompatActivity
                         Log.e("polyline",""+PolyUtil.decode(polylines.get(i)));
 
                     }
-
+*/
 
                     /*PolylineOptions options = new PolylineOptions();
                     options.width(5);
@@ -792,7 +737,7 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void onFailure(Call<PlaceModel> call, Throwable t) {
                 Toast.makeText(HomeActivity.this, getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
-                Log.e("error",t.getMessage());
+                Log.e("errordirection",t.getMessage());
             }
         });
     }
@@ -824,13 +769,5 @@ public class HomeActivity extends AppCompatActivity
         return (rad * 180.0 / Math.PI);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (userModel.getUser_type().equals(Tags.Driver))
-        {
-            Intent intent = new Intent(this, UpdateDriver_Location.class);
-            startService(intent);
-        }
-    }
+
 }
