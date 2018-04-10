@@ -80,17 +80,19 @@
     <string name="yes">نعم</string>
     <string name="cancel">إلغاء</string>
     <string name="enter_new_username">ادخل اسم المستخدم الجديد</string>
-    <string name="update_username">update username</string>
-    <string name="enter_new_phone">enter new phone number</string>
-    <string name="update_phone">update phone</string>
-    <string name="update_email">update  email</string>
-    <string name="enter_new_email">enter new email</string>
+    <string name="update_username">تعديل الأسم</string>
+    <string name="enter_new_phone">أدخل رقم الهاتف</string>
+    <string name="update_phone">تعديل رقم الهاتف</string>
+    <string name="update_email">تعديل البريد الألكترونى</string>
+    <string name="enter_new_email">أدخل البريد الالكترونى الجديد</string>
     <string name="loc_notfounded">عفوا لم يتم تحديد مكانك</string>
     <string name="already_driver">تم تسجيل دخولك كسائق مسبقا</string>
     <string name="serv_aval_drivers">عفوا هذه الخدمة متاحة للسائقين فقط</string>
-    <string name="enter_subject">enter subject</string>
-    <string name="enter_message">enter your message</string>
+    <string name="enter_subject">أدخل العنوان</string>
+    <string name="enter_message">أدخل رسالتك</string>
     <string name="CurrentOrders">الطلبات الحاليه</string>
     <string name="PreviousOrders">الطلبات السابقه</string>
     <string name="CancelledOrders">الطلبات الملغيه</string>
+    <string name="empty_list">القائمة فارغه</string>
+    <string name="Cost_the_way">تكلفه الطريق</string>
 </resources>

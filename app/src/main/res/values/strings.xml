@@ -83,7 +83,7 @@
     <string name="close">close</string>
     <string name="yes">Ok</string>
     <string name="cancel">Cancel</string>
-    <string name="enter_new_username">ادخل اسم المستخدم الجديد</string>
+    <string name="enter_new_username"> enter_new_username </string>
     <string name="update_username">update username</string>
     <string name="enter_new_phone">enter new phone number</string>
     <string name="update_phone">update phone</string>
@@ -95,11 +95,10 @@
     <string name="enter_subject">enter subject</string>
     <string name="enter_message">enter your message</string>
     <string name="title_activity_driver_orders">DriverOrdersActivity</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="CurrentOrders">الطلبات الحاليه</string>
-    <string name="PreviousOrders">الطلبات السابقه</string>
-    <string name="CancelledOrders">الطلبات الملغيه</string>
+    <string name="CurrentOrders"> Current Orders</string>
+    <string name="PreviousOrders"> Previous Orders</string>
+    <string name="CancelledOrders"> Cancelled Orders</string>
+    <string name="empty_list"> empty list</string>
+    <string name="Cost_the_way">Cost the way </string>
 
 </resources>
