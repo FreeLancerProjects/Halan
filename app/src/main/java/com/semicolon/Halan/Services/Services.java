@@ -1,5 +1,6 @@
 package com.semicolon.Halan.Services;
 
+import com.semicolon.Halan.Models.AvailableDriversModel;
 import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.Models.PlaceModel;
 import com.semicolon.Halan.Models.ResponseModel;
@@ -13,7 +14,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 /**
  * Created by Delta on 25/03/2018.
@@ -63,10 +64,8 @@ public interface Services {
     );
 
 
-    @GET("maps/api/directions/json")
-    Call<PlaceModel> getDirection(@Query("origin") String origin
-            ,@Query("destination")String destination
-            ,@Query("key") String server_key);
+    @GET()
+    Call<PlaceModel> getDirection(@Url String url);
 
     @FormUrlEncoded
     @POST("Api/UpdateTokenId/{user_id}")
@@ -108,4 +107,6 @@ public interface Services {
 
     @GET("Api/ViewDriverOrders/2")
     Call<List<MyOrderModel>> getCanceledOrders ();
+    @GET("Api/ShowDrivers")
+    Call<List<AvailableDriversModel>> ShowAvailable_Drivers();
 }

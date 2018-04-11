@@ -3,11 +3,14 @@ package com.semicolon.Halan.Activities;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -36,6 +39,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,10 +64,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.maps.android.PolyUtil;
 import com.semicolon.Halan.Adapters.PlaceAutocompleteAdapter;
+import com.semicolon.Halan.Models.AvailableDriversModel;
 import com.semicolon.Halan.Models.PlaceModel;
 import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.TokenModel;
@@ -82,7 +89,11 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.anwarshahriar.calligrapher.Calligrapher;
@@ -114,7 +125,7 @@ public class HomeActivity extends AppCompatActivity
             new LatLng(-33.858754, 151.229596));
     private PlaceAutocompleteAdapter adapter;
     private GoogleApiClient apiClient;
-    private LatLng mylatLng;
+    private LatLng mylatLng,latLng;
     private FrameLayout costContainer;
     private LinearLayout locContainer;
     private RelativeLayout search_container;
@@ -126,6 +137,10 @@ public class HomeActivity extends AppCompatActivity
     private AlertDialog.Builder builder,builder2;
     private Users users;
     private LinearLayout profileContainer;
+    private ProgressDialog dialog;
+    private List<String> drivers_ids;
+    private String from,to;
+    private String distn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -140,6 +155,7 @@ public class HomeActivity extends AppCompatActivity
         users = Users.getInstance();
         users.getUserData(this);
         UpdateToken();
+        CreateProgDialog();
         preferences = new Preferences(this);
         if (IsServicesOk()) {
             checkPermission();
@@ -150,6 +166,13 @@ public class HomeActivity extends AppCompatActivity
     {
         super.onStart();
         users.getUserData(this);
+
+        if (userModel.getUser_type().equals(Tags.Driver))
+        {
+            Intent intent = new Intent(this,DriverOrdersActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
     }
     @Override
@@ -164,7 +187,7 @@ public class HomeActivity extends AppCompatActivity
             locContainer.setVisibility(View.GONE);
             search_view.setText("");
             mMap.clear();
-            AddMarker(mylatLng);
+            AddMarker(mylatLng,"");
 
         }else if (vis2==0)
         {
@@ -216,7 +239,24 @@ public class HomeActivity extends AppCompatActivity
                 costContainer.setVisibility(View.VISIBLE);
 
                 String[] dis = String.valueOf(dist).split(" ");
-                distance.setText(String.valueOf(Math.round(Double.parseDouble(dis[0])))+" "+getString(R.string.km));
+                distn = String.valueOf(Math.round(Double.parseDouble(dis[0])));
+                distance.setText(distn+" "+getString(R.string.km));
+            }
+        });
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("from",from);
+                Log.e("to",to);
+                Log.e("my",mylatLng.latitude+"");
+                Log.e("to lat",latLng.latitude+"");
+                Log.e("ids",drivers_ids.size()+"");
+                Log.e("dis",distn);
+                Log.e("id",userModel.getUser_id());
+
+
+
+
             }
         });
 
@@ -274,6 +314,18 @@ public class HomeActivity extends AppCompatActivity
                 .enableAutoManage(this,this)
                 .build();
 
+
+    }
+    private void CreateProgDialog()
+    {
+        ProgressBar bar = new ProgressBar(this);
+        Drawable drawable = bar.getIndeterminateDrawable().mutate();
+        drawable.setColorFilter(ContextCompat.getColor(this,R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("جار تحديد الموقع");
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(true);
+        dialog.setIndeterminateDrawable(drawable);
 
     }
     private void CreateAlertDialog()
@@ -420,7 +472,7 @@ public class HomeActivity extends AppCompatActivity
                            try {
 
                                mylatLng  = new LatLng(location.getLatitude(),location.getLongitude());
-                               AddMarker(mylatLng);
+                               AddMarker(mylatLng,"");
                            }catch (NullPointerException e)
                            {
                                Toast.makeText(HomeActivity.this, R.string.loc_notfounded, Toast.LENGTH_SHORT).show();
@@ -438,13 +490,24 @@ public class HomeActivity extends AppCompatActivity
 
        }
     }
-    private void AddMarker(LatLng latLng)
+    private void AddMarker(LatLng latLng,String title)
     {
-        mMap.addMarker(
-                new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.g_map)).position(latLng)
+        if (TextUtils.isEmpty(title))
+        {
+            mMap.addMarker(
+                    new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.g_map)).position(latLng)
 
-        );
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,11f));
+            );
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,11f));
+        }else
+            {
+                mMap.addMarker(
+                        new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.g_map)).position(latLng).title(title)
+
+                );
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,11f));
+            }
+
     }
      @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -610,6 +673,7 @@ public class HomeActivity extends AppCompatActivity
             String place_id = item.getPlaceId();
             PendingResult<PlaceBuffer> bufferPendingResult = Places.GeoDataApi.getPlaceById(apiClient,place_id);
             bufferPendingResult.setResultCallback(resultCallback);
+
         }
     };
 
@@ -626,24 +690,20 @@ public class HomeActivity extends AppCompatActivity
             try
             {
                 HideKeyBoard();
-                LatLng latLng = place.getLatLng();
-                AddMarker(mylatLng);
-                mMap.addMarker(
-                        new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.g_map)).position(new LatLng(place.getViewport().getCenter().latitude,place.getViewport().getCenter().longitude))
-
-                );
-
+                latLng = place.getLatLng();
+                from = place.getName()+","+place.getAddress();
                 locContainer.setVisibility(View.VISIBLE);
-                txt_order_from.setText(place.getName()+","+place.getAddress());
+                txt_order_from.setText(from);
                 Geocoder geocoder = new Geocoder(HomeActivity.this);
                 List<Address> addressList = geocoder.getFromLocation(mylatLng.latitude,mylatLng.longitude,1);
                 if (addressList.size()>0)
                 {
-                    txt_order_to.setText(addressList.get(0).getAddressLine(0));
+                    to = addressList.get(0).getAddressLine(0);
+                    txt_order_to.setText(to);
                 }
+                dialog.show();
 
-
-                getDirection(latLng);
+                getDirection(mylatLng,latLng);
                 //dist = distance(mylatLng.latitude,mylatLng.longitude,latLng.latitude,latLng.longitude);
 
 
@@ -660,39 +720,48 @@ public class HomeActivity extends AppCompatActivity
         }
     };
 
-    private void getDirection(final LatLng latLng) {
+    private void getDirection(final LatLng mylatLng,final LatLng latLng) {
         Retrofit retrofit = Api.getClient(Tags.Map_BaseUrl);
         Services services = retrofit.create(Services.class);
         String Origin = String.valueOf(mylatLng.latitude)+","+String.valueOf(mylatLng.longitude);
         String Dest   = String.valueOf(latLng.latitude)+","+String.valueOf(latLng.longitude);
         Log.e("origin",Origin);
         Log.e("dest",Dest);
-        String server_key="AIzaSyDZQnx0ZrSv6H8AtVeMFPEJn8MCChrAC4M";
-        Call<PlaceModel> call = services.getDirection(Origin,Dest,server_key);
+        String server_key=getString(R.string.google_maps_key);
+        String url = "https://maps.googleapis.com/maps/api/directions/json?origin="+Origin+"&destination="+Dest+"&key="+server_key;
+        Call<PlaceModel> call = services.getDirection(url);
         call.enqueue(new Callback<PlaceModel>() {
             @Override
             public void onResponse(Call<PlaceModel> call, Response<PlaceModel> response) {
                 if (response.isSuccessful())
                 {
                     PlaceModel placeModel = response.body();
-
-                   /* Log.e("pl",placeModel.getRoutes().get(0).getLegs().get(0).getSteps().get(0).g);
+                    try {
+                    Log.e("pl",placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText());
                     Log.e("p2",placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText());
-                   */ /*Log.e("p3",""+placeModel.getRoutes().get(0).getLegs().get(0).getSteps().get(0).getPolyline()..getLat());
-                    Log.e("p4",""+placeModel.getRoutes().get(0).getLegs().get(0).getSteps().get(0).getEnd_location().getLat());
-                  */  try {
-                        //String spilit_dist [] =placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText().split(" ");
-                               // dist = Double.parseDouble(spilit_dist[0]);
+
+                        String spilit_dist [] =placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText().split(" ");
+                                dist = Double.parseDouble(spilit_dist[0]);
                         Toast.makeText(HomeActivity.this, "dist1"+dist, Toast.LENGTH_SHORT).show();
                     }catch (NullPointerException e)
                     {
                         dist = distance(mylatLng.latitude,mylatLng.longitude,latLng.latitude,latLng.longitude);
                         Toast.makeText(HomeActivity.this, "dist2"+dist, Toast.LENGTH_SHORT).show();
 
+                    }catch (IndexOutOfBoundsException e)
+                    {
+                        Toast.makeText(HomeActivity.this, "empty data", Toast.LENGTH_SHORT).show();
                     }
-                   // durat = placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText();
-                   /* List<String> polylines = new ArrayList<>();
+                    String durat = placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText();
+                    List<String> polylines = new ArrayList<>();
                     List<PlaceModel.Steps> stepsModelList =placeModel.getRoutes().get(0).getLegs().get(0).getSteps();
+
+                    AddMarker(mylatLng,durat);
+                    AddMarker(latLng,durat);
+                    /*mMap.addMarker(
+                            new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.g_map)).position(new LatLng(mylatLng.latitude,mylatLng.longitude)).title(durat)
+
+                    );*/
 
                     for (int i=0;i<stepsModelList.size();i++)
                     {
@@ -711,36 +780,17 @@ public class HomeActivity extends AppCompatActivity
                         Log.e("polyline",""+PolyUtil.decode(polylines.get(i)));
 
                     }
-*/
 
-                    /*PolylineOptions options = new PolylineOptions();
-                    options.width(5);
-                    options.color(Color.BLACK);
-                    mMap.addPolyline(options);
-                    options.add(mylatLng);*/
-
-                   /* List<StepsModel> stepsModelList = placeModel.getRoutes().get(0).getLegs().get(0).getSteps();
-
-                    for (int i=0;i<stepsModelList.size();i++)
-                    {
-                        LatLng latLng1 = new LatLng(stepsModelList.get(i).getStart_location().getLat(),stepsModelList.get(i).getStart_location().getLng());
-                        LatLng latLng2 = new LatLng(stepsModelList.get(i).getEnd_location().getLat(),stepsModelList.get(i).getEnd_location().getLng());
-                        options.add(latLng1,latLng2);
-                        mMap.addPolyline(options);
-                    }
-                    options.add(latLng);
-                    mMap.addPolyline(options);
-*/
-
-
-
-
+                    dialog.dismiss();
+                    ShowAvaliable_Drivers();
                 }
             }
 
             @Override
             public void onFailure(Call<PlaceModel> call, Throwable t) {
                 Toast.makeText(HomeActivity.this, getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+
                 Log.e("errordirection",t.getMessage());
             }
         });
@@ -751,6 +801,86 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
+    private void ShowAvaliable_Drivers()
+    {
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<List<AvailableDriversModel>> call = services.ShowAvailable_Drivers();
+        call.enqueue(new Callback<List<AvailableDriversModel>>() {
+            @Override
+            public void onResponse(Call<List<AvailableDriversModel>> call, Response<List<AvailableDriversModel>> response) {
+                if (response.isSuccessful())
+                {
+                    List<AvailableDriversModel> availableDriversModelList = response.body();
+                    getDrivers(availableDriversModelList);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AvailableDriversModel>> call, Throwable t) {
+                Log.e("Error",t.getMessage());
+                Toast.makeText(HomeActivity.this, ""+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getDrivers(List<AvailableDriversModel> availableDriversModelList) {
+        try
+        {
+            Map<String,Double> map = new HashMap<>();
+            List<Double> sortedArray = new ArrayList<>();
+            drivers_ids = new ArrayList<>();
+            for (int i=0;i<availableDriversModelList.size();i++)
+            {
+                AvailableDriversModel driversModel = availableDriversModelList.get(i);
+                double dis = distance(mylatLng.latitude,mylatLng.longitude,Double.parseDouble(driversModel.getUser_google_lat()),Double.parseDouble(driversModel.getUser_google_long()));
+                map.put(driversModel.getDriver_id(),dis);
+            }
+            for (String key :map.keySet())
+            {
+                sortedArray.add(map.get(key));
+            }
+
+            Collections.sort(sortedArray);
+
+            if (sortedArray.size()<6)
+            {
+                for (int i =0;i<sortedArray.size();i++)
+                {
+                    for (String key :map.keySet())
+                    {
+                        if (map.get(key)== sortedArray.get(i))
+                        {
+                            drivers_ids.add(key);
+                        }
+                    }
+                }
+                Log.e("iffff","<6");
+            }else
+                {
+                    for (int i =0;i<6;i++)
+                    {
+                        for (String key :map.keySet())
+                        {
+                            if (map.get(key)== sortedArray.get(i))
+                            {
+                                drivers_ids.add(key);
+                            }
+                        }
+                    }
+                    Log.e("iffff",">6");
+
+                }
+
+
+
+
+
+        }catch (IndexOutOfBoundsException e)
+        {
+            Log.e("error drivers","index < 0");
+        }
+    }
 
     private double distance(double lat1, double lon1, double lat2, double lon2) {
         double theta = lon1 - lon2;
