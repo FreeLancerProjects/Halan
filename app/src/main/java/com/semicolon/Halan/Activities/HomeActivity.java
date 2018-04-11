@@ -74,6 +74,7 @@ import com.semicolon.Halan.Models.AvailableDriversModel;
 import com.semicolon.Halan.Models.PlaceModel;
 import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.TokenModel;
+import com.semicolon.Halan.Models.TotalCostModel;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
@@ -140,7 +141,9 @@ public class HomeActivity extends AppCompatActivity
     private ProgressDialog dialog;
     private List<String> drivers_ids;
     private String from,to;
-    private String distn;
+    private String distn,order_details;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -155,7 +158,6 @@ public class HomeActivity extends AppCompatActivity
         users = Users.getInstance();
         users.getUserData(this);
         UpdateToken();
-        CreateProgDialog();
         preferences = new Preferences(this);
         if (IsServicesOk()) {
             checkPermission();
@@ -226,6 +228,7 @@ public class HomeActivity extends AppCompatActivity
         txt_order     = findViewById(R.id.txt_order);
         txt_order_from= findViewById(R.id.txt_order_from);
         txt_order_to  = findViewById(R.id.txt_order_to);
+        cost          = findViewById(R.id.cost);
         distance      = findViewById(R.id.distance);
         nextBtn       = findViewById(R.id.nextBtn);
         sendBtn       = findViewById(R.id.sendBtn);
@@ -235,12 +238,27 @@ public class HomeActivity extends AppCompatActivity
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                locContainer.setVisibility(View.GONE);
-                costContainer.setVisibility(View.VISIBLE);
 
-                String[] dis = String.valueOf(dist).split(" ");
-                distn = String.valueOf(Math.round(Double.parseDouble(dis[0])));
-                distance.setText(distn+" "+getString(R.string.km));
+
+                if (TextUtils.isEmpty(txt_order.getText().toString()))
+                {
+                    txt_order.setError("أدخل تفاصيل الطلب");
+                }else
+                    {
+
+
+                        String[] dis = String.valueOf(dist).split(" ");
+                        distn = String.valueOf(Math.round(Double.parseDouble(dis[0])));
+                        distance.setText(distn+" "+getString(R.string.km));
+                        order_details = txt_order.getText().toString();
+                        CreateProgDialog("جار تحديد تكلفة الطريق...");
+
+                        dialog.show();
+                        getCostByDistance(distn);
+
+                    }
+
+
             }
         });
         sendBtn.setOnClickListener(new View.OnClickListener() {
@@ -253,6 +271,11 @@ public class HomeActivity extends AppCompatActivity
                 Log.e("ids",drivers_ids.size()+"");
                 Log.e("dis",distn);
                 Log.e("id",userModel.getUser_id());
+                Log.e("details",order_details);
+                Log.e("Cost",cost.getText().toString());
+
+
+
 
 
 
@@ -292,21 +315,6 @@ public class HomeActivity extends AppCompatActivity
                 return false;
             }
         });
-
-        /*if (userModel.getUser_type().equals(Tags.Driver))
-        {
-            search_container.setVisibility(View.GONE);
-            costContainer.setVisibility(View.GONE);
-            locContainer.setVisibility(View.GONE);
-            driver_orderContainer.setVisibility(View.VISIBLE);
-
-        }else if (userModel.getUser_type().equals(Tags.Client))
-            {
-                search_container.setVisibility(View.VISIBLE);
-                driver_orderContainer.setVisibility(View.GONE);
-                costContainer.setVisibility(View.GONE);
-                locContainer.setVisibility(View.GONE);
-            }*/
         apiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -316,13 +324,13 @@ public class HomeActivity extends AppCompatActivity
 
 
     }
-    private void CreateProgDialog()
+    private void CreateProgDialog(String msg)
     {
         ProgressBar bar = new ProgressBar(this);
         Drawable drawable = bar.getIndeterminateDrawable().mutate();
         drawable.setColorFilter(ContextCompat.getColor(this,R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
         dialog = new ProgressDialog(this);
-        dialog.setMessage("جار تحديد الموقع");
+        dialog.setMessage(msg);
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(true);
         dialog.setIndeterminateDrawable(drawable);
@@ -692,7 +700,6 @@ public class HomeActivity extends AppCompatActivity
                 HideKeyBoard();
                 latLng = place.getLatLng();
                 from = place.getName()+","+place.getAddress();
-                locContainer.setVisibility(View.VISIBLE);
                 txt_order_from.setText(from);
                 Geocoder geocoder = new Geocoder(HomeActivity.this);
                 List<Address> addressList = geocoder.getFromLocation(mylatLng.latitude,mylatLng.longitude,1);
@@ -701,6 +708,8 @@ public class HomeActivity extends AppCompatActivity
                     to = addressList.get(0).getAddressLine(0);
                     txt_order_to.setText(to);
                 }
+                CreateProgDialog("جار تحديد الموقع...");
+
                 dialog.show();
 
                 getDirection(mylatLng,latLng);
@@ -739,10 +748,17 @@ public class HomeActivity extends AppCompatActivity
                     try {
                     Log.e("pl",placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText());
                     Log.e("p2",placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText());
-
-                        String spilit_dist [] =placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText().split(" ");
+                        String d = placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText();
+                        String d2="";
+                        if (d.contains(","))
+                        {
+                           d2 = d.replace(",","");
+                        }else
+                            {
+                                d2=d;
+                            }
+                        String spilit_dist [] =d2.split(" ");
                                 dist = Double.parseDouble(spilit_dist[0]);
-                        Toast.makeText(HomeActivity.this, "dist1"+dist, Toast.LENGTH_SHORT).show();
                     }catch (NullPointerException e)
                     {
                         dist = distance(mylatLng.latitude,mylatLng.longitude,latLng.latitude,latLng.longitude);
@@ -782,7 +798,8 @@ public class HomeActivity extends AppCompatActivity
                     }
 
                     dialog.dismiss();
-                    ShowAvaliable_Drivers();
+                    locContainer.setVisibility(View.VISIBLE);
+                    ShowAvailable_Drivers();
                 }
             }
 
@@ -801,7 +818,7 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-    private void ShowAvaliable_Drivers()
+    private void ShowAvailable_Drivers()
     {
         Retrofit retrofit = Api.getClient(Tags.BASE_URL);
         Services services = retrofit.create(Services.class);
@@ -875,11 +892,39 @@ public class HomeActivity extends AppCompatActivity
 
 
 
-
         }catch (IndexOutOfBoundsException e)
         {
             Log.e("error drivers","index < 0");
         }
+    }
+
+    private void getCostByDistance(String distance) {
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<TotalCostModel> call = services.getCostByDistance(distance);
+        call.enqueue(new Callback<TotalCostModel>() {
+            @Override
+            public void onResponse(Call<TotalCostModel> call, Response<TotalCostModel> response) {
+                if (response.isSuccessful())
+                {
+                    String totalcost = response.body().getTotal_cost();
+                    Log.e("total cost",totalcost);
+                    cost.setText(totalcost);
+                    locContainer.setVisibility(View.GONE);
+                    costContainer.setVisibility(View.VISIBLE);
+                    dialog.dismiss();
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TotalCostModel> call, Throwable t) {
+                dialog.dismiss();
+                Log.e("Error",t.getMessage());
+                Toast.makeText(HomeActivity.this, ""+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private double distance(double lat1, double lon1, double lat2, double lon2) {

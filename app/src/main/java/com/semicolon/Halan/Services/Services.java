@@ -4,6 +4,7 @@ import com.semicolon.Halan.Models.AvailableDriversModel;
 import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.Models.PlaceModel;
 import com.semicolon.Halan.Models.ResponseModel;
+import com.semicolon.Halan.Models.TotalCostModel;
 import com.semicolon.Halan.Models.UserModel;
 
 import java.util.List;
@@ -109,4 +110,8 @@ public interface Services {
     Call<List<MyOrderModel>> getCanceledOrders (@Path("user_id")String user_id);
     @GET("Api/ShowDrivers")
     Call<List<AvailableDriversModel>> ShowAvailable_Drivers();
+
+    @FormUrlEncoded
+    @POST("Api/DestanceCost")
+    Call<TotalCostModel> getCostByDistance(@Field("my_distance") String distance);
 }
