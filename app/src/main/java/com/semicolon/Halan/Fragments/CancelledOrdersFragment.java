@@ -17,10 +17,13 @@ import android.widget.ProgressBar;
 
 import com.semicolon.Halan.Adapters.MyOrdersAdapter;
 import com.semicolon.Halan.Models.MyOrderModel;
+import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
+import com.semicolon.Halan.Services.Preferences;
 import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
+import com.semicolon.Halan.SingleTone.Users;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +33,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class CancelledOrdersFragment extends Fragment {
+public class CancelledOrdersFragment extends Fragment implements Users.UserData  {
 
 
     ArrayList<MyOrderModel> model;
@@ -40,12 +43,18 @@ public class CancelledOrdersFragment extends Fragment {
     private ProgressBar progBar;
     private LinearLayout nodata_container;
     private SwipeRefreshLayout sr;
+    private Preferences preferences;
+    private UserModel userModel;
+    Users users;
+    private String userId;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view= inflater.inflate(R.layout.fragment_cancelled_orders, container, false);
-
+        users=Users.getInstance();
+        preferences=new Preferences(getContext());
+        users.getUserData(this);
         recyclerView = view.findViewById(R.id.rec_canceled);
 
         model = new ArrayList<>();
@@ -82,7 +91,7 @@ public class CancelledOrdersFragment extends Fragment {
     private void getDataFromServer() {
         progBar.setVisibility(View.VISIBLE);
         Services services= Api.getClient(Tags.BASE_URL).create(Services.class);
-        Call<List<MyOrderModel>> call=services.getCanceledOrders();
+        Call<List<MyOrderModel>> call=services.getCanceledOrders(userId);
         call.enqueue(new Callback<List<MyOrderModel>>() {
             @Override
             public void onResponse(Call<List<MyOrderModel>> call, Response<List<MyOrderModel>> response) {
@@ -112,4 +121,10 @@ public class CancelledOrdersFragment extends Fragment {
     }
 
 
+    @Override
+    public void UserDataSuccess(UserModel userModel) {
+
+        this.userModel=userModel;
+        userId=userModel.getUser_id();
+    }
 }

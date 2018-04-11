@@ -99,14 +99,14 @@ public interface Services {
                                              @Field("user_google_lat") String lat,
                                              @Field("user_google_long") String lng);
 
-    @GET("Api/ViewDriverOrders/1")
-    Call<List<MyOrderModel>> getCurrentOrders ();
+    @GET("Api/ViewDriverOrders/1/{user_id}")
+    Call<List<MyOrderModel>> getCurrentOrders (@Path("user_id")String user_id);
 
-    @GET("Api/ViewDriverOrders/4")
-    Call<List<MyOrderModel>> getPreviousOrders ();
+    @GET("Api/ViewDriverOrders/4/{user_id}")
+    Call<List<MyOrderModel>> getPreviousOrders (@Path("user_id")String user_id);
 
-    @GET("Api/ViewDriverOrders/2")
-    Call<List<MyOrderModel>> getCanceledOrders ();
+    @GET("Api/ViewDriverOrders/2/{user_id}")
+    Call<List<MyOrderModel>> getCanceledOrders (@Path("user_id")String user_id);
     @GET("Api/ShowDrivers")
     Call<List<AvailableDriversModel>> ShowAvailable_Drivers();
 }
