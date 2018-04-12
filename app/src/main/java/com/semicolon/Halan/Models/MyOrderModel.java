@@ -18,7 +18,14 @@ public class MyOrderModel {
     private Double market_google_lat;
     private String client_phone;
 
-    public MyOrderModel(String client_location, String market_location, String cost, String order_start_time, String client_name, String order_start_from_minute, Double client_google_lang, Double client_google_lat, String order_details, Double market_google_lang, Double market_google_lat, String client_phone) {
+    private String message_id;
+    private String order_id_fk;
+    private String client_id_fk;
+    private String order_driver_cost;
+    private String messages_status;
+    private String order_date;
+
+    public MyOrderModel(String client_location, String market_location, String cost, String order_start_time, String client_name, String order_start_from_minute, Double client_google_lang, Double client_google_lat, String order_details, Double market_google_lang, Double market_google_lat, String client_phone, String message_id, String order_id_fk, String client_id_fk, String order_driver_cost, String messages_status, String order_date) {
         this.client_location = client_location;
         this.market_location = market_location;
         this.cost = cost;
@@ -31,6 +38,60 @@ public class MyOrderModel {
         this.market_google_lang = market_google_lang;
         this.market_google_lat = market_google_lat;
         this.client_phone = client_phone;
+        this.message_id = message_id;
+        this.order_id_fk = order_id_fk;
+        this.client_id_fk = client_id_fk;
+        this.order_driver_cost = order_driver_cost;
+        this.messages_status = messages_status;
+        this.order_date = order_date;
+    }
+
+    public String getMessage_id() {
+        return message_id;
+    }
+
+    public void setMessage_id(String message_id) {
+        this.message_id = message_id;
+    }
+
+    public String getOrder_id_fk() {
+        return order_id_fk;
+    }
+
+    public void setOrder_id_fk(String order_id_fk) {
+        this.order_id_fk = order_id_fk;
+    }
+
+    public String getClient_id_fk() {
+        return client_id_fk;
+    }
+
+    public void setClient_id_fk(String client_id_fk) {
+        this.client_id_fk = client_id_fk;
+    }
+
+    public String getOrder_driver_cost() {
+        return order_driver_cost;
+    }
+
+    public void setOrder_driver_cost(String order_driver_cost) {
+        this.order_driver_cost = order_driver_cost;
+    }
+
+    public String getMessages_status() {
+        return messages_status;
+    }
+
+    public void setMessages_status(String messages_status) {
+        this.messages_status = messages_status;
+    }
+
+    public String getOrder_date() {
+        return order_date;
+    }
+
+    public void setOrder_date(String order_date) {
+        this.order_date = order_date;
     }
 
     public Double getClient_google_lang() {

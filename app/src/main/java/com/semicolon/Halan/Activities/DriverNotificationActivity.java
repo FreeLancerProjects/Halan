@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.semicolon.Halan.Adapters.DriverNotficationAdapter;
 import com.semicolon.Halan.Adapters.MyOrdersAdapter;
 import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.Models.UserModel;
@@ -31,7 +32,7 @@ import retrofit2.Response;
 
 public class DriverNotificationActivity extends AppCompatActivity implements Users.UserData{
     ArrayList<MyOrderModel> model;
-    MyOrdersAdapter adapter;
+    DriverNotficationAdapter adapter;
     RecyclerView recyclerView;
     private LinearLayoutManager mLayoutManager;
     private ProgressBar progBar;
@@ -65,7 +66,7 @@ public class DriverNotificationActivity extends AppCompatActivity implements Use
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        adapter = new MyOrdersAdapter(this, model);
+        adapter = new DriverNotficationAdapter(this, model);
         recyclerView.setAdapter(adapter);
         sr.setRefreshing(false);
 
