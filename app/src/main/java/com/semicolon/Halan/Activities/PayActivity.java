@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ public class PayActivity extends AppCompatActivity implements View.OnClickListen
     private Users users;
     private Preferences preferences;
     private UserModel userModel;
+    private ImageView back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,13 @@ public class PayActivity extends AppCompatActivity implements View.OnClickListen
         transBank=findViewById(R.id.edt_bank);
         code=findViewById(R.id.edt_code);
         send=findViewById(R.id.btn_send);
-
+        back = findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         transDate.setOnClickListener(this);
         send.setOnClickListener(this);
 

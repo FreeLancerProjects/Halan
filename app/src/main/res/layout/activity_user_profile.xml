@@ -21,16 +21,24 @@
             app:contentInsetEnd="0dp"
             app:contentInsetLeft="0dp"
             app:contentInsetRight="0dp"
-            app:contentInsetStart="0dp">
+            app:contentInsetStart="0dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+
+            >
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <ImageView
+                    android:id="@+id/back"
+                    android:clickable="true"
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
-                    android:padding="12dp"
-                    android:src="@drawable/white_back" />
+                    android:padding="13dp"
+                    android:src="@drawable/white_back"
+                    android:layout_gravity="left|center_vertical"
+
+                    />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -38,7 +46,7 @@
                     android:gravity="center"
                     android:text="@string/profile_page"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
             </RelativeLayout>
 

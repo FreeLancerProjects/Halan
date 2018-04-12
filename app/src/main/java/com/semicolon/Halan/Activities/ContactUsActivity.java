@@ -17,6 +17,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -33,9 +34,10 @@ import retrofit2.Response;
 public class ContactUsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText name, email, subject, message;
-    Button call, send;
+    private Button call, send;
     private ProgressDialog dialog;
     private String phone;
+    private ImageView back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +128,13 @@ public class ContactUsActivity extends AppCompatActivity implements View.OnClick
         message = findViewById(R.id.edt_message);
         call = findViewById(R.id.btn_call);
         send = findViewById(R.id.btn_send);
+        back = findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         call.setOnClickListener(this);
         send.setOnClickListener(this);

@@ -61,12 +61,12 @@
         <activity android:name=".Activities.OrderDetailActivity" />
         <activity
             android:name=".Activities.DriverOrdersActivity"
-            android:label="@string/title_activity_driver_orders"
+            android:label="@string/my_order"
             android:theme="@style/AppTheme" />
         <activity android:name=".Activities.DriverOrderDetailsActivity">
 
         </activity>
-        <activity android:name=".Activities.MyOrdersActivity" android:theme="@style/AppTheme">
+        <activity android:name=".Activities.MyOrdersActivity" android:theme="@style/AppTheme" android:label="@string/my_order">
 
         </activity>
 

@@ -90,9 +90,10 @@
     <string name="serv_aval_drivers">عفوا هذه الخدمة متاحة للسائقين فقط</string>
     <string name="enter_subject">أدخل العنوان</string>
     <string name="enter_message">أدخل رسالتك</string>
-    <string name="CurrentOrders">الطلبات الحاليه</string>
-    <string name="PreviousOrders">الطلبات السابقه</string>
-    <string name="CancelledOrders">الطلبات الملغيه</string>
-    <string name="empty_list">القائمة فارغه</string>
-    <string name="Cost_the_way">تكلفه الطريق</string>
+    <string name="my_order">طلباتي</string>
+    <string name="CurrentOrders">الحالية</string>
+    <string name="PreviousOrders">السابقة</string>
+    <string name="CancelledOrders">الملغية</string>
+    <string name="empty_list">القائمة فارغة</string>
+    <string name="Cost_the_way">تكلفة الطريق</string>
 </resources>

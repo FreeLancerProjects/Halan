@@ -54,6 +54,7 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
     private ImageView photo_car_form,license_photo,front_back_image;
     private Preferences preferences;
     private Button register;
+    private ImageView back;
     private final int IMG_REQ1 = 100;
     private final int IMG_REQ2 = 200;
     private final int IMG_REQ3 = 300;
@@ -105,6 +106,7 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
     }
 
     private void initView() {
+        back = findViewById(R.id.back);
         e_car_model=findViewById(R.id.car_model);
         t_photo_car_form=findViewById(R.id.photo_car_form);
         t_license_photo=findViewById(R.id.license_photo);
@@ -119,6 +121,12 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
         t_photo_car_form.setOnClickListener(this);
         t_license_photo.setOnClickListener(this);
         t_front_back_image.setOnClickListener(this);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
 
 

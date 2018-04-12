@@ -22,13 +22,18 @@
             app:contentInsetRight="0dp"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+
             >
             <ImageView
+                android:id="@+id/back"
+                android:clickable="true"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="left"
                 android:src="@drawable/white_back"
-                android:padding="12dp"
+                android:padding="13dp"
+                android:layout_gravity="left|center_vertical"
+
                 />
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>

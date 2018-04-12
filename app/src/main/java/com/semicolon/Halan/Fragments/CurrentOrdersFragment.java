@@ -1,7 +1,6 @@
 package com.semicolon.Halan.Fragments;
 
 import android.graphics.PorterDuff;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.semicolon.Halan.Adapters.MyOrdersAdapter;
 import com.semicolon.Halan.Models.MyOrderModel;
@@ -24,7 +22,6 @@ import com.semicolon.Halan.Services.Preferences;
 import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +88,6 @@ public class CurrentOrdersFragment extends Fragment implements Users.UserData {
 
     private void getDataFromServer() {
         progBar.setVisibility(View.VISIBLE);
-        Toast.makeText(getActivity(), ""+userId, Toast.LENGTH_SHORT).show();
         Services services= Api.getClient(Tags.BASE_URL).create(Services.class);
         Call<List<MyOrderModel>> call=services.getCurrentOrders(userId);
         call.enqueue(new Callback<List<MyOrderModel>>() {

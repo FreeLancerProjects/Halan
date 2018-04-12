@@ -5,28 +5,28 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.content.ContextCompat;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.semicolon.Halan.Adapters.ViewPagerAdapter;
+import com.semicolon.Halan.Fragments.CancelledOrdersFragment;
+import com.semicolon.Halan.Fragments.CurrentOrdersFragment;
+import com.semicolon.Halan.Fragments.PreviousOrdersFragment;
 import com.semicolon.Halan.Models.LocationUpdateModel;
 import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.TokenModel;
@@ -66,12 +66,10 @@ public class DriverOrdersActivity extends AppCompatActivity
     private Target target;
     private CircleImageView userImage;
     private LinearLayout profileContainer;
-    private SwipeRefreshLayout swipeRef;
-    private RecyclerView recView;
-    private RecyclerView.LayoutManager manager;
-    private RecyclerView.Adapter adapter;
-    private ProgressBar progBar;
     private Intent service_intent;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -116,6 +114,11 @@ public class DriverOrdersActivity extends AppCompatActivity
 
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        viewPager =  findViewById(R.id.viewpager);
+        tabLayout =  findViewById(R.id.tabs);
+        setupViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager);
+
         ///////////////////////////////////////////////////////
         View view = navigationView.getHeaderView(0);
         userImage = view.findViewById(R.id.userImage);
@@ -128,15 +131,14 @@ public class DriverOrdersActivity extends AppCompatActivity
             }
         });
         ////////////////////////////////////////////////////////
-        recView = findViewById(R.id.recView);
-        manager = new LinearLayoutManager(this);
-        recView.setHasFixedSize(true);
-        recView.setLayoutManager(manager);
-        swipeRef = findViewById(R.id.swipeRef);
-        progBar = findViewById(R.id.progBar);
-        progBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this,R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 
-
+    }
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new CurrentOrdersFragment(), getString(R.string.CurrentOrders));
+        adapter.addFragment(new PreviousOrdersFragment(), getString(R.string.PreviousOrders));
+        adapter.addFragment(new CancelledOrdersFragment(), getString(R.string.CancelledOrders));
+        viewPager.setAdapter(adapter);
     }
     private void CreateAlertDialog()
     {

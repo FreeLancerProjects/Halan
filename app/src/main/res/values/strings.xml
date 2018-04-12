@@ -94,10 +94,10 @@
     <string name="serv_aval_drivers">Sorry this service is available to drivers only</string>
     <string name="enter_subject">enter subject</string>
     <string name="enter_message">enter your message</string>
-    <string name="title_activity_driver_orders">DriverOrdersActivity</string>
-    <string name="CurrentOrders"> Current Orders</string>
-    <string name="PreviousOrders"> Previous Orders</string>
-    <string name="CancelledOrders"> Cancelled Orders</string>
+    <string name="my_order">My Orders</string>
+    <string name="CurrentOrders">Current</string>
+    <string name="PreviousOrders">Previous</string>
+    <string name="CancelledOrders">Canceled</string>
     <string name="empty_list"> empty list</string>
     <string name="Cost_the_way">Cost the way </string>
 

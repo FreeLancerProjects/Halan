@@ -1,25 +1,19 @@
 package com.semicolon.Halan.Activities;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.nfc.Tag;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +43,7 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
     private final int IMG_REQ = 100;
     private String enCodedImage;
     private Bitmap bitmap;
+    private ImageView back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +72,7 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
     }
 
     private void initView() {
+        back = findViewById(R.id.back);
         imageView=findViewById(R.id.img_profile);
         name=findViewById(R.id.user_name);
         phone=findViewById(R.id.txt_phone);
@@ -90,6 +86,12 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
         edtemail.setOnClickListener(this);
         edtphone.setOnClickListener(this);
         imageView.setOnClickListener(this);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
     }
 

@@ -752,7 +752,7 @@ public class HomeActivity extends AppCompatActivity
                         String d2="";
                         if (d.contains(","))
                         {
-                           d2 = d.replace(",","");
+                           d2 = d.replaceAll(",","");
                         }else
                             {
                                 d2=d;
@@ -860,7 +860,7 @@ public class HomeActivity extends AppCompatActivity
 
             Collections.sort(sortedArray);
 
-            if (sortedArray.size()<6)
+            if (sortedArray.size()<=6)
             {
                 for (int i =0;i<sortedArray.size();i++)
                 {

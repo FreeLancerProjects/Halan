@@ -8,6 +8,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.semicolon.Halan.Fragments.CancelledOrdersFragment;
 import com.semicolon.Halan.Fragments.CurrentOrdersFragment;
@@ -22,6 +24,7 @@ public class MyOrdersActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private ImageView back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,11 +37,16 @@ public class MyOrdersActivity extends AppCompatActivity {
         toolbar =  findViewById(R.id.toolbar);
         viewPager =  findViewById(R.id.viewpager);
         tabLayout =  findViewById(R.id.tabs);
-
+        back = findViewById(R.id.back);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     private void setupViewPager(ViewPager viewPager) {

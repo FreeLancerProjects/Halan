@@ -15,44 +15,44 @@
             android:orderInCategory="200"
             android:title="@string/register"
             app:showAsAction="never" />
-        <item
+       <!-- <item
             android:id="@+id/notification"
             android:orderInCategory="300"
             android:title="@string/notification"
-            app:showAsAction="never" />
+            app:showAsAction="never" />-->
         <item
             android:id="@+id/orders"
-            android:orderInCategory="400"
+            android:orderInCategory="300"
             android:title="@string/orders"
             app:showAsAction="never" />
         <item
             android:id="@+id/pay"
-            android:orderInCategory="500"
+            android:orderInCategory="400"
             android:title="@string/pay"
             app:showAsAction="never" />
         <item
             android:id="@+id/contact"
-            android:orderInCategory="600"
+            android:orderInCategory="500"
             android:title="@string/contact_us"
             app:showAsAction="never" />
         <item
             android:id="@+id/share"
-            android:orderInCategory="700"
+            android:orderInCategory="600"
             android:title="@string/share"
             app:showAsAction="never" />
         <item
             android:id="@+id/report"
-            android:orderInCategory="800"
+            android:orderInCategory="700"
             android:title="@string/send_report"
             app:showAsAction="never" />
         <item
             android:id="@+id/rule"
-            android:orderInCategory="900"
+            android:orderInCategory="800"
             android:title="@string/rules"
             app:showAsAction="never" />
         <item
             android:id="@+id/logout"
-            android:orderInCategory="1000"
+            android:orderInCategory="900"
             android:title="@string/logout"
             app:showAsAction="never" />
 

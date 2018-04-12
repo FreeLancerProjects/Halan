@@ -4,11 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 import com.semicolon.Halan.R;
 
@@ -16,6 +15,7 @@ public class Activity_Driver_Register extends AppCompatActivity implements View.
 
     private EditText d_city,d_identity_number,d_vehicle_number,d_car_color;
     private Button next;
+    private ImageView back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +32,13 @@ public class Activity_Driver_Register extends AppCompatActivity implements View.
         d_vehicle_number=findViewById(R.id.vehicle_number);
         d_car_color =findViewById(R.id.car_color);
         next=findViewById(R.id.nextBtn);
+        back = findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         next.setOnClickListener(this);
 
     }
