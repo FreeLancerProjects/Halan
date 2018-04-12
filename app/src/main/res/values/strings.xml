@@ -98,7 +98,7 @@
     <string name="CurrentOrders">Current</string>
     <string name="PreviousOrders">Previous</string>
     <string name="CancelledOrders">Canceled</string>
-    <string name="empty_list"> empty list</string>
+    <string name="empty_list"> There are no orders to display</string>
     <string name="Cost_the_way">Cost the way </string>
 
 </resources>

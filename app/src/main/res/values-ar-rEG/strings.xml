@@ -94,6 +94,6 @@
     <string name="CurrentOrders">الحالية</string>
     <string name="PreviousOrders">السابقة</string>
     <string name="CancelledOrders">الملغية</string>
-    <string name="empty_list">القائمة فارغة</string>
+    <string name="empty_list">لا توجد طلبات لعرضها</string>
     <string name="Cost_the_way">تكلفة الطريق</string>
 </resources>
