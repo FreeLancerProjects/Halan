@@ -8,9 +8,11 @@ import com.semicolon.Halan.Models.TotalCostModel;
 import com.semicolon.Halan.Models.UserModel;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -114,4 +116,7 @@ public interface Services {
     @FormUrlEncoded
     @POST("Api/DestanceCost")
     Call<TotalCostModel> getCostByDistance(@Field("my_distance") String distance);
+    @FormUrlEncoded
+    @POST("Api/AddMyOrder")
+    Call<ResponseModel> sendOrder(@FieldMap Map<String,String> map,@Field("driver_id[] array") List<String> driver_ids);
 }

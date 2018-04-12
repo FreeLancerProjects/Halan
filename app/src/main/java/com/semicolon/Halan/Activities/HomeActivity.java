@@ -274,7 +274,19 @@ public class HomeActivity extends AppCompatActivity
                 Log.e("details",order_details);
                 Log.e("Cost",cost.getText().toString());
 
+                Map<String,String> map =new HashMap<>();
+                map.put("user_id",userModel.getUser_id());
+                map.put("client_location",to);
+                map.put("market_location",from);
+                map.put("client_google_lat",String.valueOf(mylatLng.latitude));
+                map.put("client_google_lang",String.valueOf(mylatLng.longitude));
+                map.put("market_google_lat",String.valueOf(latLng.latitude));
+                map.put("market_google_lang",String.valueOf(latLng.longitude));
+                map.put("distance",distn);
+                map.put("order_details",order_details);
+                map.put("total_cost",cost.getText().toString());
 
+                sendOrders(map,drivers_ids);
 
 
 
@@ -324,6 +336,43 @@ public class HomeActivity extends AppCompatActivity
 
 
     }
+
+    private void sendOrders(Map<String, String> map, List<String> drivers_ids) {
+        CreateProgDialog("جار إرسال طلبك الى السائقين...");
+        dialog.show();
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.sendOrder(map, drivers_ids);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful())
+                {
+                    if (response.body().getSuccess()==1)
+                    {
+                        dialog.dismiss();
+                        Toast.makeText(HomeActivity.this, "تم إرسال طلبك بنجاح", Toast.LENGTH_LONG).show();
+                        costContainer.setVisibility(View.GONE);
+                        mMap.clear();
+                        AddMarker(mylatLng,"");
+                        search_view.setText("");
+
+                    }else
+                        {
+                            Toast.makeText(HomeActivity.this, "عفوا لم يتم إرسال طلبك من فضلك أعد المحاولة لاحقا", Toast.LENGTH_SHORT).show();
+                        }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                Toast.makeText(HomeActivity.this,getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+                Log.e("Error",t.getMessage());
+            }
+        });
+
+    }
+
     private void CreateProgDialog(String msg)
     {
         ProgressBar bar = new ProgressBar(this);
