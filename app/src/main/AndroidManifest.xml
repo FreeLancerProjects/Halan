@@ -63,13 +63,13 @@
             android:name=".Activities.DriverOrdersActivity"
             android:label="@string/my_order"
             android:theme="@style/AppTheme" />
-        <activity android:name=".Activities.DriverOrderDetailsActivity">
-
-        </activity>
-        <activity android:name=".Activities.MyOrdersActivity" android:theme="@style/AppTheme" android:label="@string/my_order">
-
-        </activity>
-
+        <activity android:name=".Activities.DriverOrderDetailsActivity" />
+        <activity
+            android:name=".Activities.MyOrdersActivity"
+            android:label="@string/my_order"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".Activities.ClientNotificationActivity" />
+        <activity android:name=".Activities.DriverNotificationActivity"></activity>
     </application>
 
 </manifest>

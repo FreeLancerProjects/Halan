@@ -619,6 +619,18 @@ public class HomeActivity extends AppCompatActivity
                 Intent intent2=new Intent(this,MyOrdersActivity.class);
                 startActivity(intent2);
                 break;
+            case R.id.notification:
+                if (userModel.getUser_type().equals(Tags.Client))
+                {
+                    Intent intent = new Intent(HomeActivity.this,ClientNotificationActivity.class);
+                    startActivity(intent);
+                }else if (userModel.getUser_type().equals(Tags.Driver))
+                {
+                    Intent intent = new Intent(HomeActivity.this,DriverNotificationActivity.class);
+                    startActivity(intent);
+
+                }
+                break;
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
