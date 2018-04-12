@@ -110,6 +110,11 @@ public interface Services {
 
     @GET("Api/ViewDriverOrders/2/{user_id}")
     Call<List<MyOrderModel>> getCanceledOrders (@Path("user_id")String user_id);
+
+
+    @GET("Api/ReceivedRequests/{user_id}")
+    Call<List<MyOrderModel>> getNotification (@Path("user_id")String user_id);
+
     @GET("Api/ShowDrivers")
     Call<List<AvailableDriversModel>> ShowAvailable_Drivers();
 

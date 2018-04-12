@@ -620,16 +620,19 @@ public class HomeActivity extends AppCompatActivity
                 startActivity(intent2);
                 break;
             case R.id.notification:
-                if (userModel.getUser_type().equals(Tags.Client))
-                {
+//                if (userModel.getUser_type().equals(Tags.Client))
+//                {
                     Intent intent = new Intent(HomeActivity.this,ClientNotificationActivity.class);
-                    startActivity(intent);
-                }else if (userModel.getUser_type().equals(Tags.Driver))
-                {
-                    Intent intent = new Intent(HomeActivity.this,DriverNotificationActivity.class);
-                    startActivity(intent);
+                   // Toast.makeText(this, "عميل", Toast.LENGTH_SHORT).show();
 
-                }
+                    startActivity(intent);
+//                }else if (userModel.getUser_type().equals(Tags.Driver))
+//                {
+//                    Intent intent = new Intent(HomeActivity.this,DriverNotificationActivity.class);
+//                    Toast.makeText(this, "سائق", Toast.LENGTH_SHORT).show();
+//                    startActivity(intent);
+//
+//                }
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
