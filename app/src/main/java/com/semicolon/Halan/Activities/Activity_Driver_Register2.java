@@ -1,7 +1,9 @@
 package com.semicolon.Halan.Activities;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -55,6 +57,7 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
     private Preferences preferences;
     private Button register;
     private ImageView back;
+    private AlertDialog alertDialog;
     private final int IMG_REQ1 = 100;
     private final int IMG_REQ2 = 200;
     private final int IMG_REQ3 = 300;
@@ -78,10 +81,12 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
         preferences = new Preferences(getApplicationContext());
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         initView();
+        CreateAlertDialog();
         getDataFromIntent();
         CheckPermission();
         users=Users.getInstance();
         users.getUserData(this);
+
 
     }
 
@@ -229,6 +234,7 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
 
         }else {
             CreateProgressDialog();
+            dialog.show();
             enCode1(bitmap1);
             enCode2(bitmap2);
             enCode3(bitmap3);
@@ -245,13 +251,13 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
 
                 if (response.isSuccessful()){
 
-                    UserModel userModel=response.body();
                     if (response.body().getSuccess()==1){
+                        UserModel userModel=response.body();
                         Log.e("mmmm",userModel.getUser_id()+city+identety+car_model+car_color+enCodedImage1+enCodedImage2+enCodedImage3);
-                        preferences.CreatePref(userModel);
+                        preferences.UpdatePref(userModel);
                         users.setUserData(userModel);
                         dialog.dismiss();
-                        finish();
+                        alertDialog.show();
 
                     }else {
 
@@ -269,8 +275,9 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
 
             @Override
             public void onFailure(Call<UserModel> call, Throwable t) {
-                Toast.makeText(Activity_Driver_Register2.this, ""+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
+                Toast.makeText(Activity_Driver_Register2.this, ""+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+                Log.e("error",t.getMessage());
             }
         });
 
@@ -285,6 +292,19 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
         dialog.setIndeterminateDrawable(drawable);
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(false);
+    }
+    private void CreateAlertDialog()
+    {
+        alertDialog = new AlertDialog.Builder(this)
+                .setMessage("تم إرسال طلبك بنجاح بإنتظار الموافقة علي طلبك")
+                .setPositiveButton("تم", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                        alertDialog.dismiss();
+                    }
+                })
+                .create();
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)

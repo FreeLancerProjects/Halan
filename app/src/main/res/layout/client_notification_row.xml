@@ -25,11 +25,11 @@
                 android:id="@+id/not_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="13/04/2018"
                 android:layout_gravity="left|center_vertical"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:layout_marginTop="5dp"
+                android:textSize="12sp"
                 />
             <TextView
                 android:layout_width="match_parent"
@@ -63,7 +63,6 @@
                         android:id="@+id/driver_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="عماد مجدي محمد"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="@color/gray2"
@@ -79,7 +78,6 @@
                             android:id="@+id/rate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="4.7"
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             />
@@ -108,6 +106,7 @@
                 android:layout_marginTop="10dp"
                 >
                 <Button
+                    android:id="@+id/refuse"
                     android:layout_width="120dp"
                     android:layout_height="30dp"
                     android:text="@string/refuse"
@@ -115,10 +114,12 @@
                     android:drawableLeft="@drawable/close_icon"
                     android:background="@drawable/gray_btn_bg"
                     android:layout_gravity="center_vertical"
+                    android:textSize="13sp"
 
                     />
 
                 <Button
+                    android:id="@+id/accept"
                     android:layout_width="120dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="5dp"
@@ -127,6 +128,7 @@
                     android:text="@string/accept"
                     android:textColor="@color/white"
                     android:layout_gravity="center_vertical"
+                    android:textSize="13sp"
                     />
             </LinearLayout>
         </LinearLayout>
@@ -168,11 +170,11 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="13/04/2018"
                     android:layout_gravity="left|center_vertical"
                     android:textColor="@color/black"
                     android:textStyle="bold"   android:layout_marginTop="5dp"
                     android:gravity="left|center_vertical"
+                    android:textSize="12sp"
 
                     />
             </LinearLayout>
@@ -195,7 +197,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/gray2"
-                    android:text="50 ريال"
                     android:textSize="15sp"
                     android:layout_marginRight="15dp"
                     />

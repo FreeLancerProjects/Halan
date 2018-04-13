@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -14,8 +15,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.semicolon.Halan.Activities.ClientNotificationActivity;
 import com.semicolon.Halan.Models.ClientNotificationModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Tags;
@@ -34,10 +35,12 @@ public class ClientNotificationAdapter extends RecyclerView.Adapter<ClientNotifi
 
     private Context context;
     private List<ClientNotificationModel> clientNotificationModelList;
-    Target target;
+    private Target target;
+    private ClientNotificationActivity activity;
 
     public ClientNotificationAdapter(Context context, List<ClientNotificationModel> clientNotificationModelList) {
         this.context = context;
+        activity = (ClientNotificationActivity) context;
         this.clientNotificationModelList = clientNotificationModelList;
     }
 
@@ -76,7 +79,17 @@ public class ClientNotificationAdapter extends RecyclerView.Adapter<ClientNotifi
             ratingBar = itemView.findViewById(R.id.rateBar);
             accept = itemView.findViewById(R.id.accept);
             refuse = itemView.findViewById(R.id.refuse);
-            ratingBar.getProgressDrawable().setColorFilter(ContextCompat.getColor(context,R.color.rate), PorterDuff.Mode.SRC_IN);
+            //ratingBar.getProgressDrawable().setColorFilter(ContextCompat.getColor(context,R.color.rate), PorterDuff.Mode.SRC_IN);
+            try {
+                LayerDrawable drawable = (LayerDrawable) ratingBar.getProgressDrawable();
+                drawable.getDrawable(0).setColorFilter(ContextCompat.getColor(context,R.color.gray3), PorterDuff.Mode.SRC_ATOP);
+
+                drawable.getDrawable(1).setColorFilter(ContextCompat.getColor(context,R.color.rate), PorterDuff.Mode.SRC_ATOP);
+                drawable.getDrawable(2).setColorFilter(ContextCompat.getColor(context,R.color.rate), PorterDuff.Mode.SRC_ATOP);
+
+            }catch (NullPointerException e){}
+
+
             ratingBar.setEnabled(false);
             accept.setOnClickListener(this);
             refuse.setOnClickListener(this);
@@ -120,12 +133,12 @@ public class ClientNotificationAdapter extends RecyclerView.Adapter<ClientNotifi
             switch (id)
             {
                 case R.id.accept:
-                    Toast.makeText(context, "accept", Toast.LENGTH_SHORT).show();
+                    activity.setPos(getAdapterPosition(),Tags.accept);
 
                     break;
 
                 case R.id.refuse:
-                    Toast.makeText(context, "refuse", Toast.LENGTH_SHORT).show();
+                    activity.setPos(getAdapterPosition(),Tags.refuse);
                     break;
             }
 

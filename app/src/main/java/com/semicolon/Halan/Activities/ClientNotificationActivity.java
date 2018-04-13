@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.semicolon.Halan.Adapters.ClientNotificationAdapter;
 import com.semicolon.Halan.Models.ClientNotificationModel;
+import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
@@ -25,7 +26,9 @@ import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -128,6 +131,94 @@ public class ClientNotificationActivity extends AppCompatActivity implements Use
     @Override
     public void UserDataSuccess(UserModel userModel) {
         this.userModel = userModel;
+    }
+
+    public void setPos(int pos,String action_type)
+    {
+        ClientNotificationModel model = clientNotificationModelList.get(pos);
+
+        if (action_type.equals(Tags.accept))
+        {
+            SendAccept(model);
+
+        }else if (action_type.equals(Tags.refuse))
+        {
+            SendRefuse(model);
+        }
+    }
+
+
+
+    private void SendAccept(ClientNotificationModel model) {
+
+        Map<String,String> map = new HashMap<>();
+        map.put("action","1");
+        map.put("message_id",model.getMessage_id());
+        map.put("order_id_fk",model.getOrder_id_fk());
+        map.put("driver_id_fk",model.getDriver_id_fk());
+        map.put("user_id",userModel.getUser_id());
+
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.sendClientRequest_Accept(map);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful())
+                {
+                    if (response.body().getSuccess()==1)
+                    {
+                        Toast.makeText(ClientNotificationActivity.this, "تم إرسال ردك الي السائق", Toast.LENGTH_LONG).show();
+                    }else
+                        {
+                            Toast.makeText(ClientNotificationActivity.this, "لم تم إرسال ردك الي السائق حاول مره أخرى لاحقا", Toast.LENGTH_LONG).show();
+
+                        }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                Log.e("Error",t.getMessage());
+                Toast.makeText(ClientNotificationActivity.this, getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void SendRefuse(ClientNotificationModel model) {
+
+        Map<String,String> map = new HashMap<>();
+        map.put("action","2");
+        map.put("message_id",model.getMessage_id());
+        map.put("order_id_fk",model.getOrder_id_fk());
+        map.put("driver_id_fk",model.getDriver_id_fk());
+        map.put("user_id",userModel.getUser_id());
+
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.sendClientRequest_Accept(map);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful())
+                {
+                    if (response.body().getSuccess()==1)
+                    {
+                        Toast.makeText(ClientNotificationActivity.this, "تم إرسال ردك الي السائق", Toast.LENGTH_LONG).show();
+                    }else
+                    {
+                        Toast.makeText(ClientNotificationActivity.this, "لم تم إرسال ردك الي السائق حاول مره أخرى لاحقا", Toast.LENGTH_LONG).show();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                Log.e("Error",t.getMessage());
+                Toast.makeText(ClientNotificationActivity.this, getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

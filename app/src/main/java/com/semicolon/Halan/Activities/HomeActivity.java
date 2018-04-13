@@ -167,14 +167,19 @@ public class HomeActivity extends AppCompatActivity
     protected void onStart()
     {
         super.onStart();
-        users.getUserData(this);
-
         if (userModel.getUser_type().equals(Tags.Driver))
         {
             Intent intent = new Intent(this,DriverOrdersActivity.class);
             startActivity(intent);
             finish();
-        }
+        }else
+            {
+                users = Users.getInstance();
+                users.getUserData(this);
+            }
+
+
+
 
     }
     @Override

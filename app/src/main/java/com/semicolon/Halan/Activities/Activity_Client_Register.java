@@ -266,7 +266,7 @@ public class Activity_Client_Register extends AppCompatActivity {
                 {
                     dialog.dismiss();
 
-                    Toast.makeText(Activity_Client_Register.this,getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Activity_Client_Register.this,getString(R.string.something_haywire)+0, Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -277,7 +277,7 @@ public class Activity_Client_Register extends AppCompatActivity {
                 dialog.dismiss();
 
                 Toast.makeText(Activity_Client_Register.this, "" +getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
-                Log.d("onFailure", t.toString());
+                Log.e("onFailure", t.getMessage());
             }
         });
     }

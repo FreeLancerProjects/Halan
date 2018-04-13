@@ -122,10 +122,19 @@ public interface Services {
     @FormUrlEncoded
     @POST("Api/DestanceCost")
     Call<TotalCostModel> getCostByDistance(@Field("my_distance") String distance);
+
     @FormUrlEncoded
     @POST("Api/AddMyOrder")
     Call<ResponseModel> sendOrder(@FieldMap Map<String,String> map,@Field("driver_id[] array") List<String> driver_ids);
 
     @GET("Api/ShowMyRequests/{id}")
     Call<List<ClientNotificationModel>> getclientNotification(@Path("id") String user_id);
+
+    @FormUrlEncoded
+    @POST("Api/ClientAction")
+    Call<ResponseModel> sendClientRequest_Accept(@FieldMap Map<String,String> map);
+
+    @FormUrlEncoded
+    @POST("Api/ClientAction")
+    Call<ResponseModel> sendClientRequest_Refuse(@FieldMap Map<String,String> map);
 }

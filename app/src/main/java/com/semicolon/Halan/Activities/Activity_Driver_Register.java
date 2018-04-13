@@ -94,6 +94,7 @@ public class Activity_Driver_Register extends AppCompatActivity implements View.
             intent.putExtra("vihile_number",vihile_number);
             intent.putExtra("car_color",car_color);
             startActivity(intent);
+            finish();
 
         }
     }

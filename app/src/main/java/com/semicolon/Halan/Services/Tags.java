@@ -12,5 +12,7 @@ public class Tags {
     public static final String Client="2";
     public static final String login="login";
     public static final String logout="logout";
+    public static final String accept="accept";
+    public static final String refuse="refuse";
 
 }
