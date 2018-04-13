@@ -1,13 +1,16 @@
 package com.semicolon.Halan.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.semicolon.Halan.Activities.DriverOrderDetailsActivity;
 import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.R;
 
@@ -76,7 +79,17 @@ public class DriverNotficationAdapter extends RecyclerView.Adapter<DriverNotfica
             int position = (int) view.getTag();
 
             mmodel = mylist.get(position);
-
+            Intent intent=new Intent(context, DriverOrderDetailsActivity.class);
+            intent.putExtra("client_location",mmodel.getClient_location());
+            intent.putExtra("market_location",mmodel.getMarket_location());
+            intent.putExtra("market_lat",mmodel.getMarket_google_lat());
+            intent.putExtra("client_lat",mmodel.getClient_google_lat());
+            intent.putExtra("market_long",mmodel.getMarket_google_lang());
+            intent.putExtra("client_long",mmodel.getClient_google_lang());
+            intent.putExtra("order_detail",mmodel.getOrder_details());
+            intent.putExtra("cost",mmodel.getOrder_driver_cost());
+            intent.putExtra("phone",mmodel.getClient_phone());
+            context.startActivity(intent);
 
         }
 
