@@ -2,6 +2,7 @@ package com.semicolon.Halan.Activities;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -31,16 +32,37 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
     private final int per_req=1550;
     private final int error_dialog=9001;
     private GoogleMap mMap;
+    private String client_location,market_location,order_detail,cost,phone;
+    private Double market_lat,market_long,client_lat,client_long;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_order_details);
+        getDataFromIntent();
         initView();
         if (isServiceOk())
         {
             CheckPermission();
         }
 
+    }
+
+    private void getDataFromIntent() {
+        Intent intent=getIntent();
+
+        if (intent!=null)
+        {
+            client_location=intent.getStringExtra("client_location");
+            market_location=intent.getStringExtra("market_location");
+            order_detail=intent.getStringExtra("order_detail");
+            cost=intent.getStringExtra("cost");
+            phone=intent.getStringExtra("phone");
+            market_lat=intent.getDoubleExtra("market_lat",1.1);
+            market_long=intent.getDoubleExtra("market_long",1.1);
+            client_lat=intent.getDoubleExtra("client_lat",1.1);
+            client_long=intent.getDoubleExtra("client_long",1.1);
+
+        }
     }
 
     private void initView() {
@@ -52,6 +74,12 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
         driver_cost           = findViewById(R.id.driver_cost);
         accept                = findViewById(R.id.accept);
         refuse                = findViewById(R.id.refuse);
+
+        driver_txt_order_from.setText(market_location);
+        driver_txt_order_to.setText(client_location);
+        driver_order_details.setText(order_detail);
+        driver_client_phone.setText(phone);
+        driver_cost.setText(cost);
 
     }
     private void initMap()
