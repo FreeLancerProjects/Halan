@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -14,7 +15,9 @@ import android.widget.Toast;
 
 import com.semicolon.Halan.Adapters.DriverNotficationAdapter;
 import com.semicolon.Halan.Adapters.MyOrdersAdapter;
+import com.semicolon.Halan.Models.ClientNotificationModel;
 import com.semicolon.Halan.Models.MyOrderModel;
+import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
@@ -24,11 +27,14 @@ import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class DriverNotificationActivity extends AppCompatActivity implements Users.UserData{
     ArrayList<MyOrderModel> model;
@@ -42,6 +48,7 @@ public class DriverNotificationActivity extends AppCompatActivity implements Use
     private UserModel userModel;
     Users users;
     private String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,4 +129,6 @@ public class DriverNotificationActivity extends AppCompatActivity implements Use
         userId=userModel.getUser_id();
 
     }
+
+
 }

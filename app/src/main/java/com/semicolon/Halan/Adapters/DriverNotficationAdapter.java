@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.semicolon.Halan.Activities.DriverOrderDetailsActivity;
 import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.R;
+import com.semicolon.Halan.Services.Tags;
 
 import java.util.List;
 
@@ -89,7 +90,13 @@ public class DriverNotficationAdapter extends RecyclerView.Adapter<DriverNotfica
             intent.putExtra("order_detail",mmodel.getOrder_details());
             intent.putExtra("cost",mmodel.getOrder_driver_cost());
             intent.putExtra("phone",mmodel.getClient_phone());
+
+            intent.putExtra("client_id",mmodel.getClient_id_fk());
+            intent.putExtra("order_id",mmodel.getOrder_id_fk());
+            intent.putExtra("messege_id",mmodel.getMessage_id());
+
             context.startActivity(intent);
+
 
         }
 

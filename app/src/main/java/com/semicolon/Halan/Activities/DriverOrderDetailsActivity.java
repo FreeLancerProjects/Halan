@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -28,21 +29,28 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
+import com.semicolon.Halan.Models.ClientNotificationModel;
 import com.semicolon.Halan.Models.PlaceModel;
+import com.semicolon.Halan.Models.ResponseModel;
+import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
+import com.semicolon.Halan.Services.Preferences;
 import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
+import com.semicolon.Halan.SingleTone.Users;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class DriverOrderDetailsActivity extends AppCompatActivity implements OnMapReadyCallback{
+public class DriverOrderDetailsActivity extends AppCompatActivity implements OnMapReadyCallback, Users.UserData,View.OnClickListener{
 
     private FrameLayout driver_orderContainer;
     private TextView driver_txt_order_from,driver_txt_order_to,driver_order_details,driver_client_phone,driver_cost;
@@ -53,14 +61,22 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
     private final int per_req=1550;
     private final int error_dialog=9001;
     private GoogleMap mMap;
-    private String client_location,market_location,order_detail,cost,phone;
+    private String client_location,market_location,order_detail,cost,phone,client_id,order_id,messege_id;
     private Double market_lat,market_long,client_lat,client_long;
     private double dist;
     private LatLng fromLatLng,toLatLng;
+    private Preferences preferences;
+    private UserModel userModel;
+    Users users;
+    private String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_order_details);
+        users = Users.getInstance();
+        preferences=new Preferences(this);
+        users.getUserData(this);
         getDataFromIntent();
         initView();
         if (isServiceOk())
@@ -85,6 +101,10 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
             client_lat=intent.getDoubleExtra("client_lat",1.1);
             client_long=intent.getDoubleExtra("client_long",1.1);
 
+            client_id=intent.getStringExtra("client_id");
+            order_id=intent.getStringExtra("order_id");
+            messege_id=intent.getStringExtra("messege_id");
+
             fromLatLng = new LatLng(market_lat,market_long);
             toLatLng = new LatLng(client_lat,client_long);
 
@@ -106,6 +126,8 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
         driver_order_details.setText(order_detail);
         driver_client_phone.setText(phone);
         driver_cost.setText(cost);
+        accept.setOnClickListener(this);
+        refuse.setOnClickListener(this);
 
     }
     private void initMap()
@@ -285,5 +307,100 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,11f));
         }
 
+    }
+
+
+    private void SendAccept() {
+
+        Map<String,String> map = new HashMap<>();
+        map.put("action","1");
+        map.put("message_id",messege_id);
+        map.put("order_id_fk",order_id);
+        map.put("client_id_fk",client_id);
+//        map.put("user_id",userId);
+
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.sendDriverRequest_Accept(map);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful())
+                {
+                    if (response.body().getSuccess()==1)
+                    {
+                        Toast.makeText(DriverOrderDetailsActivity.this, "تم إرسال ردك الي العميل", Toast.LENGTH_LONG).show();
+                    }else
+                    {
+                        Toast.makeText(DriverOrderDetailsActivity.this, "لم تم إرسال ردك الي العميل حاول مره أخرى لاحقا", Toast.LENGTH_LONG).show();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                Log.e("Error",t.getMessage());
+                Toast.makeText(DriverOrderDetailsActivity.this, getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void SendRefuse() {
+
+        Map<String,String> map = new HashMap<>();
+        map.put("action","2");
+        map.put("message_id",messege_id);
+        map.put("order_id_fk",order_id);
+        map.put("client_id_fk",client_id);
+      //  map.put("user_id",userId);
+
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.sendDriverRequest_Refuse(map);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful())
+                {
+                    if (response.body().getSuccess()==1)
+                    {
+                        Toast.makeText(DriverOrderDetailsActivity.this, "تم إرسال ردك الي العميل", Toast.LENGTH_LONG).show();
+                    }else
+                    {
+                        Toast.makeText(DriverOrderDetailsActivity.this, "لم تم إرسال ردك الي العميل حاول مره أخرى لاحقا", Toast.LENGTH_LONG).show();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                Log.e("Error",t.getMessage());
+                Toast.makeText(DriverOrderDetailsActivity.this, getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void UserDataSuccess(UserModel userModel) {
+        this.userModel = userModel;
+        userId=userModel.getUser_id();
+
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId())
+        {
+            case R.id.accept:
+                SendAccept();
+                break;
+            case R.id.refuse:
+                SendRefuse();
+
+                break;
+        }
     }
 }

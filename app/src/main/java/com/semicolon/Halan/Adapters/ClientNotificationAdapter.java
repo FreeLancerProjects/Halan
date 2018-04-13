@@ -134,7 +134,6 @@ public class ClientNotificationAdapter extends RecyclerView.Adapter<ClientNotifi
             {
                 case R.id.accept:
                     activity.setPos(getAdapterPosition(),Tags.accept);
-
                     break;
 
                 case R.id.refuse:
