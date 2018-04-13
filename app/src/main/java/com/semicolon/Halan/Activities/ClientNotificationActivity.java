@@ -69,6 +69,7 @@ public class ClientNotificationActivity extends AppCompatActivity implements Use
             public void onRefresh() {
                 DisplayNotification();
             }
+
         });
         recView = findViewById(R.id.recView);
         manager = new LinearLayoutManager(this);
