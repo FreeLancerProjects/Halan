@@ -1,6 +1,7 @@
 package com.semicolon.Halan.Services;
 
 import com.semicolon.Halan.Models.AvailableDriversModel;
+import com.semicolon.Halan.Models.ClientNotificationModel;
 import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.Models.PlaceModel;
 import com.semicolon.Halan.Models.ResponseModel;
@@ -124,4 +125,7 @@ public interface Services {
     @FormUrlEncoded
     @POST("Api/AddMyOrder")
     Call<ResponseModel> sendOrder(@FieldMap Map<String,String> map,@Field("driver_id[] array") List<String> driver_ids);
+
+    @GET("Api/ShowMyRequests/{id}")
+    Call<List<ClientNotificationModel>> getclientNotification(@Path("id") String user_id);
 }

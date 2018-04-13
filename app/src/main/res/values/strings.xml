@@ -100,5 +100,12 @@
     <string name="CancelledOrders">Canceled</string>
     <string name="empty_list"> There are no orders to display</string>
     <string name="Cost_the_way">Cost the way </string>
+    <string name="notf_txt">Notification</string>
+    <string name="no_not">There are no notification to display</string>
+    <string name="driver_accept">Your request has been accepted</string>
+    <string name="accept">accept</string>
+    <string name="refuse">refuse</string>
+    <string name="delv_bill">Delivery bill</string>
+    <string name="delev_cost">Delivery cost</string>
 
 </resources>

@@ -96,4 +96,11 @@
     <string name="CancelledOrders">الملغية</string>
     <string name="empty_list">لا توجد طلبات لعرضها</string>
     <string name="Cost_the_way">تكلفة الطريق</string>
+    <string name="notf_txt">الإشعارات</string>
+    <string name="no_not">لاتوجد إشعارات لعرضها</string>
+    <string name="driver_accept">تم قبول طلبك من السائق</string>
+    <string name="accept">قبول</string>
+    <string name="refuse">رفض</string>
+    <string name="delv_bill">فاتورة التوصيل</string>
+    <string name="delev_cost">تكلفة التوصيل</string>
 </resources>
