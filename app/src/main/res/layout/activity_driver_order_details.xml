@@ -43,7 +43,7 @@
             <TextView
                 android:id="@+id/driver_txt_order_from"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="55dp"
                 android:textStyle="bold"
                 android:textColor="@color/white"
                 android:background="@color/gray2"
@@ -57,7 +57,7 @@
             <TextView
                 android:id="@+id/driver_txt_order_to"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="55dp"
                 android:background="@color/gray3"
                 android:textColor="@color/white"
                 android:gravity="center_vertical"
@@ -93,7 +93,6 @@
                     android:textColor="@color/gray2"
                     android:paddingRight="20dp"
                     android:paddingLeft="20dp"
-                    android:text="من مطعم ماكدونالدز \n 2ساندوتش فراخ زنجر \2 كولا"
                     android:layout_marginBottom="5dp"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -138,7 +137,6 @@
                         android:paddingLeft="20dp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:text="+201017357658"
                         android:gravity="right"
                         android:textStyle="bold"
                         android:textSize="12sp"
@@ -181,7 +179,6 @@
                         android:paddingLeft="20dp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:text="50 ريال"
                         android:textStyle="bold"
                         android:gravity="right"
                         android:textSize="12sp"
@@ -239,10 +236,11 @@
                     android:layout_height="20dp"
                     android:src="@drawable/point"
                     android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
                     />
                 <View
                     android:layout_width="2dp"
-                    android:layout_height="20dp"
+                    android:layout_height="25dp"
                     android:background="@color/white"
                     android:layout_gravity="center"
                     />
