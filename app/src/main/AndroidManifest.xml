@@ -35,8 +35,9 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
+/////////////////////////////////////////////////
         <activity android:name=".Activities.Activity_Client_Login">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -69,7 +70,10 @@
             android:label="@string/my_order"
             android:theme="@style/AppTheme" />
         <activity android:name=".Activities.ClientNotificationActivity" />
-        <activity android:name=".Activities.DriverNotificationActivity"></activity>
+        <activity android:name=".Activities.DriverNotificationActivity" />
+        <activity android:name=".Activities.ChatActivity">
+
+        </activity>
     </application>
 
 </manifest>

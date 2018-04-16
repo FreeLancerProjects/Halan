@@ -4,20 +4,146 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
+    android:layoutDirection="ltr"
     xmlns:android="http://schemas.android.com/apk/res/android" >
-<LinearLayout
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:id="@+id/txt_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray3"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                />
+            <TextView
+                android:id="@+id/txt_market_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minLines="2"
+                android:maxLines="2"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:gravity="center_vertical|right"
+                android:layout_marginRight="30dp"
+                android:textSize="14sp"
+                android:layout_marginTop="3dp"
+                android:paddingLeft="5dp"
+                />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray1"
+                android:layout_marginTop=".5px"
+                android:layout_marginBottom="2dp"
+                android:layout_marginRight="30dp"
+
+                />
+            <TextView
+                android:id="@+id/txt_client_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:textColor="@color/black"
+                android:gravity="center_vertical|right"
+                android:paddingLeft="5dp"
+                android:drawablePadding="10dp"
+                android:textStyle="bold"
+                android:layout_marginRight="30dp"
+                android:maxLines="2"
+                android:minLines="2"
+
+                android:textSize="14sp"
+
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:weightSum="1"
+                android:background="@color/gray2"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                >
+                <TextView
+                    android:id="@+id/txt_cost"
+                    android:layout_width="0dp"
+                    android:layout_weight=".6"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center"
+                    android:gravity="left|center_vertical"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight=".4"
+                    android:textSize="15sp"
+                    android:text="@string/Cost_the_way"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
+                    android:gravity="right|center_vertical"
+                    android:paddingRight="10dp"
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="10dp"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:padding="4dp"
+                    android:src="@drawable/green_btn_bg"
+                    android:layout_gravity="center"
+                    />
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="15dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_gravity="center"
+                    />
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/g_map"
+                    android:layout_gravity="center"
+                    />
+            </LinearLayout>
+        </FrameLayout>
+    </FrameLayout>
+<!--<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="wrap_content">
-    <TextView
+    &lt;!&ndash;<TextView
         android:id="@+id/txt_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:textColor="@color/gray3"
-       />
+       />&ndash;&gt;
     <FrameLayout
         android:layout_marginTop="-30dp"
         android:id="@+id/costContainer"
@@ -117,4 +243,5 @@
             android:layout_gravity="center"
             android:layout_height="wrap_content" />
     </RelativeLayout>
-</LinearLayout></android.support.v7.widget.CardView>
+</LinearLayout>-->
+</android.support.v7.widget.CardView>

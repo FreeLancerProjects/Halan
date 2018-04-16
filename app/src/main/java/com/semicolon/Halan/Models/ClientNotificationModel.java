@@ -18,10 +18,28 @@ public class ClientNotificationModel {
     private String driver_image;
     private String order_details;
     private String order_date;
-    private int rate_evaluation;
-    private int stars_evaluation;
+    private double rate_evaluation;
+    private double stars_evaluation;
 
     public ClientNotificationModel() {
+    }
+
+    public ClientNotificationModel(String message_id, String order_id_fk, String driver_id_fk, String client_id_fk, String messages_status, String driver_name, String driver_phone, String driver_evaluation_count, String driver_client_count, String order_cost, String driver_image, String order_details, String order_date, double rate_evaluation, double stars_evaluation) {
+        this.message_id = message_id;
+        this.order_id_fk = order_id_fk;
+        this.driver_id_fk = driver_id_fk;
+        this.client_id_fk = client_id_fk;
+        this.messages_status = messages_status;
+        this.driver_name = driver_name;
+        this.driver_phone = driver_phone;
+        this.driver_evaluation_count = driver_evaluation_count;
+        this.driver_client_count = driver_client_count;
+        this.order_cost = order_cost;
+        this.driver_image = driver_image;
+        this.order_details = order_details;
+        this.order_date = order_date;
+        this.rate_evaluation = rate_evaluation;
+        this.stars_evaluation = stars_evaluation;
     }
 
     public String getMessage_id() {
@@ -128,19 +146,19 @@ public class ClientNotificationModel {
         this.order_date = order_date;
     }
 
-    public int getRate_evaluation() {
+    public double getRate_evaluation() {
         return rate_evaluation;
     }
 
-    public void setRate_evaluation(int rate_evaluation) {
+    public void setRate_evaluation(double rate_evaluation) {
         this.rate_evaluation = rate_evaluation;
     }
 
-    public int getStars_evaluation() {
+    public double getStars_evaluation() {
         return stars_evaluation;
     }
 
-    public void setStars_evaluation(int stars_evaluation) {
+    public void setStars_evaluation(double stars_evaluation) {
         this.stars_evaluation = stars_evaluation;
     }
 }

@@ -144,4 +144,13 @@ public class Preferences {
 
        return userModel;
     }
+
+    public void Update_UserState(String state)
+    {
+        SharedPreferences pref = context.getSharedPreferences("user",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("state",state);
+        editor.apply();
+    }
+
 }

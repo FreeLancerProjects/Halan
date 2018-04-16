@@ -1,5 +1,7 @@
 package com.semicolon.Halan.Activities;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -10,10 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.semicolon.Halan.Adapters.DriverNotficationAdapter;
-import com.semicolon.Halan.Adapters.MyOrdersAdapter;
 import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
@@ -73,7 +73,7 @@ public class DriverNotificationActivity extends AppCompatActivity implements Use
         progBar = findViewById(R.id.progBar);
         progBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this,R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
         nodata_container =findViewById(R.id.nodata_container);
-        sr.setColorSchemeResources(R.color.colorPrimary);
+        sr.setColorSchemeColors(ContextCompat.getColor(this,R.color.colorPrimary),ContextCompat.getColor(this,R.color.rate), Color.RED,Color.BLUE);
         sr.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -82,8 +82,6 @@ public class DriverNotificationActivity extends AppCompatActivity implements Use
         });
     }
     private void getDataFromServer() {
-        Toast.makeText(this, ""+userId, Toast.LENGTH_SHORT).show();
-        progBar.setVisibility(View.VISIBLE);
         Services services= Api.getClient(Tags.BASE_URL).create(Services.class);
         Call<List<MyOrderModel>> call=services.getNotification(userId);
         call.enqueue(new Callback<List<MyOrderModel>>() {
@@ -121,5 +119,13 @@ public class DriverNotificationActivity extends AppCompatActivity implements Use
         this.userModel = userModel;
         userId=userModel.getUser_id();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this,DriverOrdersActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

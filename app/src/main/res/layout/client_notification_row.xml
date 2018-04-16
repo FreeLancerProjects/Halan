@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layoutDirection="rtl"
     >
 
@@ -86,7 +86,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:numStars="5"
-                            android:rating="2"
                             android:stepSize="1.0"
                             style="@style/Base.Widget.AppCompat.RatingBar.Small"
                             android:layout_gravity="center_vertical"

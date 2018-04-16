@@ -17,6 +17,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -142,6 +143,7 @@ public class HomeActivity extends AppCompatActivity
     private List<String> drivers_ids;
     private String from,to;
     private String distn,order_details;
+    private AlertDialog notalertDialog;
 
 
 
@@ -163,25 +165,60 @@ public class HomeActivity extends AppCompatActivity
             checkPermission();
         }
     }
+    private void CreateNotAlertDialog()
+    {
+        notalertDialog = new AlertDialog.Builder(this)
+                .setMessage("تم قبول طلبك بنجاح برجاء الخروج لتحديث البيانات")
+                .setPositiveButton("موافق", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        preferences.Update_UserState("");
+                        Logout();
+                        notalertDialog.dismiss();
+                    }
+                })
+                .setCancelable(false)
+                .create();
+
+    }
     @Override
     protected void onStart()
     {
         super.onStart();
-        if (userModel.getUser_type().equals(Tags.Driver))
-        {
-            Intent intent = new Intent(this,DriverOrdersActivity.class);
-            startActivity(intent);
-            finish();
-        }else
-            {
-                users = Users.getInstance();
-                users.getUserData(this);
-            }
+        users = Users.getInstance();
+        users.getUserData(this);
+
 
 
 
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String user_state = getSharedPreferences("user",MODE_PRIVATE).getString("state","");
+        if (user_state.equals(Tags.Driver))
+        {
+            try
+            {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        CreateNotAlertDialog();
+                        notalertDialog.show();
+
+                    }
+                },500);
+            }catch (NullPointerException e)
+            {
+
+            }
+
+        }
+
+    }
+
     @Override
     public void onBackPressed()
     {
@@ -452,9 +489,16 @@ public class HomeActivity extends AppCompatActivity
 
             }
         };
-        if (userModel.getUser_photo() != null || !userModel.getUser_photo().equals("0") || TextUtils.isEmpty(userModel.getUser_photo())) {
-            Picasso.with(this).load(Uri.parse(Tags.ImgPath + userModel.getUser_photo())).placeholder(R.drawable.user_profile).into(target);
+        try
+        {
+            if (userModel.getUser_photo() != null || !userModel.getUser_photo().equals("0") || TextUtils.isEmpty(userModel.getUser_photo())) {
+                Picasso.with(this).load(Uri.parse(Tags.ImgPath + userModel.getUser_photo())).placeholder(R.drawable.user_profile).into(target);
+            }
+        }catch (NullPointerException e)
+        {
+
         }
+
     }
     private boolean IsServicesOk()
     {

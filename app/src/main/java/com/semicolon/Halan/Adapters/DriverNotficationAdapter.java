@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.semicolon.Halan.Activities.DriverOrderDetailsActivity;
 import com.semicolon.Halan.Models.MyOrderModel;
@@ -39,7 +39,7 @@ public class DriverNotficationAdapter extends RecyclerView.Adapter<DriverNotfica
     public void onBindViewHolder(Holder holder, int position) {
         mmodel = mylist.get(position);
 
-        holder.container.setTag(position);
+        //holder.container.setTag(position);
 
         holder.client_location.setText(mmodel.getClient_location());
         holder.market_location.setText(mmodel.getMarket_location());
@@ -76,9 +76,14 @@ public class DriverNotficationAdapter extends RecyclerView.Adapter<DriverNotfica
         @Override
         public void onClick(View view) {
 
-            int position = (int) view.getTag();
+            int position = getAdapterPosition();
 
             mmodel = mylist.get(position);
+            Log.e("lllllllllllllllllat",""+mmodel.getClient_google_lat());
+            Log.e("lllllllllllllllllat",""+mmodel.getClient_google_lang());
+            Log.e("lllllllllllllllllat",""+mmodel.getMarket_google_lat());
+            Log.e("lllllllllllllllllat",""+mmodel.getMarket_google_lang());
+
             Intent intent=new Intent(context, DriverOrderDetailsActivity.class);
             intent.putExtra("client_location",mmodel.getClient_location());
             intent.putExtra("market_location",mmodel.getMarket_location());
@@ -89,6 +94,7 @@ public class DriverNotficationAdapter extends RecyclerView.Adapter<DriverNotfica
             intent.putExtra("order_detail",mmodel.getOrder_details());
             intent.putExtra("cost",mmodel.getOrder_driver_cost());
             intent.putExtra("phone",mmodel.getClient_phone());
+
             context.startActivity(intent);
 
         }

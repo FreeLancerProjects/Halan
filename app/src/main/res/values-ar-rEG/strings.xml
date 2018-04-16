@@ -103,4 +103,9 @@
     <string name="refuse">رفض</string>
     <string name="delv_bill">فاتورة التوصيل</string>
     <string name="delev_cost">تكلفة التوصيل</string>
+    <string name="type_msg">اكتب رسالة...</string>
+    <string name="send_msg">إرسال رسالة</string>
+    <string name="Issue_bill">إصدار فاتوره</string>
+    <string name="cancel_order">تراجع عن الطلب</string>
+    <string name="done">تم تنفيز الطلب</string>
 </resources>

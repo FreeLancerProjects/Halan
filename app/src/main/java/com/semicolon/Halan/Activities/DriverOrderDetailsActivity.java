@@ -88,6 +88,7 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
             fromLatLng = new LatLng(market_lat,market_long);
             toLatLng = new LatLng(client_lat,client_long);
 
+
         }
     }
 
@@ -156,6 +157,9 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
             {
                 if (isGranted)
                 {
+                    Log.e("latlng" +fromLatLng.longitude,"");
+                    Log.e("latlng" +toLatLng.latitude,"");
+
                     getDirection(fromLatLng,toLatLng);
                 }
             }catch (SecurityException e)
@@ -205,55 +209,70 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
                 if (response.isSuccessful())
                 {
                     PlaceModel placeModel = response.body();
-                    try {
-                        Log.e("pl",placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText());
-                        Log.e("p2",placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText());
-                        String d = placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText();
-                        String d2="";
-                        if (d.contains(","))
+                    if (placeModel.getRoutes().size()>0)
+                    {
+                        try {
+
+                            Log.e("pl",placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText());
+                            Log.e("p2",placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText());
+                            String d = placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText();
+                            String d2="";
+                            if (d.contains(","))
+                            {
+                                d2 = d.replaceAll(",","");
+                            }else
+                            {
+                                d2=d;
+                            }
+                            String spilit_dist [] =d2.split(" ");
+                            dist = Double.parseDouble(spilit_dist[0]);
+                        }catch (NullPointerException e)
                         {
-                            d2 = d.replaceAll(",","");
-                        }else
+
+                        }catch (IndexOutOfBoundsException e)
                         {
-                            d2=d;
+                            Toast.makeText(DriverOrderDetailsActivity.this, "empty data", Toast.LENGTH_SHORT).show();
                         }
-                        String spilit_dist [] =d2.split(" ");
-                        dist = Double.parseDouble(spilit_dist[0]);
-                    }catch (NullPointerException e)
-                    {
+                        String durat = placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText();
+                        List<String> polylines = new ArrayList<>();
+                        List<PlaceModel.Steps> stepsModelList =placeModel.getRoutes().get(0).getLegs().get(0).getSteps();
 
-                    }catch (IndexOutOfBoundsException e)
-                    {
-                        Toast.makeText(DriverOrderDetailsActivity.this, "empty data", Toast.LENGTH_SHORT).show();
-                    }
-                    String durat = placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText();
-                    List<String> polylines = new ArrayList<>();
-                    List<PlaceModel.Steps> stepsModelList =placeModel.getRoutes().get(0).getLegs().get(0).getSteps();
-
-                    AddMarker(fromlatLng,durat);
-                    AddMarker(tolatLng,durat);
+                        AddMarker(fromlatLng,durat);
+                        AddMarker(tolatLng,durat);
                     /*mMap.addMarker(
                             new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.g_map)).position(new LatLng(mylatLng.latitude,mylatLng.longitude)).title(durat)
 
                     );*/
 
-                    for (int i=0;i<stepsModelList.size();i++)
+                    if (stepsModelList.size()>0)
                     {
-                        polylines.add(stepsModelList.get(i).getPolyline().getPoints());
+                        for (int i=0;i<stepsModelList.size();i++)
+                        {
+                            polylines.add(stepsModelList.get(i).getPolyline().getPoints());
+                        }
+
+                        if (polylines.size()>0)
+                        {
+                            for (int i=0;i<polylines.size();i++)
+                            {
+                                PolylineOptions options = new PolylineOptions();
+                                options.width(5);
+                                options.color(Color.BLACK);
+                                options.addAll(PolyUtil.decode(polylines.get(i)));
+                                options.geodesic(true);
+                                mMap.addPolyline(options);
+                                Log.e("polyline",""+PolyUtil.decode(polylines.get(i)));
+
+                            }
+                        }
+
                     }
 
+                    }else
+                        {
+                            Toast.makeText(DriverOrderDetailsActivity.this, getString(R.string.cfl), Toast.LENGTH_LONG).show();
+                        }
 
-                    for (int i=0;i<polylines.size();i++)
-                    {
-                        PolylineOptions options = new PolylineOptions();
-                        options.width(5);
-                        options.color(Color.BLACK);
-                        options.addAll(PolyUtil.decode(polylines.get(i)));
-                        options.geodesic(true);
-                        mMap.addPolyline(options);
-                        Log.e("polyline",""+PolyUtil.decode(polylines.get(i)));
-
-                    }
 
 
                 }

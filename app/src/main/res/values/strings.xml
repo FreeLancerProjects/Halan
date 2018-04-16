@@ -99,7 +99,7 @@
     <string name="PreviousOrders">Previous</string>
     <string name="CancelledOrders">Canceled</string>
     <string name="empty_list"> There are no orders to display</string>
-    <string name="Cost_the_way">Cost the way </string>
+    <string name="Cost_the_way">Cost of way </string>
     <string name="notf_txt">Notification</string>
     <string name="no_not">There are no notification to display</string>
     <string name="driver_accept">Your request has been accepted</string>
@@ -107,5 +107,10 @@
     <string name="refuse">refuse</string>
     <string name="delv_bill">Delivery bill</string>
     <string name="delev_cost">Delivery cost</string>
+    <string name="type_msg">Type a message...</string>
+    <string name="send_msg">Send message</string>
+    <string name="Issue_bill">Issue a bill</string>
+    <string name="cancel_order">Cancelling order</string>
+    <string name="done">Done</string>
 
 </resources>

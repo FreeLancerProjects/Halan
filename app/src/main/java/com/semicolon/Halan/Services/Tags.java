@@ -14,5 +14,15 @@ public class Tags {
     public static final String logout="logout";
     public static final String accept="accept";
     public static final String refuse="refuse";
+    public static final String nottype_driverAccept="driver_accept";
+    public static final String notDriver="driver";
+    public static final String notclient="client";
+    public static final String notclient_send_request="client_send_request";
+    public static final String notdriver_accept_order="driver_accept_order";
+    public static final String notdriver_refuse_order="driver_refuse_order";
+    public static final String notclient_cancel_order="client_cancel_order";
+    public static final String notdriver_cancel_order="driver_cancel_order";
+
+
 
 }
