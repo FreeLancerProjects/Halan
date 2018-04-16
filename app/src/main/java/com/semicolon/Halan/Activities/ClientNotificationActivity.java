@@ -135,6 +135,7 @@ public class ClientNotificationActivity extends AppCompatActivity implements Use
 
     public void setPos(int pos,String action_type)
     {
+
         ClientNotificationModel model = clientNotificationModelList.get(pos);
 
         if (action_type.equals(Tags.accept))
@@ -196,7 +197,7 @@ public class ClientNotificationActivity extends AppCompatActivity implements Use
 
         Retrofit retrofit = Api.getClient(Tags.BASE_URL);
         Services services = retrofit.create(Services.class);
-        Call<ResponseModel> call = services.sendClientRequest_Accept(map);
+        Call<ResponseModel> call = services.sendClientRequest_Refuse(map);
         call.enqueue(new Callback<ResponseModel>() {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {

@@ -137,4 +137,13 @@ public interface Services {
     @FormUrlEncoded
     @POST("Api/ClientAction")
     Call<ResponseModel> sendClientRequest_Refuse(@FieldMap Map<String,String> map);
+
+    @FormUrlEncoded
+    @POST("Api/DriverAction")
+    Call<ResponseModel> sendDriverRequest_Accept(@FieldMap Map<String,String> map);
+
+    @FormUrlEncoded
+    @POST("Api/DriverAction")
+    Call<ResponseModel> sendDriverRequest_Refuse(@FieldMap Map<String,String> map);
+
 }
