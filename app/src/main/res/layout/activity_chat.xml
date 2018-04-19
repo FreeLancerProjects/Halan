@@ -53,11 +53,25 @@
         android:layout_below="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/msgContainer"
+        android:layout_above="@+id/typing"
 
         >
 
     </android.support.v7.widget.RecyclerView>
+    <TextView
+        android:id="@+id/typing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/msgContainer"
+        android:textSize="16sp"
+        android:text="typing....."
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:visibility="invisible"
+        android:layout_marginTop="5dp"
+
+
+        />
     <LinearLayout
         android:id="@+id/msgContainer"
         android:layout_width="match_parent"

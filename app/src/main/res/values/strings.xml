@@ -56,7 +56,7 @@
     <string name="send_report">Send Report</string>
     <string name="rules">Rules</string>
     <string name="logout">Logout</string>
-    <string name="search_plc_details">Enter places in details</string>
+    <string name="search_plc_details">Fast food store</string>
     <string name="enter_city">enter city</string>
     <string name="enter_identity_number">enter identity number</string>
     <string name="enter_vehicle_number">enter vehicle number</string>
@@ -112,5 +112,28 @@
     <string name="Issue_bill">Issue a bill</string>
     <string name="cancel_order">Cancelling order</string>
     <string name="done">Done</string>
+    <string name="cost">Cost</string>
+    <string name="comp_state">Completed</string>
+    <string name="delv_comp">Delivery completed</string>
+    <string name="chat">Chat</string>
+    <string name="order_details">Order details</string>
+    <string name="deliv_order">Order delivery</string>
+    <string name="add_rate">Add Rate</string>
+    <string name="rate2">Add Rate</string>
+    <string name="connectiom">Check network connection</string>
+    <string name="driver_late">The driver was late</string>
+    <string name="not_want">Not want now</string>
+    <string name="other">Other</string>
+    <string name="reson_for_cancel">Reason for cancellation</string>
+    <string name="do_you_send_other_driver">Do you want to send the request to another driver?</string>
+    <string name="yes_btn">Yes</string>
+    <string name="no_btn">No</string>
+    <string name="driver_name">Driver name</string>
+    <string name="delivery_time">Delivery time</string>
+    <string name="delete_order_must_in_5">The customer\'s order must be within 5 minutes of order</string>
+    <string name="client_name">client_name</string>
+    <string name="type">type now...</string>
+    <string name="img_sav">image saved</string>
+
 
 </resources>

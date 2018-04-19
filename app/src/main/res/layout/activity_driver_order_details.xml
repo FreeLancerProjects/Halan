@@ -84,7 +84,7 @@
                     android:text="تفاصيل الطلب"
                     android:textStyle="bold"
                     android:textSize="12sp"
-
+                    android:layout_marginTop="5dp"
                     />
                 <TextView
                     android:id="@+id/driver_order_details"

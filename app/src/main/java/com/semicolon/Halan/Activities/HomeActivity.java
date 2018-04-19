@@ -79,6 +79,7 @@ import com.semicolon.Halan.Models.TotalCostModel;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
+import com.semicolon.Halan.Services.NetworkConnection;
 import com.semicolon.Halan.Services.Preferences;
 import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
@@ -144,6 +145,7 @@ public class HomeActivity extends AppCompatActivity
     private String from,to;
     private String distn,order_details;
     private AlertDialog notalertDialog;
+    private NetworkConnection connection;
 
 
 
@@ -154,6 +156,7 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
+        connection = NetworkConnection.getInstance();
         initView();
         EventBus.getDefault().register(this);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -353,9 +356,17 @@ public class HomeActivity extends AppCompatActivity
         search_view = findViewById(R.id.search);
         search_view.setOnItemClickListener(itemClickListener);
         GeoDataClient geoDataClient = Places.getGeoDataClient(this,null);
-        adapter = new PlaceAutocompleteAdapter(this,geoDataClient,latLngBounds,null);
 
-        search_view.setAdapter(adapter);
+        if (connection.getConnection(this))
+        {
+            adapter = new PlaceAutocompleteAdapter(this,geoDataClient,latLngBounds,null);
+            search_view.setAdapter(adapter);
+
+        }else
+            {
+                Toast.makeText(this, R.string.connectiom, Toast.LENGTH_SHORT).show();
+            }
+
         search_view.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {

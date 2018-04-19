@@ -2,6 +2,7 @@ package com.semicolon.Halan.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +12,6 @@ import android.widget.TextView;
 
 import com.semicolon.Halan.Activities.ClientOrderDetailsActivity;
 import com.semicolon.Halan.Activities.DriverOrderDetailActivity;
-import com.semicolon.Halan.Activities.OrderDeliveryActivity;
 import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Tags;
@@ -19,26 +19,23 @@ import com.semicolon.Halan.Services.Tags;
 import java.util.List;
 
 
+public class CancelOrdersAdapter extends RecyclerView.Adapter<CancelOrdersAdapter.Holder> {
+    Context context;
+    MyOrderModel mmodel;
+    List<MyOrderModel> mylist;
+    String user_type;
 
-public class MyOrdersAdapter extends RecyclerView.Adapter<MyOrdersAdapter.Holder> {
-    private Context context;
-    private MyOrderModel mmodel;
-    private List<MyOrderModel> mylist;
-    private String order_state,user_type;
-
-
-
-    public MyOrdersAdapter(Context context, List<MyOrderModel> mylist,String order_state,String user_type) {
+    public CancelOrdersAdapter(Context context, List<MyOrderModel> mylist) {
         this.context = context;
         this.mylist = mylist;
-        this.order_state = order_state;
-        this.user_type = user_type;
+        SharedPreferences preferences = context.getSharedPreferences("user",Context.MODE_PRIVATE);
+        user_type = preferences.getString("user_type","");
 
     }
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_orders, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.cancel_order_item, parent, false);
 
         return new Holder(view);
     }
@@ -52,13 +49,21 @@ public class MyOrdersAdapter extends RecyclerView.Adapter<MyOrdersAdapter.Holder
         holder.client_location.setText(mmodel.getClient_location());
         holder.market_location.setText(mmodel.getMarket_location());
         holder.cost.setText(mmodel.getCost());
-        if (order_state.equals(Tags.current_order))
-        {
-            holder.order_start_time.setText(mmodel.getOrder_start_from_minute());
 
-        }else if (order_state.equals(Tags.prev_order))
+        try {
+            if (user_type.equals(Tags.Driver))
+            {
+                holder.name.setText(mmodel.getClient_name());
+
+
+            }else if (user_type.equals(Tags.Client))
+                {
+                    holder.name.setText(mmodel.getDriver_name());
+
+                }
+
+        }catch (NullPointerException e)
         {
-            holder.order_start_time.setText(mmodel.getOrder_start_time());
 
         }
 
@@ -72,7 +77,7 @@ public class MyOrdersAdapter extends RecyclerView.Adapter<MyOrdersAdapter.Holder
     }
 
     class Holder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView client_location, market_location, cost,order_start_time;
+        TextView name,client_location, market_location, cost;
         CardView container;
 
 
@@ -82,9 +87,10 @@ public class MyOrdersAdapter extends RecyclerView.Adapter<MyOrdersAdapter.Holder
             client_location = itemView.findViewById(R.id.txt_client_location);
             market_location = itemView.findViewById(R.id.txt_market_location);
             cost = itemView.findViewById(R.id.txt_cost);
-            order_start_time = itemView.findViewById(R.id.txt_date);
+            name = itemView.findViewById(R.id.name);
             container=itemView.findViewById(R.id.card_order);
             container.setOnClickListener(this);
+
 
         }
 
@@ -92,28 +98,20 @@ public class MyOrdersAdapter extends RecyclerView.Adapter<MyOrdersAdapter.Holder
         public void onClick(View view) {
 
             int position = getAdapterPosition();
-            MyOrderModel myOrderModel = mylist.get(position);
+            mmodel = mylist.get(position);
 
-            if (order_state.equals(Tags.current_order))
+            if (user_type.equals(Tags.Client))
             {
-
-                Intent intent = new Intent(context, OrderDeliveryActivity.class);
-                intent.putExtra("order",myOrderModel);
+                Intent intent = new Intent(context, ClientOrderDetailsActivity.class);
+                intent.putExtra("order",mmodel);
                 context.startActivity(intent);
-            }else if (order_state.equals(Tags.prev_order))
+            }else if (user_type.equals(Tags.Driver))
             {
-                if (user_type.equals(Tags.Client))
-                {
-                    Intent intent = new Intent(context, ClientOrderDetailsActivity.class);
-                    intent.putExtra("order",myOrderModel);
-                    context.startActivity(intent);
-                }else if (user_type.equals(Tags.Driver))
-                {
-                    Intent intent = new Intent(context, DriverOrderDetailActivity.class);
-                    intent.putExtra("order",myOrderModel);
-                    context.startActivity(intent);
-                }
+                Intent intent = new Intent(context, DriverOrderDetailActivity.class);
+                intent.putExtra("order",mmodel);
+                context.startActivity(intent);
             }
+
 
         }
 

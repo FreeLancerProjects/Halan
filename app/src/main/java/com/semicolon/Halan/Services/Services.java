@@ -11,6 +11,7 @@ import com.semicolon.Halan.Models.UserModel;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
@@ -113,6 +114,15 @@ public interface Services {
     Call<List<MyOrderModel>> getCanceledOrders (@Path("user_id")String user_id);
 
 
+    @GET("Api/ViewClientOrders/1/{user_id}")
+    Call<List<MyOrderModel>> getCurrentOrders_Client (@Path("user_id")String user_id);
+
+    @GET("Api/ViewClientOrders/4/{user_id}")
+    Call<List<MyOrderModel>> getPreviousOrders_Client (@Path("user_id")String user_id);
+
+    @GET("Api/ViewClientOrders/2/{user_id}")
+    Call<List<MyOrderModel>> getCanceledOrders_Client (@Path("user_id")String user_id);
+
     @GET("Api/ReceivedRequests/{user_id}")
     Call<List<MyOrderModel>> getNotification (@Path("user_id")String user_id);
 
@@ -145,5 +155,12 @@ public interface Services {
     @FormUrlEncoded
     @POST("Api/DriverAction")
     Call<ResponseModel> sendDriverRequest_Refuse(@FieldMap Map<String,String> map);
+
+    @FormUrlEncoded
+    @POST("Api/ClientCancelOrder/{user_id}")
+    Call<ResponseModel> client_cancel_order(@Path("user_id") String user_id,@FieldMap Map<String,String> map);
+
+    @GET()
+    Call<ResponseBody> downloadImage(@Url String url);
 
 }

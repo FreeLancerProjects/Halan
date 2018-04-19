@@ -21,6 +21,7 @@
                 android:textColor="@color/gray3"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
+                android:gravity="left|center_vertical"
                 />
             <TextView
                 android:id="@+id/txt_market_location"
@@ -81,7 +82,9 @@
                     android:textColor="@color/white"
                     android:layout_gravity="center"
                     android:gravity="left|center_vertical"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    />
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight=".4"

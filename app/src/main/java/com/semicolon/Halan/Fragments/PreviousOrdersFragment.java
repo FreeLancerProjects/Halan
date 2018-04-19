@@ -1,5 +1,6 @@
 package com.semicolon.Halan.Fragments;
 
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -63,7 +64,7 @@ public class PreviousOrdersFragment extends Fragment implements Users.UserData {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        adapter = new MyOrdersAdapter(getContext(), model);
+        adapter = new MyOrdersAdapter(getActivity(), model,Tags.prev_order,userModel.getUser_type());
         recyclerView.setAdapter(adapter);
         sr =view. findViewById(R.id.sr);
         sr.setRefreshing(false);
@@ -71,7 +72,7 @@ public class PreviousOrdersFragment extends Fragment implements Users.UserData {
         progBar = view.findViewById(R.id.progBar);
         progBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(getContext(),R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
         nodata_container = view.findViewById(R.id.nodata_container);
-        sr.setColorSchemeResources(R.color.colorPrimary);
+        sr.setColorSchemeColors(ContextCompat.getColor(getActivity(),R.color.colorPrimary),ContextCompat.getColor(getActivity(),R.color.rate), Color.RED,Color.BLUE);
         sr.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -87,6 +88,50 @@ public class PreviousOrdersFragment extends Fragment implements Users.UserData {
 
     private void getDataFromServer() {
         progBar.setVisibility(View.VISIBLE);
+
+        if (userModel.getUser_type().equals(Tags.Client))
+        {
+            getClient_Previous_Order();
+        }else if (userModel.getUser_type().equals(Tags.Driver))
+        {
+            getDriver_Previous_Order();
+        }
+    }
+
+
+    private void getClient_Previous_Order()
+    {
+        Services services= Api.getClient(Tags.BASE_URL).create(Services.class);
+        Call<List<MyOrderModel>> call=services.getPreviousOrders_Client(userId);
+        call.enqueue(new Callback<List<MyOrderModel>>() {
+            @Override
+            public void onResponse(Call<List<MyOrderModel>> call, Response<List<MyOrderModel>> response) {
+
+                model.clear();
+                model.addAll( response.body());
+                if (model.size()>0){
+                    adapter.notifyDataSetChanged();
+                    progBar.setVisibility(View.GONE);
+                    sr.setRefreshing(false);
+                    // Toast.makeText(Activities.this, "no activities", Toast.LENGTH_SHORT).show();
+                }else {
+                    progBar.setVisibility(View.GONE);
+                    nodata_container.setVisibility(View.VISIBLE);
+                    sr.setRefreshing(false);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<MyOrderModel>> call, Throwable t) {
+                nodata_container.setVisibility(View.GONE);
+                sr.setRefreshing(false);
+
+            }
+        });
+    }
+    private void getDriver_Previous_Order()
+    {
         Services services= Api.getClient(Tags.BASE_URL).create(Services.class);
         Call<List<MyOrderModel>> call=services.getPreviousOrders(userId);
         call.enqueue(new Callback<List<MyOrderModel>>() {
@@ -116,7 +161,6 @@ public class PreviousOrdersFragment extends Fragment implements Users.UserData {
             }
         });
     }
-
 
     @Override
     public void UserDataSuccess(UserModel userModel) {

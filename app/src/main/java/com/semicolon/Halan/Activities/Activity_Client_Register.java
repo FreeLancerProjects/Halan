@@ -62,7 +62,6 @@ public class Activity_Client_Register extends AppCompatActivity {
         initView();
         users = Users.getInstance();
         preferences = new Preferences(getApplicationContext());
-
         CreateProgressDialog();
 
     }
@@ -242,6 +241,7 @@ public class Activity_Client_Register extends AppCompatActivity {
                     UserModel userModel = response.body();
                     if (response.body().getSuccess()==1)
                     {
+
                         preferences.CreatePref(userModel);
                         users.setUserData(userModel);
                         dialog.dismiss();

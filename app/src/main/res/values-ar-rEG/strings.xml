@@ -52,7 +52,7 @@
     <string name="send_report">إرسال شكوى لللإدارة</string>
     <string name="rules">الشروط والأحكام</string>
     <string name="logout">خروج</string>
-    <string name="search_plc_details">أدخل المكان الذي تريد ان تبحث عنه بالتفصيل</string>
+    <string name="search_plc_details">متجر اكلات سريعة... </string>
     <string name="enter_city">enter city</string>
     <string name="enter_identity_number">أدخل رقم الهويه</string>
     <string name="enter_vehicle_number">أدخل رفم السياره</string>
@@ -74,7 +74,7 @@
     <string name="bank">بنك التحويل</string>
     <string name="code">كود الخصم</string>
     <string name="order_detail">تفاصيل الطلب</string>
-    <string name="car_number">رقم السياره</string>
+    <string name="car_number">رقم السيارة</string>
     <string name="time">وقت التسليم</string>
     <string name="close">إغلاق</string>
     <string name="yes">نعم</string>
@@ -108,4 +108,26 @@
     <string name="Issue_bill">إصدار فاتوره</string>
     <string name="cancel_order">تراجع عن الطلب</string>
     <string name="done">تم تنفيز الطلب</string>
+    <string name="cost">تكلفة الرحلة</string>
+    <string name="comp_state">الحالة منتهي</string>
+    <string name="delv_comp">تم التوصيل</string>
+    <string name="chat">الدردشات</string>
+    <string name="order_details">تفاصيل الطلب</string>
+    <string name="deliv_order">تسليم الطلب</string>
+    <string name="add_rate">تقييم السائق</string>
+    <string name="rate2">تقييم</string>
+    <string name="connectiom">تحقق من الاتصال بالانترنت</string>
+    <string name="driver_late">لقد تأخر السائق</string>
+    <string name="not_want">لا أريد الطلب الان</string>
+    <string name="other">أسباب أخرى</string>
+    <string name="reson_for_cancel">سبب الإلغاء</string>
+    <string name="do_you_send_other_driver">هل ترغب بإرسال الطلب لسائق أخر</string>
+    <string name="yes_btn">نعم أريد</string>
+    <string name="no_btn">لا أريد</string>
+    <string name="driver_name">اسم السائق</string>
+    <string name="delivery_time">وقت التسليم</string>
+    <string name="delete_order_must_in_5">حزف الطلب للعميل يكون خلال 5 دقائق من الطلب</string>
+    <string name="client_name">إسم العميل</string>
+    <string name="type"> يكتب الان...</string>
+    <string name="img_sav">تم حفظ الصورة</string>
 </resources>

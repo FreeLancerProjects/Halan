@@ -29,7 +29,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
-import com.semicolon.Halan.Models.ClientNotificationModel;
 import com.semicolon.Halan.Models.PlaceModel;
 import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.UserModel;
@@ -103,7 +102,7 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
 
             client_id=intent.getStringExtra("client_id");
             order_id=intent.getStringExtra("order_id");
-            messege_id=intent.getStringExtra("messege_id");
+            messege_id=intent.getStringExtra("message_id");
 
             fromLatLng = new LatLng(market_lat,market_long);
             toLatLng = new LatLng(client_lat,client_long);

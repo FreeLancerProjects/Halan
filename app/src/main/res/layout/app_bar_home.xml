@@ -58,7 +58,7 @@
             android:drawablePadding="5dp"
             android:imeOptions="actionSearch"
             android:layout_alignParentTop="true"
-
+            android:textStyle="bold"
 
             />
     </RelativeLayout>
