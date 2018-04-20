@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,6 +54,9 @@ public class AddRateActivity extends AppCompatActivity implements Users.UserData
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_rate);
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
+
         users = Users.getInstance();
         users.getUserData(this);
         initView();

@@ -29,6 +29,7 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 
+import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,6 +49,8 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
 
         initView();
         users=Users.getInstance();

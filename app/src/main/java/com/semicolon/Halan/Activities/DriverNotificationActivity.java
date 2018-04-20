@@ -26,6 +26,7 @@ import com.semicolon.Halan.SingleTone.Users;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,6 +47,9 @@ public class DriverNotificationActivity extends AppCompatActivity implements Use
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_notification);
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
+
         users = Users.getInstance();
         preferences=new Preferences(this);
         users.getUserData(this);

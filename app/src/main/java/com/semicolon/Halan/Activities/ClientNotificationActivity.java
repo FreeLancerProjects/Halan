@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,6 +51,9 @@ public class ClientNotificationActivity extends AppCompatActivity implements Use
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client_notification);
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
+
         initView();
 
         users = Users.getInstance();

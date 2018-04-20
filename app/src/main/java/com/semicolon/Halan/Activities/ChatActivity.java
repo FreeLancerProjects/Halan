@@ -56,6 +56,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import me.anwarshahriar.calligrapher.Calligrapher;
+
 public class ChatActivity extends AppCompatActivity {
     private Toolbar toolBar;
     private ImageView back,upload_imageBtn,send_imageBtn;
@@ -78,6 +80,9 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
+
         dRef = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
         getDataFromIntent();

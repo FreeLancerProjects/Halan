@@ -44,6 +44,7 @@ import com.semicolon.Halan.SingleTone.Users;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 
+import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -78,6 +79,9 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_register2);
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
+
         preferences = new Preferences(getApplicationContext());
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         initView();

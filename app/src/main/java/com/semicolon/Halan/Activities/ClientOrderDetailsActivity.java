@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.R;
 
+import me.anwarshahriar.calligrapher.Calligrapher;
+
 public class ClientOrderDetailsActivity extends AppCompatActivity {
 
     private ImageView back;
@@ -21,6 +23,9 @@ public class ClientOrderDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client_order_details);
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
+
         initView();
         getDataFromIntent();
     }

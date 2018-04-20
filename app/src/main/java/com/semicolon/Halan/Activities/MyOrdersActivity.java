@@ -19,6 +19,8 @@ import com.semicolon.Halan.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.anwarshahriar.calligrapher.Calligrapher;
+
 public class MyOrdersActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
@@ -29,6 +31,8 @@ public class MyOrdersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_orders);
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
 
         initView();
     }

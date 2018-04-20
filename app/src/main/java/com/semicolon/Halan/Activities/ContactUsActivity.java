@@ -27,6 +27,7 @@ import com.semicolon.Halan.Services.Api;
 import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
 
+import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,6 +44,8 @@ public class ContactUsActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_us);
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
 
         initView();
         CreateProgressDialog();

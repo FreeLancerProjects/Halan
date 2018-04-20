@@ -25,6 +25,7 @@ import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
 
+import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,6 +45,8 @@ public class PayActivity extends AppCompatActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay);
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
 
         initView();
         CreateProgressDialog();

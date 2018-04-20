@@ -11,6 +11,8 @@ import android.widget.ImageView;
 
 import com.semicolon.Halan.R;
 
+import me.anwarshahriar.calligrapher.Calligrapher;
+
 public class Activity_Driver_Register extends AppCompatActivity implements View.OnClickListener {
 
     private EditText d_city,d_identity_number,d_vehicle_number,d_car_color;
@@ -21,6 +23,8 @@ public class Activity_Driver_Register extends AppCompatActivity implements View.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_register);
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
 
         initView();
 

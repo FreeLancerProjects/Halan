@@ -29,6 +29,7 @@ import com.semicolon.Halan.Services.Tags;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 
+import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,6 +48,9 @@ public class IssueAbillActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue_abill);
+        Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
+
         initView();
         getDataFromIntent();
         CreateProgressDialog();
