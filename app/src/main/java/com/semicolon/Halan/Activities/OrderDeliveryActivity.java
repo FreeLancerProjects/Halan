@@ -3,6 +3,7 @@ package com.semicolon.Halan.Activities;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -82,7 +83,7 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
     private MyOrderModel myOrderModel;
     private LatLng client_latLng,market_latLng;
     private double dist;
-    private AlertDialog alertDialog;
+    private AlertDialog alertDialog,cancelAlertDialog;
     private DatabaseReference dRef;
     private String curr_id,chat_id;
     private String curr_type,chat_type;
@@ -131,9 +132,16 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
             public void onClick(View view) {
                 if (userModel.getUser_type().equals(Tags.Client))
                 {
-                    Intent intent = new Intent(OrderDeliveryActivity.this,AddRateActivity.class);
-                    intent.putExtra("order",myOrderModel);
-                    startActivity(intent);
+                    CreateProgDialog(getString(R.string.confirm_delev));
+                    dialog.show();
+                    OrderDelivered("2");
+
+                }else if (userModel.getUser_type().equals(Tags.Driver))
+                {
+                    CreateProgDialog(getString(R.string.confirm_delev));
+                    dialog.show();
+                    OrderDelivered("1");
+
                 }
             }
         });
@@ -156,12 +164,59 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                alertDialog.show();
+                if (userModel.getUser_type().equals(Tags.Client))
+                {
+                    alertDialog.show();
+
+
+                }else
+                    {
+                        Create_Cancel_AlertDialog();
+                        cancelAlertDialog.show();
+                    }
             }
         });
 
     }
 
+
+
+    private void OrderDelivered(final String user_type)
+    {
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.orderDeliverd(myOrderModel.getOrder_id(), user_type);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+
+                if (response.isSuccessful())
+                {
+                    if (response.body().getSuccess()==1)
+                    {
+                        dialog.dismiss();
+                        if (user_type.equals("1"))
+                        {
+                            finish();
+                            //driver
+                        }else if (user_type.equals("2"))
+                        {
+                            Intent intent = new Intent(OrderDeliveryActivity.this,AddRateActivity.class);
+                            intent.putExtra("order",myOrderModel);
+                            startActivity(intent);
+                            finish();
+                            //client
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+
+            }
+        });
+    }
     private void CreateProgDialog(String msg)
     {
         ProgressBar bar = new ProgressBar(this);
@@ -241,6 +296,28 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
         }
     }
 
+    private void Create_Cancel_AlertDialog()
+    {
+        cancelAlertDialog = new AlertDialog.Builder(this)
+                .setMessage(R.string.cancelOrder)
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                cancelAlertDialog.dismiss();
+                                CreateProgDialog(getString(R.string.cancelling_ord));
+                                dialog.show();
+                                DriverCancelOrder();
+
+                    }
+                })
+                .setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        cancelAlertDialog.dismiss();
+                    }
+                }).create();
+    }
     private void Create_AlertDialog()
     {
         View view = LayoutInflater.from(this).inflate(R.layout.custom_refuse_dialog,null);
@@ -254,15 +331,21 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
             public void onClick(View view) {
                 if (noRbtn.isChecked())
                 {
-                    Toast.makeText(OrderDeliveryActivity.this, "لا اريد الطلب الان", Toast.LENGTH_SHORT).show();
+                    CreateProgDialog(getString(R.string.cancelling_ord));
+                    dialog.show();
+                    ClientCancelOrder("0","2");
                 }else if (driver_late_Rbtn.isChecked())
                 {
-                    Toast.makeText(OrderDeliveryActivity.this, "لقد تأخر السائق", Toast.LENGTH_SHORT).show();
+                    CreateProgDialog(getString(R.string.cancelling_ord));
+                    dialog.show();
+                    ClientCancelOrder("0","1");
 
                 }
                 else if (otherRbtn.isChecked())
                 {
-                    Toast.makeText(OrderDeliveryActivity.this, "اسباب اخرى", Toast.LENGTH_SHORT).show();
+                    CreateProgDialog(getString(R.string.cancelling_ord));
+                    dialog.show();
+                    ClientCancelOrder("0","3");
 
                 }
                 alertDialog.dismiss();
@@ -273,18 +356,26 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
             public void onClick(View view) {
                 if (noRbtn.isChecked())
                 {
-                    Toast.makeText(OrderDeliveryActivity.this, "لا اريد الطلب الان", Toast.LENGTH_SHORT).show();
+                    CreateProgDialog(getString(R.string.cancel_andSend));
+                    dialog.show();
+                    ClientCancelOrder("1","2");
+
                 }else if (driver_late_Rbtn.isChecked())
                 {
-                    Toast.makeText(OrderDeliveryActivity.this, "لقد تأخر السائق", Toast.LENGTH_SHORT).show();
+                    CreateProgDialog(getString(R.string.cancel_andSend));
+                    dialog.show();
+                    ClientCancelOrder("1","1");
+
 
                 }
                 else if (otherRbtn.isChecked())
                 {
-                    Toast.makeText(OrderDeliveryActivity.this, "اسباب اخرى", Toast.LENGTH_SHORT).show();
+                    CreateProgDialog(getString(R.string.cancel_andSend));
+                    dialog.show();
+                    ClientCancelOrder("1","3");
+
 
                 }
-                sendTo_AnotherDrivers();
                 alertDialog.dismiss();
 
             }
@@ -296,7 +387,70 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
 
     }
 
-    private void sendTo_AnotherDrivers() {
+    private void ClientCancelOrder(final String sendtoAnotherDrivers, String cancel_type)
+    {
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.clientCancelOrder(userModel.getUser_id(), myOrderModel.getOrder_id(), myOrderModel.getDriver_id(), cancel_type);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful())
+                {
+                    if (response.body().getSuccess()==1)
+                    {
+                        if (sendtoAnotherDrivers.equals("0"))
+                        {
+                            Toast.makeText(OrderDeliveryActivity.this, R.string.orded_cancelled, Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            finish();
+                        }else if (sendtoAnotherDrivers.equals("1"))
+                        {
+                            sendTo_AnotherDrivers();
+
+                        }
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                dialog.dismiss();
+                Toast.makeText(OrderDeliveryActivity.this,getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+                Log.e("Error",t.getMessage());
+            }
+        });
+
+    }
+    private void DriverCancelOrder()
+    {
+
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.driverCancelOrder(userModel.getUser_id(), myOrderModel.getOrder_id(), myOrderModel.getClient_id_fk());
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful())
+                {
+                    dialog.dismiss();
+                    Toast.makeText(OrderDeliveryActivity.this, R.string.orded_cancelled, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                dialog.dismiss();
+                Toast.makeText(OrderDeliveryActivity.this, getString(R.string.something_haywire), Toast.LENGTH_LONG).show();
+                Log.e("Error",t.getMessage());
+            }
+        });
+    }
+    private void sendTo_AnotherDrivers()
+
+    {
         ShowAvailable_Drivers();
     }
 
@@ -342,6 +496,7 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
 
             @Override
             public void onFailure(Call<List<AvailableDriversModel>> call, Throwable t) {
+                dialog.dismiss();
                 Log.e("Error",t.getMessage());
                 Toast.makeText(OrderDeliveryActivity.this, ""+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
             }
@@ -393,7 +548,7 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
                     }
                 }
 
-                Map<String,String> datamap =new HashMap<>();
+               /* Map<String,String> datamap =new HashMap<>();
                 datamap.put("user_id",userModel.getUser_id());
                 datamap.put("client_location",myOrderModel.getClient_location());
                 datamap.put("market_location",myOrderModel.getMarket_location());
@@ -403,9 +558,9 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
                 datamap.put("market_google_lang",String.valueOf(myOrderModel.getMarket_google_lang()));
                 datamap.put("distance",String.valueOf(dist));
                 datamap.put("order_details",myOrderModel.getOrder_details());
-                datamap.put("total_cost",myOrderModel.getCost());
+                datamap.put("total_cost",myOrderModel.getCost());*/
 
-                sendOrders(datamap,drivers_ids);
+                sendOrders(drivers_ids);
 
                 Log.e("iffff",">6");
 
@@ -419,12 +574,10 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
             Log.e("error drivers","index < 0");
         }
     }
-    private void sendOrders(Map<String, String> map, List<String> drivers_ids) {
-        CreateProgDialog("جار إرسال طلبك الى السائقين...");
-        dialog.show();
+    private void sendOrders(List<String> drivers_ids) {
         Retrofit retrofit = Api.getClient(Tags.BASE_URL);
         Services services = retrofit.create(Services.class);
-        Call<ResponseModel> call = services.sendOrder(map, drivers_ids);
+        Call<ResponseModel> call = services.SendToNewDriver(myOrderModel.getOrder_id(),userModel.getUser_id(), drivers_ids);
         call.enqueue(new Callback<ResponseModel>() {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
@@ -433,11 +586,11 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
                     if (response.body().getSuccess()==1)
                     {
                         dialog.dismiss();
-                        Toast.makeText(OrderDeliveryActivity.this, "تم إرسال طلبك بنجاح", Toast.LENGTH_LONG).show();
+                        Toast.makeText(OrderDeliveryActivity.this,R.string.order_sent, Toast.LENGTH_LONG).show();
 
                     }else
                     {
-                        Toast.makeText(OrderDeliveryActivity.this, "عفوا لم يتم إرسال طلبك من فضلك أعد المحاولة لاحقا", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(OrderDeliveryActivity.this, R.string.order_notsent, Toast.LENGTH_SHORT).show();
                     }
                 }
             }

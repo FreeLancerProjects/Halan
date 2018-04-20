@@ -182,7 +182,7 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
 
         }else
         {
-            Toast.makeText(this, "intent data is empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "data is empty", Toast.LENGTH_SHORT).show();
         }
     }
 

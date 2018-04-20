@@ -130,4 +130,24 @@
     <string name="client_name">إسم العميل</string>
     <string name="type"> يكتب الان...</string>
     <string name="img_sav">تم حفظ الصورة</string>
+    <string name="rated_added">تم إرسال تقييمك بنجاح</string>
+    <string name="rate_notadded">لم تم إرسال التقييم حاول مره أخرى لاحقا</string>
+    <string name="failed">فشل</string>
+    <string name="respons_send_todriver">تم إرسال ردك بنحاج</string>
+    <string name="respons_not_send">لم تم إرسال ردك حاول مره أخرى لاحقا</string>
+    <string name="data_send">تم إرسال البيانات بنجاح</string>
+    <string name="sending">جار الارسال...</string>
+    <string name="order_sent">تم إرسال طلبك بنجاح</string>
+    <string name="order_notsent">عفوا لم يتم إرسال طلبك من فضلك أعد المحاولة لاحقا</string>
+    <string name="request_accepted">تم قبول طلبك بنجاح برجاء الخروج لتحديث البيانات</string>
+    <string name="accepttxt">موافق</string>
+    <string name="detr_cost_road">جار تحديد تكلفة الطريق...</string>
+    <string name="send_reqtoDriv">جار إرسال طلبك الى السائقين...</string>
+    <string name="locating">جار تحديد الموقع...</string>
+    <string name="orded_cancelled">تم الغاء الطلب</string>
+    <string name="confirm_delev">جار تأكيد توصيل الطلب...</string>
+    <string name="cancelOrder">هل تريد إلغاء الطلب ؟</string>
+    <string name="cancelling_ord">جار إلغاء الطلب...</string>
+    <string name="No">لا</string>
+    <string name="cancel_andSend">جار إلغاء الطلب وإرسال لسائقين أخرين...</string>
 </resources>

@@ -93,13 +93,13 @@ public class ContactUsActivity extends AppCompatActivity implements View.OnClick
                         if (response.body().getSuccess() == 1) {
 
                             dialog.dismiss();
-                            Toast.makeText(ContactUsActivity.this, "Data Sent Succesfuly", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ContactUsActivity.this, R.string.data_send, Toast.LENGTH_SHORT).show();
                             finish();
 
                         } else {
                             dialog.dismiss();
 
-                            Toast.makeText(ContactUsActivity.this, "error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ContactUsActivity.this, R.string.failed, Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         dialog.dismiss();
@@ -203,7 +203,7 @@ public class ContactUsActivity extends AppCompatActivity implements View.OnClick
         Drawable drawable = bar.getIndeterminateDrawable().mutate();
         drawable.setColorFilter(ContextCompat.getColor(this,R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
         dialog = new ProgressDialog(this);
-        dialog.setMessage(getString(R.string.waitreg));
+        dialog.setMessage(getString(R.string.sending));
         dialog.setIndeterminateDrawable(drawable);
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(false);

@@ -6,12 +6,12 @@
         android:title="@string/Issue_bill"
         app:showAsAction="never"
         android:orderInCategory="100"/>
-    <item android:id="@+id/refuse"
+    <!--<item android:id="@+id/refuse"
         android:title="@string/cancel_order"
         app:showAsAction="never"
         android:orderInCategory="200"/>
     <item android:id="@+id/done"
         android:title="@string/done"
         app:showAsAction="never"
-        android:orderInCategory="300"/>
+        android:orderInCategory="300"/>-->
 </menu>

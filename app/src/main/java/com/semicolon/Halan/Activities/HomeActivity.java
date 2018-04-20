@@ -171,8 +171,8 @@ public class HomeActivity extends AppCompatActivity
     private void CreateNotAlertDialog()
     {
         notalertDialog = new AlertDialog.Builder(this)
-                .setMessage("تم قبول طلبك بنجاح برجاء الخروج لتحديث البيانات")
-                .setPositiveButton("موافق", new DialogInterface.OnClickListener() {
+                .setMessage(R.string.request_accepted)
+                .setPositiveButton(R.string.accepttxt, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         preferences.Update_UserState("");
@@ -296,7 +296,7 @@ public class HomeActivity extends AppCompatActivity
                         distn = String.valueOf(Math.round(Double.parseDouble(dis[0])));
                         distance.setText(distn+" "+getString(R.string.km));
                         order_details = txt_order.getText().toString();
-                        CreateProgDialog("جار تحديد تكلفة الطريق...");
+                        CreateProgDialog(getString(R.string.detr_cost_road));
 
                         dialog.show();
                         getCostByDistance(distn);
@@ -391,7 +391,7 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void sendOrders(Map<String, String> map, List<String> drivers_ids) {
-        CreateProgDialog("جار إرسال طلبك الى السائقين...");
+        CreateProgDialog(getString(R.string.send_reqtoDriv));
         dialog.show();
         Retrofit retrofit = Api.getClient(Tags.BASE_URL);
         Services services = retrofit.create(Services.class);
@@ -404,7 +404,7 @@ public class HomeActivity extends AppCompatActivity
                     if (response.body().getSuccess()==1)
                     {
                         dialog.dismiss();
-                        Toast.makeText(HomeActivity.this, "تم إرسال طلبك بنجاح", Toast.LENGTH_LONG).show();
+                        Toast.makeText(HomeActivity.this, R.string.order_sent, Toast.LENGTH_LONG).show();
                         costContainer.setVisibility(View.GONE);
                         mMap.clear();
                         AddMarker(mylatLng,"");
@@ -412,7 +412,7 @@ public class HomeActivity extends AppCompatActivity
 
                     }else
                         {
-                            Toast.makeText(HomeActivity.this, "عفوا لم يتم إرسال طلبك من فضلك أعد المحاولة لاحقا", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(HomeActivity.this, R.string.order_notsent, Toast.LENGTH_SHORT).show();
                         }
                 }
             }
@@ -680,19 +680,12 @@ public class HomeActivity extends AppCompatActivity
                 startActivity(intent2);
                 break;
             case R.id.notification:
-//                if (userModel.getUser_type().equals(Tags.Client))
-//                {
                     Intent intent = new Intent(HomeActivity.this,ClientNotificationActivity.class);
-                   // Toast.makeText(this, "عميل", Toast.LENGTH_SHORT).show();
-
                     startActivity(intent);
-//                }else if (userModel.getUser_type().equals(Tags.Driver))
-//                {
-//                    Intent intent = new Intent(HomeActivity.this,DriverNotificationActivity.class);
-//                    Toast.makeText(this, "سائق", Toast.LENGTH_SHORT).show();
-//                    startActivity(intent);
-//
-//                }
+                    break;
+            case R.id.rule:
+                Intent intent3 = new Intent(HomeActivity.this,RulesActivity.class);
+                startActivity(intent3);
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
@@ -832,7 +825,7 @@ public class HomeActivity extends AppCompatActivity
                     to = addressList.get(0).getAddressLine(0);
                     txt_order_to.setText(to);
                 }
-                CreateProgDialog("جار تحديد الموقع...");
+                CreateProgDialog(getString(R.string.locating));
 
                 dialog.show();
 

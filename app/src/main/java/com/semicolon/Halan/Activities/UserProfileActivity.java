@@ -136,11 +136,11 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                         users.setUserData(response.body());
                      //   Toast.makeText(UserProfileActivity.this, ""+userModel.getUser_name(), Toast.LENGTH_SHORT).show();
                      //   Log.e("name",userModel.getUser_name());
-                        Toast.makeText(UserProfileActivity.this, "Data Sent Succesfuly", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UserProfileActivity.this, R.string.data_send, Toast.LENGTH_SHORT).show();
                     }
                     else
                     {
-                        Toast.makeText(UserProfileActivity.this, "error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UserProfileActivity.this, R.string.failed, Toast.LENGTH_SHORT).show();
 
                     }
                 }else {
@@ -175,11 +175,11 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                         users.setUserData(response.body());
                        // Toast.makeText(UserProfileActivity.this, ""+userModel.getUser_name(), Toast.LENGTH_SHORT).show();
                       //  Log.e("name",userModel.getUser_name());
-                        Toast.makeText(UserProfileActivity.this, "Data Sent Succesfuly", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UserProfileActivity.this, R.string.data_send, Toast.LENGTH_SHORT).show();
                     }
                     else
                     {
-                        Toast.makeText(UserProfileActivity.this, "error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UserProfileActivity.this, R.string.failed, Toast.LENGTH_SHORT).show();
 
                     }
                 }else {

@@ -211,6 +211,12 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
     }
 
@@ -294,10 +300,10 @@ public class ChatActivity extends AppCompatActivity {
         {
             case R.id.bill:
                 break;
-            case R.id.refuse:
+            /*case R.id.refuse:
                 break;
             case R.id.done:
-                break;
+                break;*/
         }
         return super.onOptionsItemSelected(item);
     }
@@ -439,7 +445,7 @@ public class ChatActivity extends AppCompatActivity {
                 Toast.makeText(ChatActivity.this, R.string.img_sav, Toast.LENGTH_LONG).show();
             }else
             {
-                Toast.makeText(ChatActivity.this, "failed", Toast.LENGTH_LONG).show();
+                Toast.makeText(ChatActivity.this, R.string.failed, Toast.LENGTH_LONG).show();
 
             }
         }

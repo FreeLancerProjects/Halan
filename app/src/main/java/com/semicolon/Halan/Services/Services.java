@@ -170,4 +170,20 @@ public interface Services {
 
     @GET("Api/AboutUs")
     Call<List<AboutUsModel>> GetAboutUs();
+
+    @FormUrlEncoded
+    @POST("Api/SendToNewDrivers")
+    Call<ResponseModel> SendToNewDriver(@Field("order_id_fk") String order_id_fk,@Field("user_id") String user_id,@Field("driver_id[] array") List<String> driver_ids);
+
+    @FormUrlEncoded
+    @POST("Api/DriverCancelOrder/{user_id}")
+    Call<ResponseModel> driverCancelOrder(@Path("user_id") String user_id,@Field("order_id_fk") String order_id_fk,@Field("client_id_fk") String client_id_fk);
+
+    @FormUrlEncoded
+    @POST("Api/ClientCancelOrder/{user_id}")
+    Call<ResponseModel> clientCancelOrder(@Path("user_id") String user_id,@Field("order_id_fk") String order_id_fk,@Field("driver_id_fk") String driver_id_fk,@Field("cancel_reason_type") String cancel_reason_type);
+
+    @FormUrlEncoded
+    @POST("Api/OrderDelivered/{order_id_fk}")
+    Call<ResponseModel> orderDeliverd(@Path("order_id_fk") String order_id_fk,@Field("user_type") String user_type);
 }

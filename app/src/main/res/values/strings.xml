@@ -101,7 +101,7 @@
     <string name="empty_list"> There are no orders to display</string>
     <string name="Cost_the_way">Cost of way </string>
     <string name="notf_txt">Notification</string>
-    <string name="no_not">There are no notification to display</string>
+    <string name="no_not">There are no notifications to display</string>
     <string name="driver_accept">Your request has been accepted</string>
     <string name="accept">accept</string>
     <string name="refuse">refuse</string>
@@ -134,6 +134,26 @@
     <string name="client_name">client_name</string>
     <string name="type">type now...</string>
     <string name="img_sav">image saved</string>
+    <string name="rated_added">Add rate successfully</string>
+    <string name="rate_notadded">rate not added try again later</string>
+    <string name="failed">failed</string>
+    <string name="respons_send_todriver">Your response was sent to the driver</string>
+    <string name="respons_not_send">Your response not send try again later</string>
+    <string name="data_send">Data Sent Successfully</string>
+    <string name="sending">sending data...</string>
+    <string name="order_sent">Your order sent successfully</string>
+    <string name="order_notsent">Your order not sent try again later</string>
+    <string name="request_accepted">Your request has been successfully accepted Please log out to update your data</string>
+    <string name="accepttxt">Accept</string>
+    <string name="detr_cost_road">Determining the cost of the road...</string>
+    <string name="send_reqtoDriv">sending order to drivers...</string>
+    <string name="locating">Locating...</string>
+    <string name="orded_cancelled">your order canceled</string>
+    <string name="confirm_delev">Confirming delivery of the request...</string>
+    <string name="cancelOrder">Cancel order ?</string>
+    <string name="cancelling_ord">Canceling order...</string>
+    <string name="No">No</string>
+    <string name="cancel_andSend">Canceling order and sending to other drivers</string>
 
 
 </resources>

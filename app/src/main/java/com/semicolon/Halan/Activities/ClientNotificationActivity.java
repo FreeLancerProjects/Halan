@@ -169,10 +169,10 @@ public class ClientNotificationActivity extends AppCompatActivity implements Use
                 {
                     if (response.body().getSuccess()==1)
                     {
-                        Toast.makeText(ClientNotificationActivity.this, "تم إرسال ردك الي السائق", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ClientNotificationActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();
                     }else
                         {
-                            Toast.makeText(ClientNotificationActivity.this, "لم تم إرسال ردك الي السائق حاول مره أخرى لاحقا", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ClientNotificationActivity.this, R.string.respons_not_send, Toast.LENGTH_LONG).show();
 
                         }
                 }
@@ -205,10 +205,10 @@ public class ClientNotificationActivity extends AppCompatActivity implements Use
                 {
                     if (response.body().getSuccess()==1)
                     {
-                        Toast.makeText(ClientNotificationActivity.this, "تم إرسال ردك الي السائق", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ClientNotificationActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();
                     }else
                     {
-                        Toast.makeText(ClientNotificationActivity.this, "لم تم إرسال ردك الي السائق حاول مره أخرى لاحقا", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ClientNotificationActivity.this, R.string.respons_not_send, Toast.LENGTH_LONG).show();
 
                     }
                 }

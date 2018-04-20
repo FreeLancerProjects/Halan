@@ -82,12 +82,16 @@ public class CancelledOrdersFragment extends Fragment implements Users.UserData 
             }
         });
 
-        getDataFromServer();
-
 
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        getDataFromServer();
+
+    }
 
     private void getDataFromServer() {
         //progBar.setVisibility(View.VISIBLE);

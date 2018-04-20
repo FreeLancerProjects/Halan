@@ -370,8 +370,11 @@ public class DriverOrdersActivity extends AppCompatActivity
                 Intent intent = new Intent(this,DriverNotificationActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.rule:
+                Intent intent3 = new Intent(this,RulesActivity.class);
+                startActivity(intent3);
+                break;
         }
-        //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

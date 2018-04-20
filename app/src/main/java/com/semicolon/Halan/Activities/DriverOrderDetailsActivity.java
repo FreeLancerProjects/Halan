@@ -347,10 +347,10 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
                 {
                     if (response.body().getSuccess()==1)
                     {
-                        Toast.makeText(DriverOrderDetailsActivity.this, "تم إرسال ردك الي العميل", Toast.LENGTH_LONG).show();
+                        Toast.makeText(DriverOrderDetailsActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();
                     }else
                     {
-                        Toast.makeText(DriverOrderDetailsActivity.this, "لم تم إرسال ردك الي العميل حاول مره أخرى لاحقا", Toast.LENGTH_LONG).show();
+                        Toast.makeText(DriverOrderDetailsActivity.this, R.string.respons_not_send, Toast.LENGTH_LONG).show();
 
                     }
                 }
@@ -383,10 +383,10 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
                 {
                     if (response.body().getSuccess()==1)
                     {
-                        Toast.makeText(DriverOrderDetailsActivity.this, "تم إرسال ردك الي العميل", Toast.LENGTH_LONG).show();
+                        Toast.makeText(DriverOrderDetailsActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();
                     }else
                     {
-                        Toast.makeText(DriverOrderDetailsActivity.this, "لم تم إرسال ردك الي العميل حاول مره أخرى لاحقا", Toast.LENGTH_LONG).show();
+                        Toast.makeText(DriverOrderDetailsActivity.this, R.string.respons_not_send, Toast.LENGTH_LONG).show();
 
                     }
                 }

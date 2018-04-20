@@ -79,15 +79,20 @@ public class PreviousOrdersFragment extends Fragment implements Users.UserData {
                 getDataFromServer();
             }
         });
-        getDataFromServer();
 
 
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        getDataFromServer();
+
+    }
 
     private void getDataFromServer() {
-        progBar.setVisibility(View.VISIBLE);
+        //progBar.setVisibility(View.VISIBLE);
 
         if (userModel.getUser_type().equals(Tags.Client))
         {

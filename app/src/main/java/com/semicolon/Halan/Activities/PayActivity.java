@@ -129,13 +129,13 @@ public class PayActivity extends AppCompatActivity implements View.OnClickListen
                         Log.e("id",userId+" ");
                         Log.e("date",date+" ");
                         dialog.dismiss();
-                        Toast.makeText(PayActivity.this, "Data Sent Succesfuly", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PayActivity.this, R.string.data_send, Toast.LENGTH_SHORT).show();
                         finish();
 
                     } else {
                         dialog.dismiss();
 
-                        Toast.makeText(PayActivity.this, "error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PayActivity.this, R.string.failed, Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     dialog.dismiss();
@@ -161,7 +161,7 @@ public class PayActivity extends AppCompatActivity implements View.OnClickListen
         Drawable drawable = bar.getIndeterminateDrawable().mutate();
         drawable.setColorFilter(ContextCompat.getColor(this,R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
         dialog = new ProgressDialog(this);
-        dialog.setMessage(getString(R.string.waitreg));
+        dialog.setMessage(getString(R.string.sending));
         dialog.setIndeterminateDrawable(drawable);
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(false);

@@ -133,10 +133,10 @@ public class AddRateActivity extends AppCompatActivity implements Users.UserData
                     {
                         Toast.makeText(AddRateActivity.this,ratingBar.getRating()+ myOrderModel.getDriver_id()+myOrderModel.getOrder_id(), Toast.LENGTH_LONG).show();
 
-                        Toast.makeText(AddRateActivity.this, "تم إرسال تقييمك بنجاح", Toast.LENGTH_LONG).show();
+                        Toast.makeText(AddRateActivity.this, R.string.rated_added, Toast.LENGTH_LONG).show();
                     }else
                     {
-                        Toast.makeText(AddRateActivity.this, "لم تم إرسال التقييم حاول مره أخرى لاحقا", Toast.LENGTH_LONG).show();
+                        Toast.makeText(AddRateActivity.this, R.string.rate_notadded, Toast.LENGTH_LONG).show();
 
                     }
                 }
