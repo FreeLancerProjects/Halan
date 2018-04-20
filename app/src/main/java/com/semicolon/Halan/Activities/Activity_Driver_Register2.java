@@ -248,7 +248,7 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
             Log.e("latLng",""+myLatLng.longitude);
 
             Services services= Api.getClient(Tags.BASE_URL).create(Services.class);
-        Call<UserModel> call=services.driverSignIn(userModel.getUser_id(),city,identety,car_model,car_color,enCodedImage1,enCodedImage2,enCodedImage3,lat,lng);
+        Call<UserModel> call=services.driverSignIn(userModel.getUser_id(),city,identety,car_model,vihile_number,car_color,enCodedImage1,enCodedImage2,enCodedImage3,lat,lng);
         call.enqueue(new Callback<UserModel>() {
             @Override
             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
