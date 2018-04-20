@@ -190,4 +190,9 @@ public interface Services {
     @FormUrlEncoded
     @POST("Api/AddOrderBill/{order_id}")
     Call<ResponseModel> SendOrderBill(@Path("order_id") String order_id,@Field("bill_image") String bill_img,@Field("order_bill_cost") String bill_cost);
+
+    @FormUrlEncoded
+    @POST("Api/RestMyPass")
+    Call<ResponseModel> RestMyPass(@Field("user_name") String user_name,
+                                   @Field("user_email") String user_email);
 }

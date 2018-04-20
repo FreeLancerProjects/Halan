@@ -101,6 +101,13 @@ public class Activity_Client_Login extends AppCompatActivity {
 
             }
 
+            forget_password.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Activity_Client_Login.this,ForgetPasswordActivity.class);
+                    startActivity(intent);
+                }
+            });
 
         newAccount.setOnClickListener(new View.OnClickListener() {
             @Override

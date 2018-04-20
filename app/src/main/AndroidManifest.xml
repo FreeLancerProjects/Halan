@@ -75,7 +75,8 @@
         <activity android:name=".Activities.ClientOrderDetailsActivity" />
         <activity android:name=".Activities.DriverOrderDetailActivity" />
         <activity android:name=".Activities.RulesActivity" />
-        <activity android:name=".Activities.IssueAbillActivity"></activity>
+        <activity android:name=".Activities.IssueAbillActivity" />
+        <activity android:name=".Activities.ForgetPasswordActivity"></activity>
     </application>
 
 </manifest>

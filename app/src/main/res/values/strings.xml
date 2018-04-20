@@ -159,6 +159,8 @@
     <string name="bill_price">Enter bill price</string>
     <string name="sendingbill">Sending bill...</string>
     <string name="sendbill_done">Bill sent successfully</string>
+    <string name="send_data">sending data ..</string>
+    <string name="success">sending data success</string>
 
 
 </resources>
