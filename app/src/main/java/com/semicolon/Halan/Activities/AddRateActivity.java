@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,14 +19,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.semicolon.Halan.Models.MyOrderModel;
+import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
+import com.semicolon.Halan.Services.Api;
+import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class AddRateActivity extends AppCompatActivity implements Users.UserData{
 
@@ -67,7 +78,9 @@ public class AddRateActivity extends AppCompatActivity implements Users.UserData
         addRate_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(AddRateActivity.this, "rate = "+ratingBar.getRating(), Toast.LENGTH_SHORT).show();
+
+                saveDataToServer();
+               // Toast.makeText(AddRateActivity.this, "rate = "+ratingBar.getRating(), Toast.LENGTH_SHORT).show();
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +114,40 @@ public class AddRateActivity extends AppCompatActivity implements Users.UserData
             }
         });
 
+    }
+
+    private void saveDataToServer() {
+        Map<String,String> map = new HashMap<>();
+        map.put("evaluation_count",ratingBar.getRating()+"");
+        map.put("driver_id",myOrderModel.getDriver_id());
+
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.sendDriverEvaluate(myOrderModel.getOrder_id(),map);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful())
+                {
+                    if (response.body().getSuccess()==1)
+                    {
+                        Toast.makeText(AddRateActivity.this,ratingBar.getRating()+ myOrderModel.getDriver_id()+myOrderModel.getOrder_id(), Toast.LENGTH_LONG).show();
+
+                        Toast.makeText(AddRateActivity.this, "تم إرسال تقييمك بنجاح", Toast.LENGTH_LONG).show();
+                    }else
+                    {
+                        Toast.makeText(AddRateActivity.this, "لم تم إرسال التقييم حاول مره أخرى لاحقا", Toast.LENGTH_LONG).show();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                Log.e("Error",t.getMessage());
+                Toast.makeText(AddRateActivity.this, getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void getDataFromIntent() {

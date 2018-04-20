@@ -1,5 +1,6 @@
 package com.semicolon.Halan.Services;
 
+import com.semicolon.Halan.Models.AboutUsModel;
 import com.semicolon.Halan.Models.AvailableDriversModel;
 import com.semicolon.Halan.Models.ClientNotificationModel;
 import com.semicolon.Halan.Models.MyOrderModel;
@@ -163,4 +164,10 @@ public interface Services {
     @GET()
     Call<ResponseBody> downloadImage(@Url String url);
 
+    @FormUrlEncoded
+    @POST("Api/DriverEvaluate/{order_id_fk}")
+    Call<ResponseModel> sendDriverEvaluate(@Path("order_id_fk") String order_id_fk,@FieldMap Map<String,String> map);
+
+    @GET("Api/AboutUs")
+    Call<List<AboutUsModel>> GetAboutUs();
 }
