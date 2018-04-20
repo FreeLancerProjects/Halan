@@ -401,7 +401,8 @@ public class HomeActivity extends AppCompatActivity
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 if (response.isSuccessful())
                 {
-                    if (response.body().getSuccess()==1)
+                    Log.e("rs",response.body().getSuccess()+"");
+                    if (response.body().getSuccess_order()==1)
                     {
                         dialog.dismiss();
                         Toast.makeText(HomeActivity.this, R.string.order_sent, Toast.LENGTH_LONG).show();
@@ -413,6 +414,7 @@ public class HomeActivity extends AppCompatActivity
                     }else
                         {
                             Toast.makeText(HomeActivity.this, R.string.order_notsent, Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
                         }
                 }
             }
@@ -952,6 +954,8 @@ public class HomeActivity extends AppCompatActivity
 
             @Override
             public void onFailure(Call<List<AvailableDriversModel>> call, Throwable t) {
+                dialog.dismiss();
+
                 Log.e("Error",t.getMessage());
                 Toast.makeText(HomeActivity.this, ""+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
             }

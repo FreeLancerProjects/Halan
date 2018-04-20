@@ -436,9 +436,13 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 if (response.isSuccessful())
                 {
-                    dialog.dismiss();
-                    Toast.makeText(OrderDeliveryActivity.this, R.string.orded_cancelled, Toast.LENGTH_LONG).show();
-                }
+                    if (response.body().getSuccess()==1)
+                    {
+                        dialog.dismiss();
+                        Toast.makeText(OrderDeliveryActivity.this, R.string.orded_cancelled, Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                          }
             }
 
             @Override
@@ -584,11 +588,11 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 if (response.isSuccessful())
                 {
-                    if (response.body().getSuccess()==1)
+                    if (response.body().getSuccess_order()==1)
                     {
                         dialog.dismiss();
                         Toast.makeText(OrderDeliveryActivity.this,R.string.order_sent, Toast.LENGTH_LONG).show();
-
+                        finish();
                     }else
                     {
                         Toast.makeText(OrderDeliveryActivity.this, R.string.order_notsent, Toast.LENGTH_SHORT).show();

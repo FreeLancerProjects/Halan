@@ -6,7 +6,7 @@ package com.semicolon.Halan.Models;
 
 public class ClientNotificationModel {
     private String message_id;
-    private String order_id_fk;
+    private String order_id;
     private String driver_id_fk;
     private String client_id_fk;
     private String messages_status;
@@ -24,9 +24,9 @@ public class ClientNotificationModel {
     public ClientNotificationModel() {
     }
 
-    public ClientNotificationModel(String message_id, String order_id_fk, String driver_id_fk, String client_id_fk, String messages_status, String driver_name, String driver_phone, String driver_evaluation_count, String driver_client_count, String order_cost, String driver_image, String order_details, String order_date, double rate_evaluation, double stars_evaluation) {
+    public ClientNotificationModel(String message_id, String order_id, String driver_id_fk, String client_id_fk, String messages_status, String driver_name, String driver_phone, String driver_evaluation_count, String driver_client_count, String order_cost, String driver_image, String order_details, String order_date, double rate_evaluation, double stars_evaluation) {
         this.message_id = message_id;
-        this.order_id_fk = order_id_fk;
+        this.order_id = order_id;
         this.driver_id_fk = driver_id_fk;
         this.client_id_fk = client_id_fk;
         this.messages_status = messages_status;
@@ -51,11 +51,11 @@ public class ClientNotificationModel {
     }
 
     public String getOrder_id_fk() {
-        return order_id_fk;
+        return order_id;
     }
 
     public void setOrder_id_fk(String order_id_fk) {
-        this.order_id_fk = order_id_fk;
+        this.order_id = order_id_fk;
     }
 
     public String getDriver_id_fk() {

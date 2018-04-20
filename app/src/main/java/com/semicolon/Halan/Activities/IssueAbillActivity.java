@@ -118,7 +118,9 @@ public class IssueAbillActivity extends AppCompatActivity {
     private void Send_Bill(String price) {
         Retrofit retrofit = Api.getClient(Tags.BASE_URL);
         Services services = retrofit.create(Services.class);
+        Log.e("pr",price);
         Call<ResponseModel> call = services.SendOrderBill(order_id, encoded_image, price);
+
         call.enqueue(new Callback<ResponseModel>() {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
@@ -128,6 +130,7 @@ public class IssueAbillActivity extends AppCompatActivity {
                     {
                         dialog.dismiss();
                         Toast.makeText(IssueAbillActivity.this, R.string.sendbill_done, Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 }
             }

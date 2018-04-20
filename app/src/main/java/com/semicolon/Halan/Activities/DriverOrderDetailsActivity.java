@@ -339,6 +339,7 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
         map.put("message_id",messege_id);
         map.put("order_id_fk",order_id);
         map.put("client_id_fk",client_id);
+
 //        map.put("user_id",userId);
 
         Retrofit retrofit = Api.getClient(Tags.BASE_URL);
@@ -352,6 +353,7 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
                     if (response.body().getSuccess()==1)
                     {
                         Toast.makeText(DriverOrderDetailsActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();
+                        finish();
                     }else
                     {
                         Toast.makeText(DriverOrderDetailsActivity.this, R.string.respons_not_send, Toast.LENGTH_LONG).show();
@@ -388,6 +390,8 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
                     if (response.body().getSuccess()==1)
                     {
                         Toast.makeText(DriverOrderDetailsActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();
+                        finish();
+
                     }else
                     {
                         Toast.makeText(DriverOrderDetailsActivity.this, R.string.respons_not_send, Toast.LENGTH_LONG).show();

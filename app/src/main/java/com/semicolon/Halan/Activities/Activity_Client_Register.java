@@ -98,8 +98,9 @@ public class Activity_Client_Register extends AppCompatActivity {
         c_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
-            }
+                Intent intent = new Intent(Activity_Client_Register.this,Activity_Client_Login.class);
+                startActivity(intent);
+                finish();            }
         });
 
         c_image.setOnClickListener(new View.OnClickListener() {

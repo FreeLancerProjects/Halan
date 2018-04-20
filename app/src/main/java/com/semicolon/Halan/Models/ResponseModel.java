@@ -9,6 +9,7 @@ public class ResponseModel {
     private String user_type;
     private int success;
     private String message;
+    private int success_order;
 
     public ResponseModel() {
     }
@@ -18,6 +19,14 @@ public class ResponseModel {
         this.user_type = user_type;
         this.success = success;
         this.message = message;
+    }
+
+    public int getSuccess_order() {
+        return success_order;
+    }
+
+    public void setSuccess_order(int success_order) {
+        this.success_order = success_order;
     }
 
     public String getUser_id() {

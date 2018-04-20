@@ -135,9 +135,8 @@ public class AddRateActivity extends AppCompatActivity implements Users.UserData
                 {
                     if (response.body().getSuccess()==1)
                     {
-                        Toast.makeText(AddRateActivity.this,ratingBar.getRating()+ myOrderModel.getDriver_id()+myOrderModel.getOrder_id(), Toast.LENGTH_LONG).show();
-
                         Toast.makeText(AddRateActivity.this, R.string.rated_added, Toast.LENGTH_LONG).show();
+                        finish();
                     }else
                     {
                         Toast.makeText(AddRateActivity.this, R.string.rate_notadded, Toast.LENGTH_LONG).show();

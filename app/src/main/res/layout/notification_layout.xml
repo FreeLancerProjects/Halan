@@ -36,7 +36,7 @@
                 android:gravity="left|center_vertical"
                 android:textStyle="bold"
                 android:singleLine="true"
-                android:textColor="@color/white"
+                android:textColor="#00B0FF"
                 />
             <TextView
                 android:id="@+id/time"
@@ -47,7 +47,7 @@
                 android:layout_gravity="center_vertical"
                 android:gravity="right|center_vertical"
                 android:singleLine="true"
-                android:textColor="@color/white"
+                android:textColor="#00B0FF"
 
                 />
         </LinearLayout>
@@ -58,7 +58,7 @@
             android:singleLine="true"
             android:textSize="13sp"
             android:layout_marginTop="2dp"
-            android:textColor="@color/white"
+            android:textColor="#00B0FF"
             android:gravity="left|center_vertical"
 
             />
