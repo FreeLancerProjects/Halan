@@ -76,7 +76,8 @@
         <activity android:name=".Activities.AddRateActivity" />
         <activity android:name=".Activities.ClientOrderDetailsActivity" />
         <activity android:name=".Activities.DriverOrderDetailActivity" />
-        <activity android:name=".Activities.RulesActivity"></activity>
+        <activity android:name=".Activities.RulesActivity" />
+        <activity android:name=".Activities.IssueAbillActivity"></activity>
     </application>
 
 </manifest>

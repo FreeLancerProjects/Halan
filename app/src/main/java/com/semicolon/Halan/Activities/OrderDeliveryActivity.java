@@ -157,6 +157,7 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
                 intent.putExtra("chat_type",chat_type);
                 intent.putExtra("curr_photo",curr_img);
                 intent.putExtra("chat_photo",chat_img);
+                intent.putExtra("order_id",myOrderModel.getOrder_id());
                 startActivity(intent);
             }
         });

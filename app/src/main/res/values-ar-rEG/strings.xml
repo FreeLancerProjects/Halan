@@ -150,4 +150,10 @@
     <string name="cancelling_ord">جار إلغاء الطلب...</string>
     <string name="No">لا</string>
     <string name="cancel_andSend">جار إلغاء الطلب وإرسال لسائقين أخرين...</string>
+    <string name="enter_bill_price">أدخل سعر الفاتورة...</string>
+    <string name="chos_bill_img">إختر صورة الفاتورة</string>
+    <string name="bill_price">أدخل سعر الفاتورة</string>
+    <string name="sendingbill">جار ارسال الفاتورة...</string>
+    <string name="sendbill_done">تم إرسال الفاتوة بنحاج</string>
+
 </resources>

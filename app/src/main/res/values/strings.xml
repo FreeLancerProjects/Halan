@@ -154,6 +154,11 @@
     <string name="cancelling_ord">Canceling order...</string>
     <string name="No">No</string>
     <string name="cancel_andSend">Canceling order and sending to other drivers</string>
+    <string name="enter_bill_price">Enter bill price...</string>
+    <string name="chos_bill_img">please select photo bill</string>
+    <string name="bill_price">Enter bill price</string>
+    <string name="sendingbill">Sending bill...</string>
+    <string name="sendbill_done">Bill sent successfully</string>
 
 
 </resources>

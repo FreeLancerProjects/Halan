@@ -65,7 +65,7 @@ public class ChatActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
     private String curr_id,chat_id;
     private String curr_type,chat_type;
-    private String curr_img,chat_img;
+    private String curr_img,chat_img,order_id;
     private DatabaseReference dRef;
     private final int IMG_REQ=12521;
     private StorageReference storageReference;
@@ -152,7 +152,7 @@ public class ChatActivity extends AppCompatActivity {
             chat_type =intent.getStringExtra("chat_type");
             curr_img=intent.getStringExtra("curr_photo");
             chat_img =intent.getStringExtra("chat_photo");
-
+            order_id = intent.getStringExtra("order_id");
             chatModel = new ChatModel(curr_id,chat_id,curr_type,chat_type,curr_img,chat_img);
         }
     }
@@ -299,6 +299,9 @@ public class ChatActivity extends AppCompatActivity {
         switch (id)
         {
             case R.id.bill:
+                Intent intent = new Intent(ChatActivity.this,IssueAbillActivity.class);
+                intent.putExtra("order_id",order_id);
+                startActivity(intent);
                 break;
             /*case R.id.refuse:
                 break;

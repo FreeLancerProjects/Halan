@@ -186,4 +186,8 @@ public interface Services {
     @FormUrlEncoded
     @POST("Api/OrderDelivered/{order_id_fk}")
     Call<ResponseModel> orderDeliverd(@Path("order_id_fk") String order_id_fk,@Field("user_type") String user_type);
+
+    @FormUrlEncoded
+    @POST("Api/AddOrderBill/{order_id}")
+    Call<ResponseModel> SendOrderBill(@Path("order_id") String order_id,@Field("bill_image") String bill_img,@Field("order_bill_cost") String bill_cost);
 }
