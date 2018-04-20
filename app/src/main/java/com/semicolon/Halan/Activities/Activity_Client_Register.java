@@ -296,5 +296,13 @@ public class Activity_Client_Register extends AppCompatActivity {
         return enCodedImage;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this,Activity_Client_Login.class);
+        startActivity(intent);
+        finish();
+    }
+
     //Api/Client/Profile/1
 }

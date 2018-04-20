@@ -114,6 +114,7 @@ public class Activity_Client_Login extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(Activity_Client_Login.this,Activity_Client_Register.class);
                 startActivity(intent);
+                finish();
             }
         });
 
