@@ -13,8 +13,8 @@
 
     <it.beppi.tristatetogglebutton_library.TriStateToggleButton
         android:id="@+id/toggleBtn"
-        android:layout_width="42dp"
-        android:layout_height="16dp"
+        android:layout_width="50dp"
+        android:layout_height="20dp"
         android:layout_gravity="left"
         app:tbIsMidSelectable="false"
         app:tbAnimate="true"
@@ -22,7 +22,7 @@
         app:tbDefaultStatus="off"
         app:tbOnColor="@color/black"
         app:tbOffColor="@color/offGreen"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         />
     <LinearLayout
         android:id="@+id/profileContainer"

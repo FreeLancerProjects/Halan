@@ -38,6 +38,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -150,15 +151,7 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
             @Override
             public void onClick(View view) {
                 Create_typing();
-                Intent intent = new Intent(OrderDeliveryActivity.this,ChatActivity.class);
-                intent.putExtra("curr_id",curr_id);
-                intent.putExtra("chat_id",chat_id);
-                intent.putExtra("curr_type",curr_type);
-                intent.putExtra("chat_type",chat_type);
-                intent.putExtra("curr_photo",curr_img);
-                intent.putExtra("chat_photo",chat_img);
-                intent.putExtra("order_id",myOrderModel.getOrder_id());
-                startActivity(intent);
+
             }
         });
 
@@ -231,27 +224,50 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
 
     }
     private void Create_typing() {
-        dRef.child("typing").child(curr_id).addValueEventListener(new ValueEventListener() {
+        dRef.child("typing").child(curr_id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        if (!dataSnapshot.hasChild(chat_id))
-                        {
-                            String path1="/"+curr_id+"/"+chat_id;
-                            String path2="/"+chat_id+"/"+curr_id;
+                if (!dataSnapshot.hasChild(chat_id)) {
+                    String path1 = "/" + curr_id + "/" + chat_id;
+                    String path2 = "/" + chat_id + "/" + curr_id;
 
-                            Map dataMap = new HashMap();
-                            dataMap.put("type",false);
+                    Map dataMap = new HashMap();
+                    dataMap.put("type", false);
 
-                            Map map = new HashMap();
-                            map.put(path1,dataMap);
-                            map.put(path2,dataMap);
+                    Map map = new HashMap();
+                    map.put(path1, dataMap);
+                    map.put(path2, dataMap);
 
-                            dRef.child("typing").updateChildren(map);
-
+                    dRef.child("typing").updateChildren(map).addOnSuccessListener(new OnSuccessListener() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            Intent intent = new Intent(OrderDeliveryActivity.this, ChatActivity.class);
+                            intent.putExtra("curr_id", curr_id);
+                            intent.putExtra("chat_id", chat_id);
+                            intent.putExtra("curr_type", curr_type);
+                            intent.putExtra("chat_type", chat_type);
+                            intent.putExtra("curr_photo", curr_img);
+                            intent.putExtra("chat_photo", chat_img);
+                            intent.putExtra("order_id", myOrderModel.getOrder_id());
+                            startActivity(intent);
                         }
+                    });
+                }else
+                    {
+                        Intent intent = new Intent(OrderDeliveryActivity.this, ChatActivity.class);
+                        intent.putExtra("curr_id", curr_id);
+                        intent.putExtra("chat_id", chat_id);
+                        intent.putExtra("curr_type", curr_type);
+                        intent.putExtra("chat_type", chat_type);
+                        intent.putExtra("curr_photo", curr_img);
+                        intent.putExtra("chat_photo", chat_img);
+                        intent.putExtra("order_id", myOrderModel.getOrder_id());
+                        startActivity(intent);
+                    }
 
-            }
+
+                }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {

@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.semicolon.Halan.Adapters.ViewPagerAdapter;
@@ -46,6 +47,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import it.beppi.tristatetogglebutton_library.TriStateToggleButton;
 import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -69,6 +71,9 @@ public class DriverOrdersActivity extends AppCompatActivity
     private Intent service_intent;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private TriStateToggleButton toggleBtn;
+
+
 
 
     @Override
@@ -78,11 +83,12 @@ public class DriverOrdersActivity extends AppCompatActivity
         setContentView(R.layout.activity_driver_orders);
         Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
+        preferences = new Preferences(this);
+
         initView();
         EventBus.getDefault().register(this);
         users = Users.getInstance();
         users.getUserData(this);
-        preferences = new Preferences(getApplicationContext());
         service_intent = new Intent(this, UpdateDriver_Location.class);
         startService(service_intent);
         UpdateToken();
@@ -122,6 +128,42 @@ public class DriverOrdersActivity extends AppCompatActivity
         ///////////////////////////////////////////////////////
         View view = navigationView.getHeaderView(0);
         userImage = view.findViewById(R.id.userImage);
+        toggleBtn = view.findViewById(R.id.toggleBtn);
+
+        String state = preferences.getSoundState();
+
+        if (state.equals(""))
+        {
+            preferences.UpdateSoundPref("on");
+        }
+
+        String state2 = preferences.getSoundState();
+
+        if (state2.equals("on"))
+        {
+            toggleBtn.setToggleOn();
+        }else
+        {
+            toggleBtn.setToggleOff();
+        }
+
+        toggleBtn.setOnToggleChanged(new TriStateToggleButton.OnToggleChanged() {
+            @Override
+            public void onToggle(TriStateToggleButton.ToggleStatus toggleStatus, boolean b, int i) {
+                if (toggleStatus== TriStateToggleButton.ToggleStatus.on)
+                {
+                    preferences.UpdateSoundPref("on");
+                    Toast.makeText(DriverOrdersActivity.this, "on2", Toast.LENGTH_SHORT).show();
+
+                }else if (toggleStatus == TriStateToggleButton.ToggleStatus.off)
+                {
+                    preferences.UpdateSoundPref("off");
+                    Toast.makeText(DriverOrdersActivity.this, "off2", Toast.LENGTH_SHORT).show();
+
+
+                }
+            }
+        });
         profileContainer = view.findViewById(R.id.profileContainer);
         profileContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -323,6 +365,7 @@ public class DriverOrdersActivity extends AppCompatActivity
     private void Logout()
     {
         preferences.ClearPref();
+        preferences.UpdateSoundPref("");
         Intent intent = new Intent(DriverOrdersActivity.this,Activity_Client_Login.class);
         startActivity(intent);
         finish();

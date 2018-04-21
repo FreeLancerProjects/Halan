@@ -196,4 +196,23 @@ public interface Services {
     @POST("Api/RestMyPass")
     Call<ResponseModel> RestMyPass(@Field("user_name") String user_name,
                                    @Field("user_email") String user_email);
+
+
+
+
+    @FormUrlEncoded
+    @POST("Api/GetNotification/{chat_user_id}")
+    Call<ResponseModel> PushNotification(@Path("chat_user_id") String chat_user_id,
+                                         @Field("curr_id") String curr_id,
+                                         @Field("chat_id") String chat_id,
+                                         @Field("curr_type") String curr_type,
+                                         @Field("chat_type") String chat_type,
+                                         @Field("curr_photo") String curr_photo,
+                                         @Field("chat_photo") String chat_photo,
+                                         @Field("order_id") String order_id,
+                                         @Field("title") String title,
+                                         @Field("content") String content,
+                                         @Field("content_type") String content_type,
+                                         @Field("notification_type") String notification_type);
+
 }

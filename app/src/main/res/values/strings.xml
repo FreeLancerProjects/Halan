@@ -161,6 +161,7 @@
     <string name="sendbill_done">Bill sent successfully</string>
     <string name="send_data">sending data ..</string>
     <string name="success">sending data success</string>
+    <string name="photo_sent">photo sent to you</string>
 
 
 </resources>

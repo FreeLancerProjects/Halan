@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:layoutDirection="ltr"
+    android:background="@color/black"
     >
     <ImageView
         android:id="@+id/user_image"
@@ -36,7 +37,7 @@
                 android:gravity="left|center_vertical"
                 android:textStyle="bold"
                 android:singleLine="true"
-                android:textColor="#00B0FF"
+                android:textColor="@color/gray1"
                 />
             <TextView
                 android:id="@+id/time"
@@ -47,7 +48,7 @@
                 android:layout_gravity="center_vertical"
                 android:gravity="right|center_vertical"
                 android:singleLine="true"
-                android:textColor="#00B0FF"
+                android:textColor="@color/gray1"
 
                 />
         </LinearLayout>
@@ -58,7 +59,7 @@
             android:singleLine="true"
             android:textSize="13sp"
             android:layout_marginTop="2dp"
-            android:textColor="#00B0FF"
+            android:textColor="@color/gray1"
             android:gravity="left|center_vertical"
 
             />

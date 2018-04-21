@@ -153,4 +153,29 @@ public class Preferences {
         editor.apply();
     }
 
+    public void UpdateSoundPref(String state)
+    {
+
+        SharedPreferences preferences = context.getSharedPreferences("sound",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("state",state);
+        editor.apply();
+    }
+
+    public String getSoundState()
+    {
+        SharedPreferences preferences = context.getSharedPreferences("sound",Context.MODE_PRIVATE);
+        String state = preferences.getString("state","");
+        return state;
+    }
+
+    public void Createpref_chat_user_id(String id)
+    {
+        SharedPreferences preferences = context.getSharedPreferences("chat_id",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("chat_id",id);
+        editor.apply();
+
+
+    }
 }

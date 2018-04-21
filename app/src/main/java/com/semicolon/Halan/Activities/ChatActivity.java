@@ -36,9 +36,15 @@ import com.google.firebase.storage.UploadTask;
 import com.semicolon.Halan.Adapters.Message_Adapter;
 import com.semicolon.Halan.Models.ChatModel;
 import com.semicolon.Halan.Models.MessageModel;
+import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.Typing;
+import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
+import com.semicolon.Halan.Services.Api;
+import com.semicolon.Halan.Services.Preferences;
+import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
+import com.semicolon.Halan.SingleTone.Users;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -57,8 +63,12 @@ import java.util.Map;
 import java.util.Random;
 
 import me.anwarshahriar.calligrapher.Calligrapher;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements Users.UserData{
     private Toolbar toolBar;
     private ImageView back,upload_imageBtn,send_imageBtn;
     private EditText ed_msg;
@@ -74,6 +84,9 @@ public class ChatActivity extends AppCompatActivity {
     private ChatModel chatModel;
     private List<MessageModel> messageModelList;
     private TextView typing;
+    private UserModel userModel;
+    private Users users;
+    private Preferences preferences;
 
 
     @Override
@@ -82,9 +95,11 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
-
+        preferences = new Preferences(this);
         dRef = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
+        users = Users.getInstance();
+        users.getUserData(this);
         getDataFromIntent();
         initView();
         DisplayMessage();
@@ -95,17 +110,24 @@ public class ChatActivity extends AppCompatActivity {
         dRef.child("typing").child(curr_id).child(chat_id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Typing state = dataSnapshot.getValue(Typing.class);
-                if (state.isType())
+                if (dataSnapshot!=null)
                 {
-                    typing.setText(R.string.type);
-                    typing.setVisibility(View.VISIBLE);
-
-                }else
+                    if (dataSnapshot.getValue()!=null)
                     {
-                        typing.setVisibility(View.INVISIBLE);
+                        Typing state = dataSnapshot.getValue(Typing.class);
+                        if (state.isType())
+                        {
+                            typing.setText(R.string.type);
+                            typing.setVisibility(View.VISIBLE);
 
+                        }else
+                        {
+                            typing.setVisibility(View.INVISIBLE);
+
+                        }
                     }
+                }
+
             }
 
             @Override
@@ -133,7 +155,7 @@ public class ChatActivity extends AppCompatActivity {
                             messageModelList.add(messageModel);
                             adapter.notifyDataSetChanged();
                         }
-                        recView.scrollToPosition(recView.getAdapter().getItemCount());
+                        recView.scrollToPosition(messageModelList.size()-1);
 
                     }
                 }
@@ -159,6 +181,8 @@ public class ChatActivity extends AppCompatActivity {
             chat_img =intent.getStringExtra("chat_photo");
             order_id = intent.getStringExtra("order_id");
             chatModel = new ChatModel(curr_id,chat_id,curr_type,chat_type,curr_img,chat_img);
+
+            preferences.Createpref_chat_user_id(chat_id);
         }
     }
 
@@ -183,7 +207,10 @@ public class ChatActivity extends AppCompatActivity {
         send_imageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendMsg();
+                if (!TextUtils.isEmpty(ed_msg.getText().toString()))
+                {
+                    sendMsg();
+                }
             }
         });
 
@@ -223,6 +250,39 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void pushNotification(String msg,String content_type) {
+
+        Log.e("user token",userModel.getUser_token_id());
+        Log.e("ci",curr_id);
+        Log.e("ci",chat_id);
+        Log.e("ci",curr_type);
+        Log.e("ci",chat_type);
+        Log.e("ci",curr_img);
+        Log.e("ci",chat_img);
+        Log.e("ci",order_id);
+        Log.e("ci",msg);
+
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.PushNotification(chat_id,curr_id,chat_id,curr_type,chat_type,curr_img,chat_img,order_id,curr_type,msg,content_type,Tags.chat);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+
+                if (response.isSuccessful())
+                {
+                    Log.e("ssss",response.body().getNotification_success()+"");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                Log.e("error",t.getMessage());
+            }
+        });
     }
 
     private void changeTypingState(boolean state) {
@@ -272,8 +332,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMsg() {
-        if (!TextUtils.isEmpty(ed_msg.getText()))
-        {
+
             final String msg = ed_msg.getText().toString();
             dRef.child("Messages").child(curr_id).addValueEventListener(new ValueEventListener() {
                 @Override
@@ -289,12 +348,17 @@ public class ChatActivity extends AppCompatActivity {
 
                 }
             });
-        }
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.chat_menu,menu);
+
+        if (userModel.getUser_type().equals(Tags.Driver))
+        {
+            getMenuInflater().inflate(R.menu.chat_menu,menu);
+
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -316,7 +380,7 @@ public class ChatActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void DataToSend(String msg_type,String msg)
+    private void DataToSend(String msg_type, final String msg)
     {
         String curr_ref = "messages/"+curr_id+"/"+chat_id;
         String chat_ref = "messages/"+chat_id+"/"+curr_id;
@@ -342,7 +406,14 @@ public class ChatActivity extends AppCompatActivity {
             pushMap.put(curr_ref+"/"+push,dataMap);
             pushMap.put(chat_ref+"/"+push,dataMap);
 
-            dRef.updateChildren(pushMap);
+            dRef.updateChildren(pushMap).addOnSuccessListener(new OnSuccessListener() {
+                @Override
+                public void onSuccess(Object o) {
+                    pushNotification(msg,Tags.txt_content_type);
+                    Log.e("vvvvvv","vvvvv_txt");
+
+                }
+            });
             ed_msg.setText("");
         }else if (msg_type.equals(Tags.img_msg_type))
         {
@@ -363,7 +434,15 @@ public class ChatActivity extends AppCompatActivity {
             pushMap.put(curr_ref+"/"+push,dataMap);
             pushMap.put(chat_ref+"/"+push,dataMap);
 
-            dRef.updateChildren(pushMap);
+            dRef.updateChildren(pushMap).addOnSuccessListener(new OnSuccessListener() {
+                @Override
+                public void onSuccess(Object o) {
+                    pushNotification(msg,Tags.img_content_type);
+                    Log.e("vvvvvv","vvvvv_img");
+
+
+                }
+            });
             ed_msg.setText("");
         }
 
@@ -385,6 +464,11 @@ public class ChatActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         changeTypingState(false);
+    }
+
+    @Override
+    public void UserDataSuccess(UserModel userModel) {
+        this.userModel = userModel;
     }
 
     public class AsynkTask extends AsyncTask<String,Void,String>{

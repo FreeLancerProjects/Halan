@@ -99,6 +99,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import it.beppi.tristatetogglebutton_library.TriStateToggleButton;
 import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -146,6 +147,7 @@ public class HomeActivity extends AppCompatActivity
     private String distn,order_details;
     private AlertDialog notalertDialog;
     private NetworkConnection connection;
+    private TriStateToggleButton toggleBtn;
 
 
 
@@ -157,13 +159,13 @@ public class HomeActivity extends AppCompatActivity
         Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
         connection = NetworkConnection.getInstance();
+        preferences = new Preferences(this);
         initView();
         EventBus.getDefault().register(this);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         users = Users.getInstance();
         users.getUserData(this);
         UpdateToken();
-        preferences = new Preferences(this);
         if (IsServicesOk()) {
             checkPermission();
         }
@@ -344,6 +346,42 @@ public class HomeActivity extends AppCompatActivity
         View view = nav_view.getHeaderView(0);
         profileContainer = view.findViewById(R.id.profileContainer);
         userImage = view.findViewById(R.id.userImage);
+        toggleBtn = view.findViewById(R.id.toggleBtn);
+
+        String state = preferences.getSoundState();
+
+        if (state.equals(""))
+        {
+            preferences.UpdateSoundPref("on");
+        }
+
+        String state2 = preferences.getSoundState();
+
+        if (state2.equals("on"))
+        {
+            toggleBtn.setToggleOn();
+        }else
+        {
+            toggleBtn.setToggleOff();
+        }
+
+        toggleBtn.setOnToggleChanged(new TriStateToggleButton.OnToggleChanged() {
+            @Override
+            public void onToggle(TriStateToggleButton.ToggleStatus toggleStatus, boolean b, int i) {
+                if (toggleStatus== TriStateToggleButton.ToggleStatus.on)
+                {
+                    preferences.UpdateSoundPref("on");
+                    Toast.makeText(HomeActivity.this, "on2", Toast.LENGTH_SHORT).show();
+
+                }else if (toggleStatus == TriStateToggleButton.ToggleStatus.off)
+                {
+                    preferences.UpdateSoundPref("off");
+                    Toast.makeText(HomeActivity.this, "off2", Toast.LENGTH_SHORT).show();
+
+
+                }
+            }
+        });
         nav_view.setNavigationItemSelectedListener(this);
 
         profileContainer.setOnClickListener(new View.OnClickListener() {
@@ -696,6 +734,7 @@ public class HomeActivity extends AppCompatActivity
     private void Logout()
     {
         preferences.ClearPref();
+        preferences.UpdateSoundPref("");
         Intent intent = new Intent(HomeActivity.this,Activity_Client_Login.class);
         startActivity(intent);
         finish();

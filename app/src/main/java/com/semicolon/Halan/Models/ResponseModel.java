@@ -10,6 +10,7 @@ public class ResponseModel {
     private int success;
     private String message;
     private int success_order;
+    private int notification_success;
 
     public ResponseModel() {
     }
@@ -19,6 +20,14 @@ public class ResponseModel {
         this.user_type = user_type;
         this.success = success;
         this.message = message;
+    }
+
+    public int getNotification_success() {
+        return notification_success;
+    }
+
+    public void setNotification_success(int notification_success) {
+        this.notification_success = notification_success;
     }
 
     public int getSuccess_order() {

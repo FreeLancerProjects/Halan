@@ -39,6 +39,7 @@ public class SplachActivity extends AppCompatActivity implements AnimationListen
 
         Intent i =new Intent(this,Activity_Client_Login.class);
         startActivity(i);
+        finish();
 
     }
 

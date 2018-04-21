@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.semicolon.Halan.Activities.DriverNotificationActivity;
 import com.semicolon.Halan.Activities.DriverOrderDetailsActivity;
 import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.R;
@@ -20,9 +21,11 @@ public class DriverNotficationAdapter extends RecyclerView.Adapter<DriverNotfica
     Context context;
     MyOrderModel mmodel;
     List<MyOrderModel> mylist;
+    DriverNotificationActivity activity;
 
     public DriverNotficationAdapter(Context context, List<MyOrderModel> mylist) {
         this.context = context;
+        this.activity = (DriverNotificationActivity) context;
         this.mylist = mylist;
 
     }
@@ -93,6 +96,8 @@ public class DriverNotficationAdapter extends RecyclerView.Adapter<DriverNotfica
             intent.putExtra("message_id",mmodel.getMessage_id());
 
             context.startActivity(intent);
+            activity.finish();
+
 
         }
 

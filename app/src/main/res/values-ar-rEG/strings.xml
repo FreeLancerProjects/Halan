@@ -157,5 +157,6 @@
     <string name="sendbill_done">تم إرسال الفاتوة بنحاج</string>
     <string name="send_data">جارى ارسال البيانات</string>
     <string name="success">تم ارسال البيانات بشكل صحيح</string>
+    <string name="photo_sent">تم ارسال صورة لك</string>
 
 </resources>

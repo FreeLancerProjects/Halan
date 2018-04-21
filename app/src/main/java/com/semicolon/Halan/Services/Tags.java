@@ -22,6 +22,11 @@ public class Tags {
     public static final String notdriver_refuse_order="driver_refuse_order";
     public static final String notclient_cancel_order="client_cancel_order";
     public static final String notdriver_cancel_order="driver_cancel_order";
+    public static final String txt_content_type="text";
+    public static final String img_content_type="image";
+    public static final String chat="chat";
+
+
     public static final String current_order="0";
     public static final String prev_order="1";
     public static final String txt_msg_type="text";

@@ -174,6 +174,7 @@ public class ClientNotificationActivity extends AppCompatActivity implements Use
                     if (response.body().getSuccess()==1)
                     {
                         Toast.makeText(ClientNotificationActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();
+                        finish();
                     }else
                         {
                             Toast.makeText(ClientNotificationActivity.this, R.string.respons_not_send, Toast.LENGTH_LONG).show();
@@ -210,6 +211,7 @@ public class ClientNotificationActivity extends AppCompatActivity implements Use
                     if (response.body().getSuccess()==1)
                     {
                         Toast.makeText(ClientNotificationActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();
+                        finish();
                     }else
                     {
                         Toast.makeText(ClientNotificationActivity.this, R.string.respons_not_send, Toast.LENGTH_LONG).show();

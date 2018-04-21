@@ -1,7 +1,9 @@
 package com.semicolon.Halan.Services;
 
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -17,6 +19,7 @@ import android.widget.RemoteViews;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.semicolon.Halan.Activities.ChatActivity;
 import com.semicolon.Halan.Activities.ClientNotificationActivity;
 import com.semicolon.Halan.Activities.DriverNotificationActivity;
 import com.semicolon.Halan.Activities.DriverOrdersActivity;
@@ -82,7 +85,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         if (user_type.equals(Tags.Client)) {
                             if (user_id.equals(not_user_id)) {
                                 Update_User_state();
-                                CreateNotification(map,not_time);
+                                CreateNotification(map,not_time,pref);
                             }
                         }
 
@@ -115,7 +118,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                     }
                                     if (myId.size()==1)
                                     {
-                                        CreateNotification(map,not_time);
+                                        CreateNotification(map,not_time, pref);
                                         Log.e("size",""+myId.get(0));
                                     }
                                 } catch (JSONException e) {
@@ -140,7 +143,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         {
                             if (map.get("to_id").toString().equals(user_id))
                             {
-                                CreateNotification(map,not_time);
+                                CreateNotification(map,not_time, pref);
 
                             }
                         }
@@ -161,7 +164,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         {
                             if (map.get("to_id").toString().equals(user_id))
                             {
-                                CreateNotification(map,not_time);
+                                CreateNotification(map,not_time, pref);
 
                             }
                         }
@@ -181,7 +184,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         {
                             if (map.get("to_id").toString().equals(user_id))
                             {
-                                CreateNotification(map,not_time);
+                                CreateNotification(map,not_time, pref);
 
                             }
                         }
@@ -201,10 +204,64 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         {
                             if (map.get("to_id").toString().equals(user_id))
                             {
-                                CreateNotification(map,not_time);
+                                CreateNotification(map,not_time, pref);
 
                             }
                         }
+                    }
+                }
+            }else if (not_type.equals(Tags.chat))
+            {
+                if (session!=null || !TextUtils.isEmpty(session))
+                {
+                    if (session.equals(Tags.login))
+                    {
+                        SharedPreferences spRef = this.getSharedPreferences("chat_id",MODE_PRIVATE);
+                        String chat_id = spRef.getString("chat_id","");
+                        //com.semicolon.Halan.Activities.ChatActivity
+                        ActivityManager am = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+                        String curr_class = am.getRunningTasks(1).get(0).topActivity.getClassName();
+                        String user_id = preferences.getString("user_id","");
+                        String user_type = preferences.getString("user_type","");
+                        Log.e("curclass",curr_class);
+                        String from_id = map.get("curr_id");
+
+                        Log.e("curr_id",user_id);
+                        Log.e("chat_id",from_id);
+
+                        if (curr_class.equals("com.semicolon.Halan.Activities.ChatActivity"))
+                        {
+                            if (!user_id.equals(from_id))
+                            {
+                                if (!TextUtils.isEmpty(chat_id))
+                                {
+                                    if (!map.get("chat_id").equals(chat_id))
+                                    {
+                                        Log.e("mm","mmmmm");
+                                        CreateNotification(map,not_time,pref);
+                                    }else
+                                    {
+                                        if (!curr_class.equals("com.semicolon.Halan.Activities.ChatActivity"))
+                                        {
+                                            CreateNotification(map,not_time,pref);
+
+                                        }
+                                    }
+
+                                }
+
+                            }
+
+                        }else
+                            {
+                                if (!user_id.equals(from_id))
+                                {
+                                    Log.e("tt","tttt");
+
+                                    CreateNotification(map,not_time,pref);
+                                }
+                            }
+
                     }
                 }
             }
@@ -212,7 +269,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     }
 
-    private void CreateNotification(final Map<String, String> map, final long not_time) {
+    private void CreateNotification(final Map<String, String> map, final long not_time, final Preferences pref) {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -221,7 +278,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Preferences preferences = new Preferences(MyFirebaseMessagingService.this);
                 final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 final NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-                builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+                String state = pref.getSoundState();
+                if (state.equals("on"))
+                {
+                    builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+
+                }
 
                 UserModel userModel = preferences.getUserData();
 
@@ -484,6 +546,78 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             }
                         },1000);
 
+                        break;
+
+                    case Tags.chat:
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                final RemoteViews remoteViews6 = new RemoteViews(getPackageName(),R.layout.notification_layout);
+                                String title = String.valueOf(map.get("chat_type"));
+                                String content_type = map.get("content_type");
+                                Log.e("chaaaaaaaaaaaaaaat","chaaaat");
+                                if (title.equals(Tags.Driver))
+                                {
+                                    remoteViews6.setTextViewText(R.id.title,getString(R.string.driver));
+
+                                }else
+                                    {
+                                        remoteViews6.setTextViewText(R.id.title,getString(R.string.client));
+
+                                    }
+                                if (content_type.equals(Tags.txt_content_type))
+                                {
+                                    remoteViews6.setTextViewText(R.id.content,map.get("content"));
+
+                                }else
+                                    {
+                                        remoteViews6.setTextViewText(R.id.content,getString(R.string.photo_sent));
+                                    }
+                                remoteViews6.setTextViewText(R.id.time,date);
+                                final Target target = new Target() {
+                                    @Override
+                                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                        remoteViews6.setImageViewBitmap(R.id.user_image,bitmap);
+                                        Intent intent7 = new Intent(MyFirebaseMessagingService.this, ChatActivity.class);
+                                        intent7.putExtra("curr_id",map.get("chat_id"));
+                                        intent7.putExtra("chat_id",map.get("curr_id"));
+                                        intent7.putExtra("curr_type",map.get("chat_type"));
+                                        intent7.putExtra("chat_type",map.get("curr_type"));
+                                        intent7.putExtra("curr_photo",map.get("chat_photo"));
+                                        intent7.putExtra("chat_photo",map.get("curr_photo"));
+                                        intent7.putExtra("order_id",map.get("order_id"));
+
+                                        //startActivity(intent2);
+                                        PendingIntent pendingIntent2 = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent7,PendingIntent.FLAG_UPDATE_CURRENT);
+                                        builder.setContentIntent(pendingIntent2);
+                                        builder.setSmallIcon(R.mipmap.ic_launcher_round);
+                                        builder.setAutoCancel(true);
+                                        builder.setContent(remoteViews6);
+                                        manager.notify(0,builder.build());
+                                        Log.e("imaaaaaaaaaagt","sssssssssssssss");
+                                    }
+
+                                    @Override
+                                    public void onBitmapFailed(Drawable errorDrawable) {
+
+                                    }
+
+                                    @Override
+                                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                                    }
+                                };
+                                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Picasso.with(MyFirebaseMessagingService.this).load(Uri.parse(Tags.ImgPath+map.get("chat_photo"))).into(target);
+
+                                    }
+                                },1);
+
+
+                            }
+                        },1000);
                         break;
                 }
             }
