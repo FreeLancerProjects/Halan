@@ -38,11 +38,7 @@
         </service>
         /////////////////////////////////////////////////
         <activity android:name=".Activities.Activity_Client_Login">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".Activities.Activity_Client_Register" />
         <activity android:name=".Activities.Activity_Driver_Register" />
@@ -76,7 +72,14 @@
         <activity android:name=".Activities.DriverOrderDetailActivity" />
         <activity android:name=".Activities.RulesActivity" />
         <activity android:name=".Activities.IssueAbillActivity" />
-        <activity android:name=".Activities.ForgetPasswordActivity"></activity>
+        <activity android:name=".Activities.ForgetPasswordActivity" />
+        <activity android:name=".Activities.SplachActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

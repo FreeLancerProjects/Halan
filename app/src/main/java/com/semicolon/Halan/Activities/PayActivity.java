@@ -1,14 +1,18 @@
 package com.semicolon.Halan.Activities;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -25,6 +29,11 @@ import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,6 +49,8 @@ public class PayActivity extends AppCompatActivity implements View.OnClickListen
     private Preferences preferences;
     private UserModel userModel;
     private ImageView back;
+    private String date;
+    Date c;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,13 +92,14 @@ public class PayActivity extends AppCompatActivity implements View.OnClickListen
 
 
     }
-
+/*
     @Override
     @Deprecated
     protected Dialog onCreateDialog(int id) {
         return new DatePickerDialog(this, datePickerListener, year, month, day);
     }
-
+    Calendar calendar = Calendar.getInstance();
+    final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int selectedYear,
                               int selectedMonth, int selectedDay) {
@@ -97,7 +109,30 @@ public class PayActivity extends AppCompatActivity implements View.OnClickListen
             transDate.setText(selectedDay + " / " + (selectedMonth + 1) + " / "
                     + selectedYear);
         }
-    };
+    };*/
+    public void DateDialog() {
+
+        Calendar calendar = Calendar.getInstance();
+        final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(PayActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+            @SuppressLint("ResourceAsColor")
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                date = dateFormatter.format(newDate.getTime());
+
+                Date dateSpecified = newDate.getTime();
+
+                transDate.setText(date);
+
+
+
+            }
+
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+    }
 
     @Override
     public void onClick(View view) {
@@ -105,7 +140,7 @@ public class PayActivity extends AppCompatActivity implements View.OnClickListen
         switch (view.getId())
         {
             case R.id.edt_date:
-                showDialog(0);
+                DateDialog();
                 break;
             case R.id.btn_send:
                 saveDataToServer();

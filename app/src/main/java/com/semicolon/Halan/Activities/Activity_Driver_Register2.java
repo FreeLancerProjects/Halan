@@ -266,7 +266,6 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
                     }else {
 
                         Toast.makeText(Activity_Driver_Register2.this, ""+R.string.regfailed, Toast.LENGTH_SHORT).show();
-
                         dialog.dismiss();
                     }
                 }else {
