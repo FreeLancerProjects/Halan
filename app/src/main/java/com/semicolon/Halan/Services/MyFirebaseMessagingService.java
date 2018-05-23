@@ -23,14 +23,16 @@ import com.semicolon.Halan.Activities.ChatActivity;
 import com.semicolon.Halan.Activities.ClientNotificationActivity;
 import com.semicolon.Halan.Activities.DriverNotificationActivity;
 import com.semicolon.Halan.Activities.DriverOrdersActivity;
-import com.semicolon.Halan.Activities.HomeActivity;
 import com.semicolon.Halan.Activities.MyOrdersActivity;
+import com.semicolon.Halan.Models.DriverAcceptModel;
+import com.semicolon.Halan.Models.Finishied_Order_Model;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.SingleTone.Users;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -85,7 +87,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         if (user_type.equals(Tags.Client)) {
                             if (user_id.equals(not_user_id)) {
                                 Update_User_state();
-                                CreateNotification(map,not_time,pref);
+                                CreateNotification(user_id,map,not_time,pref);
                             }
                         }
 
@@ -94,6 +96,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             }else if (not_type.equals(Tags.notclient_send_request))
                 {
+                    //Log.e("to_ids",map.get("to_id"));
                     Log.e("222222222222222222","222222222");
                     if (session!=null || !TextUtils.isEmpty(session))
                     {
@@ -109,18 +112,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                 try {
                                     List<String> myId = new ArrayList<>();
                                     JSONArray jsonArray = new JSONArray(map.get("to_id"));
-                                    for (int i =0;i<jsonArray.length();i++)
+                                    if (jsonArray.length()>0)
                                     {
-                                        if (jsonArray.get(i).toString().equals(user_id))
+                                        for (int i =0;i<jsonArray.length();i++)
                                         {
-                                            myId.add(jsonArray.get(i).toString());
+                                            if (jsonArray.get(i).toString().equals(user_id))
+                                            {
+                                                myId.add(jsonArray.get(i).toString());
+                                            }
+                                        }
+                                        if (myId.size()==1)
+                                        {
+                                            CreateNotification(user_id,map,not_time, pref);
+                                            Log.e("size",""+myId.get(0));
                                         }
                                     }
-                                    if (myId.size()==1)
-                                    {
-                                        CreateNotification(map,not_time, pref);
-                                        Log.e("size",""+myId.get(0));
-                                    }
+
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -143,7 +150,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         {
                             if (map.get("to_id").toString().equals(user_id))
                             {
-                                CreateNotification(map,not_time, pref);
+                                CreateNotification(user_id,map,not_time, pref);
 
                             }
                         }
@@ -164,7 +171,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         {
                             if (map.get("to_id").toString().equals(user_id))
                             {
-                                CreateNotification(map,not_time, pref);
+                                CreateNotification(user_id,map,not_time, pref);
 
                             }
                         }
@@ -184,7 +191,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         {
                             if (map.get("to_id").toString().equals(user_id))
                             {
-                                CreateNotification(map,not_time, pref);
+                                CreateNotification(user_id,map,not_time, pref);
 
                             }
                         }
@@ -204,7 +211,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         {
                             if (map.get("to_id").toString().equals(user_id))
                             {
-                                CreateNotification(map,not_time, pref);
+                                CreateNotification(user_id,map,not_time, pref);
 
                             }
                         }
@@ -238,12 +245,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                     if (!map.get("chat_id").equals(chat_id))
                                     {
                                         Log.e("mm","mmmmm");
-                                        CreateNotification(map,not_time,pref);
+                                        CreateNotification(user_id,map,not_time,pref);
                                     }else
                                     {
                                         if (!curr_class.equals("com.semicolon.Halan.Activities.ChatActivity"))
                                         {
-                                            CreateNotification(map,not_time,pref);
+                                            CreateNotification(user_id,map,not_time,pref);
 
                                         }
                                     }
@@ -258,9 +265,26 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                 {
                                     Log.e("tt","tttt");
 
-                                    CreateNotification(map,not_time,pref);
+                                    CreateNotification(user_id,map,not_time,pref);
                                 }
                             }
+
+                    }
+                }
+            }else if (not_type.equals(Tags.driver_finish_order))
+            {
+                if (session!=null || !TextUtils.isEmpty(session))
+                {
+                    if (session.equals(Tags.login))
+                    {
+                        String user_id = preferences.getString("user_id","");
+                        String user_type = preferences.getString("user_type","");
+
+                        if (map.get("to_id").toString().equals(user_id))
+                        {
+                            CreateNotification(user_id,map,not_time, pref);
+
+                        }
 
                     }
                 }
@@ -269,7 +293,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     }
 
-    private void CreateNotification(final Map<String, String> map, final long not_time, final Preferences pref) {
+    private void CreateNotification(final String user_id , final Map<String, String> map, final long not_time, final Preferences pref)
+    {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -294,12 +319,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 {
                     case Tags.nottype_driverAccept:
 
-                        Intent intent = new Intent(MyFirebaseMessagingService.this, HomeActivity.class);
+                        /*Intent intent = new Intent(MyFirebaseMessagingService.this, HomeActivity.class);
                         //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                         //startActivity(intent);
                         PendingIntent pendingIntent = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
                         builder.setContentIntent(pendingIntent);
-                        builder.setSmallIcon(R.mipmap.ic_launcher_round);
+                      */  builder.setSmallIcon(R.mipmap.ic_launcher);
                         builder.setAutoCancel(true);
                         builder.setContentTitle(map.get("title"));
                         builder.setContentText(map.get("message"));
@@ -323,7 +348,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                         //startActivity(intent2);
                                         PendingIntent pendingIntent2 = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent2,PendingIntent.FLAG_UPDATE_CURRENT);
                                         builder.setContentIntent(pendingIntent2);
-                                        builder.setSmallIcon(R.mipmap.ic_launcher_round);
+                                        builder.setSmallIcon(R.mipmap.ic_launcher);
                                         builder.setAutoCancel(true);
                                         builder.setContent(remoteViews1);
                                         builder.setContentTitle(map.get("title"));
@@ -374,12 +399,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                         //startActivity(intent3);
                                         PendingIntent pendingIntent3 = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent3,PendingIntent.FLAG_UPDATE_CURRENT);
                                         builder.setContentIntent(pendingIntent3);
-                                        builder.setSmallIcon(R.mipmap.ic_launcher_round);
+                                        builder.setSmallIcon(R.mipmap.ic_launcher);
                                         builder.setAutoCancel(true);
                                         builder.setContent(remoteViews2);
                                         builder.setContentTitle(map.get("title"));
                                         builder.setContentText(map.get("message"));
                                         manager.notify(0,builder.build());
+                                        EventBus.getDefault().post(new DriverAcceptModel(user_id));
                                     }
 
                                     @Override
@@ -421,7 +447,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                         //startActivity(intent4);
                                         PendingIntent pendingIntent4 = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent4,PendingIntent.FLAG_UPDATE_CURRENT);
                                         builder.setContentIntent(pendingIntent4);
-                                        builder.setSmallIcon(R.mipmap.ic_launcher_round);
+                                        builder.setSmallIcon(R.mipmap.ic_launcher);
                                         builder.setAutoCancel(true);
                                         builder.setContent(remoteViews3);
                                         builder.setContentTitle(map.get("title"));
@@ -470,7 +496,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                         //startActivity(intent3);
                                         PendingIntent pendingIntent5 = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent5,PendingIntent.FLAG_UPDATE_CURRENT);
                                         builder.setContentIntent(pendingIntent5);
-                                        builder.setSmallIcon(R.mipmap.ic_launcher_round);
+                                        builder.setSmallIcon(R.mipmap.ic_launcher);
                                         builder.setAutoCancel(true);
                                         builder.setContent(remoteViews4);
                                         builder.setContentTitle(map.get("title"));
@@ -517,7 +543,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                         //startActivity(intent3);
                                         PendingIntent pendingIntent5 = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent6,PendingIntent.FLAG_UPDATE_CURRENT);
                                         builder.setContentIntent(pendingIntent5);
-                                        builder.setSmallIcon(R.mipmap.ic_launcher_round);
+                                        builder.setSmallIcon(R.mipmap.ic_launcher);
                                         builder.setAutoCancel(true);
                                         builder.setContent(remoteViews5);
                                         builder.setContentTitle(map.get("title"));
@@ -590,7 +616,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                         //startActivity(intent2);
                                         PendingIntent pendingIntent2 = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent7,PendingIntent.FLAG_UPDATE_CURRENT);
                                         builder.setContentIntent(pendingIntent2);
-                                        builder.setSmallIcon(R.mipmap.ic_launcher_round);
+                                        builder.setSmallIcon(R.mipmap.ic_launcher);
                                         builder.setAutoCancel(true);
                                         builder.setContent(remoteViews6);
                                         manager.notify(0,builder.build());
@@ -619,6 +645,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             }
                         },1000);
                         break;
+                    case Tags.driver_finish_order:
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                builder.setAutoCancel(true);
+                                manager.notify(0,builder.build());
+                                EventBus.getDefault().post(new Finishied_Order_Model(map.get("from_id").toString(),map.get("from_name").toString(),map.get("from_image").toString(),map.get("order_id").toString(),map.get("order_detals").toString()));
+
+                            }
+                        },1000);
                 }
             }
         },1000);
@@ -626,7 +662,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     }
 
-    private void Update_User_state() {
+    private void Update_User_state()
+    {
        Preferences preferences = new Preferences(this);
        preferences.Update_UserState(Tags.Driver);
     }

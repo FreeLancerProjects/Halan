@@ -22,6 +22,15 @@ public class Preferences {
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("user_id",userModel.getUser_id());
         editor.putString("user_type",userModel.getUser_type());
+        editor.putString("name",userModel.getName());
+        editor.putString("user_age",userModel.getUser_age());
+        editor.putString("user_gender",userModel.getUser_gender());
+
+        editor.putString("rate_evaluation",String.valueOf(userModel.getRate_evaluation()));
+        editor.putString("stars_evaluation",String.valueOf(userModel.getStars_evaluation()));
+        editor.putString("order_count",String.valueOf(userModel.getOrder_count()));
+
+
         editor.putString("user_name",userModel.getUser_name());
         editor.putString("user_phone",userModel.getUser_phone());
         editor.putString("user_email",userModel.getUser_email());
@@ -50,6 +59,15 @@ public class Preferences {
         editor.putString("user_id",userModel.getUser_id());
         editor.putString("user_type",userModel.getUser_type());
         editor.putString("user_name",userModel.getUser_name());
+        editor.putString("name",userModel.getName());
+        editor.putString("user_age",userModel.getUser_age());
+        editor.putString("user_gender",userModel.getUser_gender());
+
+        editor.putString("rate_evaluation",String.valueOf(userModel.getRate_evaluation()));
+        editor.putString("stars_evaluation",String.valueOf(userModel.getStars_evaluation()));
+        editor.putString("order_count",String.valueOf(userModel.getOrder_count()));
+
+
         editor.putString("user_phone",userModel.getUser_phone());
         editor.putString("user_email",userModel.getUser_email());
         editor.putString("user_token_id",userModel.getUser_token_id());
@@ -77,6 +95,15 @@ public class Preferences {
         editor.putString("user_id","");
         editor.putString("user_type","");
         editor.putString("user_name","");
+        editor.putString("name","");
+        editor.putString("user_age","");
+        editor.putString("user_gender","");
+
+        editor.putString("rate_evaluation","");
+        editor.putString("stars_evaluation","");
+        editor.putString("order_count","");
+
+
         editor.putString("user_phone","");
         editor.putString("user_email","");
         editor.putString("user_token_id","");
@@ -104,7 +131,13 @@ public class Preferences {
        String  user_id= pref.getString("user_id","");
        String  user_type= pref.getString("user_type","");
        String  user_name= pref.getString("user_name","");
-       String  user_phone= pref.getString("user_phone","");
+        String  name= pref.getString("name","");
+        String  user_age= pref.getString("user_age","");
+        String  user_gender= pref.getString("user_gender","");
+        String rate_evaluation= pref.getString("rate_evaluation","");
+        String stars_evaluation = pref.getString("stars_evaluation","");
+        String order_count = pref.getString("order_count","");
+        String  user_phone= pref.getString("user_phone","");
        String  user_email= pref.getString("user_email","");
        String  user_token_id= pref.getString("user_token_id","");
        String  user_photo= pref.getString("user_photo","");
@@ -124,6 +157,14 @@ public class Preferences {
        UserModel userModel = new UserModel();
        userModel.setUser_id(user_id);
        userModel.setUser_type(user_type);
+       userModel.setName(name);
+       userModel.setUser_age(user_age);
+       userModel.setUser_gender(user_gender);
+
+        userModel.setRate_evaluation(Double.parseDouble(rate_evaluation));
+        userModel.setStars_evaluation(Integer.parseInt(stars_evaluation));
+        userModel.setOrder_count(Integer.parseInt(order_count));
+
        userModel.setUser_name(user_name);
        userModel.setUser_phone(user_phone);
        userModel.setUser_email(user_email);

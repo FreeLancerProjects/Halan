@@ -2,8 +2,10 @@ package com.semicolon.Halan.Services;
 
 import com.semicolon.Halan.Models.AboutUsModel;
 import com.semicolon.Halan.Models.AvailableDriversModel;
+import com.semicolon.Halan.Models.ClientLastOrderModel;
 import com.semicolon.Halan.Models.ClientNotificationModel;
 import com.semicolon.Halan.Models.MyOrderModel;
+import com.semicolon.Halan.Models.NearbyModel;
 import com.semicolon.Halan.Models.PlaceModel;
 import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.TotalCostModel;
@@ -12,7 +14,6 @@ import com.semicolon.Halan.Models.UserModel;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
@@ -32,7 +33,10 @@ public interface Services {
 
     @FormUrlEncoded
     @POST("Api/ClientRegistration")
-    Call<UserModel> userSignUp(@Field("user_name") String user_name,
+    Call<UserModel> userSignUp(@Field("user_full_name") String name,
+                               @Field("user_age") String age,
+                               @Field("user_gender") String gender,
+                               @Field("user_name") String user_name,
                                @Field("user_pass") String user_pass,
                                @Field("user_phone") String user_phone,
                                @Field("user_email") String user_email,
@@ -67,7 +71,10 @@ public interface Services {
                                  @Field("user_name") String user_name,
                                  @Field("user_phone") String user_phone,
                                  @Field("user_email") String user_email,
-                                 @Field("user_photo") String user_photo
+                                 @Field("user_photo") String user_photo,
+                                 @Field("user_full_name") String name,
+                                 @Field("user_age") String user_age,
+                                 @Field("user_gender") String user_gender
     );
 
 
@@ -162,9 +169,6 @@ public interface Services {
     @POST("Api/ClientCancelOrder/{user_id}")
     Call<ResponseModel> client_cancel_order(@Path("user_id") String user_id,@FieldMap Map<String,String> map);
 
-    @GET()
-    Call<ResponseBody> downloadImage(@Url String url);
-
     @FormUrlEncoded
     @POST("Api/DriverEvaluate/{order_id_fk}")
     Call<ResponseModel> sendDriverEvaluate(@Path("order_id_fk") String order_id_fk,@FieldMap Map<String,String> map);
@@ -175,6 +179,10 @@ public interface Services {
     @FormUrlEncoded
     @POST("Api/SendToNewDrivers")
     Call<ResponseModel> SendToNewDriver(@Field("order_id_fk") String order_id_fk,@Field("user_id") String user_id,@Field("driver_id[] array") List<String> driver_ids);
+
+    @FormUrlEncoded
+    @POST("Api/SendToOtherDrivers")
+    Call<ResponseModel> SendToOtherDriver(@Field("order_id_fk") String order_id_fk,@Field("user_id") String user_id,@Field("driver_id[] array") List<String> driver_ids);
 
     @FormUrlEncoded
     @POST("Api/DriverCancelOrder/{user_id}")
@@ -190,7 +198,7 @@ public interface Services {
 
     @FormUrlEncoded
     @POST("Api/AddOrderBill/{order_id}")
-    Call<ResponseModel> SendOrderBill(@Path("order_id") String order_id,@Field("bill_image") String bill_img,@Field("order_bill_cost") String bill_cost);
+    Call<ResponseModel>SendOrderBill(@Path("order_id") String order_id,@Field("bill_image") String bill_img,@Field("order_bill_cost") String bill_cost);
 
     @FormUrlEncoded
     @POST("Api/RestMyPass")
@@ -215,4 +223,13 @@ public interface Services {
                                          @Field("content_type") String content_type,
                                          @Field("notification_type") String notification_type);
 
+
+    @GET("Api/LastOrderReplay/{user_id}")
+    Call<List<ClientLastOrderModel>>getClient_LastOrder(@Path("user_id") String user_id);
+
+    @GET("Api/Logout/{user_id}")
+    Call<ResponseModel> LogOut(@Path("user_id") String id);
+
+    @GET()
+    Call<NearbyModel> getNearbyPlaces(@Url String url);
 }

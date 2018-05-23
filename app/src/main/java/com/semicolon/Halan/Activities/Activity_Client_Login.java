@@ -70,7 +70,7 @@ public class Activity_Client_Login extends AppCompatActivity {
                     {
                         UserModel userModel =preferences.getUserData();
                         users.setUserData(userModel);
-                        Intent intent = new Intent(Activity_Client_Login.this,DriverOrdersActivity.class);
+                        Intent intent = new Intent(Activity_Client_Login.this,HomeActivity.class);
                         startActivity(intent);
                         finish();
                     }
@@ -204,7 +204,7 @@ public class Activity_Client_Login extends AppCompatActivity {
                             preferences.CreatePref(userModel);
                             users.setUserData(userModel);
                             pDialog.dismiss();
-                            Intent intent = new Intent(Activity_Client_Login.this,DriverOrdersActivity.class);
+                            Intent intent = new Intent(Activity_Client_Login.this,HomeActivity.class);
                             startActivity(intent);
                             finish();
                         }

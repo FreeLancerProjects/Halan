@@ -3,6 +3,7 @@ package com.semicolon.Halan.Services;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -15,6 +16,9 @@ public class Api {
     private static Retrofit retrofit = null;
     public static Retrofit getClient(String BaseUrl) {
         if (retrofit==null) {
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
             OkHttpClient client =new OkHttpClient.Builder()
                     .connectTimeout(1, TimeUnit.MINUTES)
                     .writeTimeout(20,TimeUnit.SECONDS)

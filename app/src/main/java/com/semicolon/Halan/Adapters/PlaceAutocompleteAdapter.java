@@ -148,7 +148,7 @@ public class PlaceAutocompleteAdapter
         // 60s for a result from the API.
         try {
             Tasks.await(results, 60, TimeUnit.SECONDS);
-        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+        } catch (ExecutionException | InterruptedException |NullPointerException |TimeoutException e) {
             e.printStackTrace();
         }
         try {
@@ -163,7 +163,12 @@ public class PlaceAutocompleteAdapter
             // If the query did not complete successfully return null
             Toast.makeText(getContext(), R.string.connection,
                     Toast.LENGTH_SHORT).show();
-            Log.e("tags", "Error getting autocomplete prediction API call", e);
+            //Log.e("tags", "Error getting autocomplete prediction API call", e);
+            return null;
+        }catch (NullPointerException e)
+        {
+            Toast.makeText(getContext(), R.string.connection,
+                    Toast.LENGTH_SHORT).show();
             return null;
         }
     }

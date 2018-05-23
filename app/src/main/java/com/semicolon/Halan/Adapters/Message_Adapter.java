@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -216,12 +217,13 @@ public class Message_Adapter extends RecyclerView.Adapter {
 
     public class myViewHolder_imgRight extends RecyclerView.ViewHolder implements View.OnClickListener{
         CircleImageView user_image;
-        TextView time;
+        TextView time,msg;
         ImageView img,downLoad_btn;
 
         public myViewHolder_imgRight(View itemView) {
             super(itemView);
             time = itemView.findViewById(R.id.time);
+            msg = itemView.findViewById(R.id.msg);
             user_image = itemView.findViewById(R.id.user_image);
             img = itemView.findViewById(R.id.image);
             downLoad_btn = itemView.findViewById(R.id.downLoad_btn);
@@ -235,6 +237,10 @@ public class Message_Adapter extends RecyclerView.Adapter {
             SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm aa");
             String date = dateFormat.format(new Date(messageModel.getMessage_time()));
 
+            if (!TextUtils.isEmpty(messageModel.getMessage()))
+            {
+                msg.setText(messageModel.getMessage());
+            }
             time.setText(date);
 
             target = new Target() {
@@ -285,11 +291,13 @@ public class Message_Adapter extends RecyclerView.Adapter {
     }
     public class myViewHolder_imgLeft extends RecyclerView.ViewHolder implements View.OnClickListener{
         CircleImageView user_image;
-        TextView time;
+        TextView time,msg;
         ImageView img,downLoad_btn;
         public myViewHolder_imgLeft(View itemView) {
             super(itemView);
             time = itemView.findViewById(R.id.time);
+            msg = itemView.findViewById(R.id.msg);
+
             user_image = itemView.findViewById(R.id.user_image);
             img = itemView.findViewById(R.id.image);
             downLoad_btn = itemView.findViewById(R.id.downLoad_btn);
@@ -304,7 +312,10 @@ public class Message_Adapter extends RecyclerView.Adapter {
             String date = dateFormat.format(new Date(messageModel.getMessage_time()));
 
             time.setText(date);
-
+            if (!TextUtils.isEmpty(messageModel.getMessage()))
+            {
+                msg.setText(messageModel.getMessage());
+            }
             target = new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {

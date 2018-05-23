@@ -18,7 +18,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
@@ -46,10 +45,11 @@ public class AddRateActivity extends AppCompatActivity implements Users.UserData
     private ImageView back;
     private RatingBar ratingBar;
     private Button addRate_btn;
-    private MyOrderModel myOrderModel;
+    //private MyOrderModel myOrderModel;
     private Target target;
     private Users users;
     private UserModel userModel;
+    private String order_id,driver_id,txtdriver_name,txtdriver_image;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,11 +123,11 @@ public class AddRateActivity extends AppCompatActivity implements Users.UserData
     private void saveDataToServer() {
         Map<String,String> map = new HashMap<>();
         map.put("evaluation_count",ratingBar.getRating()+"");
-        map.put("driver_id",myOrderModel.getDriver_id());
+        map.put("driver_id",driver_id);
 
         Retrofit retrofit = Api.getClient(Tags.BASE_URL);
         Services services = retrofit.create(Services.class);
-        Call<ResponseModel> call = services.sendDriverEvaluate(myOrderModel.getOrder_id(),map);
+        Call<ResponseModel> call = services.sendDriverEvaluate(order_id,map);
         call.enqueue(new Callback<ResponseModel>() {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
@@ -158,12 +158,16 @@ public class AddRateActivity extends AppCompatActivity implements Users.UserData
         Intent intent = getIntent();
         if (intent!=null)
         {
-            myOrderModel = (MyOrderModel) intent.getSerializableExtra("order");
-            updateUi(myOrderModel);
+            driver_id = intent.getStringExtra("driver_id");
+            order_id  = intent.getStringExtra("order_id");
+            txtdriver_name = intent.getStringExtra("driver_name");
+            txtdriver_image= intent.getStringExtra("driver_image");
+            updateUi(txtdriver_name,txtdriver_image);
         }
     }
 
-    private void updateUi(MyOrderModel myOrderModel) {
+    private void updateUi(String txtdriver_name, String txtdriver_image)
+    {
         try {
             target = new Target() {
                 @Override
@@ -182,20 +186,19 @@ public class AddRateActivity extends AppCompatActivity implements Users.UserData
                 }
             };
 
-            if (myOrderModel.getDriver_photo()!=null || !TextUtils.isEmpty(myOrderModel.getDriver_photo()) || !myOrderModel.getDriver_photo().equals("0"))
+            if (txtdriver_image!=null || !TextUtils.isEmpty(txtdriver_image) || !txtdriver_image.equals("0"))
             {
-                Picasso.with(this).load(Uri.parse(Tags.ImgPath+myOrderModel.getDriver_photo())).into(target);
+                Picasso.with(this).load(Uri.parse(Tags.ImgPath+txtdriver_image)).into(target);
             }
-            driver_name.setText(myOrderModel.getDriver_name());
+            driver_name.setText(txtdriver_name);
 
         }catch (NullPointerException e)
         {
 
         }
 
-
-
     }
+
 
     @Override
     public void UserDataSuccess(UserModel userModel) {

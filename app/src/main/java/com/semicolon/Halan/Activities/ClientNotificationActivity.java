@@ -1,7 +1,10 @@
 package com.semicolon.Halan.Activities;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,14 +12,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.semicolon.Halan.Adapters.ClientNotificationAdapter;
 import com.semicolon.Halan.Models.ClientNotificationModel;
+import com.semicolon.Halan.Models.Finishied_Order_Model;
 import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
@@ -24,12 +31,18 @@ import com.semicolon.Halan.Services.Api;
 import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
+import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,7 +66,7 @@ public class ClientNotificationActivity extends AppCompatActivity implements Use
         setContentView(R.layout.activity_client_notification);
         Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
-
+        EventBus.getDefault().register(this);
         initView();
 
         users = Users.getInstance();
@@ -96,6 +109,44 @@ public class ClientNotificationActivity extends AppCompatActivity implements Use
                 finish();
             }
         });
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Driver_delivered_Order(Finishied_Order_Model finishied_order_model)
+    {
+        CreateCustomAlertDialog(finishied_order_model);
+    }
+
+    private void CreateCustomAlertDialog(final Finishied_Order_Model finishied_order_model) {
+        View view = LayoutInflater.from(this).inflate(R.layout.custom_alert_dialog,null);
+        CircleImageView driver_img = view.findViewById(R.id.driver_image);
+        TextView driver_name = view.findViewById(R.id.driver_name);
+        TextView order_details = view.findViewById(R.id.order_details);
+
+        Picasso.with(ClientNotificationActivity.this).load(Uri.parse(Tags.ImgPath+finishied_order_model.getDriver_image())).into(driver_img);
+        driver_name.setText(finishied_order_model.getDriver_name());
+        order_details.setText(finishied_order_model.getOrder_details());
+        Button addRateBtn = view.findViewById(R.id.add_rate);
+        final AlertDialog alertDialog = new AlertDialog.Builder(ClientNotificationActivity.this)
+                .setCancelable(false)
+                .setView(view)
+                .create();
+
+        alertDialog.show();
+        addRateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ClientNotificationActivity.this,AddRateActivity.class);
+                intent.putExtra("driver_id",finishied_order_model.getDriver_id());
+                intent.putExtra("order_id",finishied_order_model.getOrder_id());
+                intent.putExtra("driver_name",finishied_order_model.getDriver_name());
+                intent.putExtra("driver_image",finishied_order_model.getDriver_image());
+                startActivity(intent);
+                alertDialog.dismiss();
+
+
+            }
+        });
+
     }
     private void DisplayNotification()
     {
@@ -226,6 +277,12 @@ public class ClientNotificationActivity extends AppCompatActivity implements Use
                 Toast.makeText(ClientNotificationActivity.this, getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

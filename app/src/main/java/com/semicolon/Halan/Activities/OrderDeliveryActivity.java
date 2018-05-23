@@ -9,7 +9,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -23,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -46,6 +50,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.PolyUtil;
 import com.semicolon.Halan.Models.AvailableDriversModel;
+import com.semicolon.Halan.Models.Finishied_Order_Model;
 import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.Models.PlaceModel;
 import com.semicolon.Halan.Models.ResponseModel;
@@ -55,6 +60,11 @@ import com.semicolon.Halan.Services.Api;
 import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
+import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,6 +72,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -91,6 +102,12 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
     private String curr_img,chat_img;
     private List<String> drivers_ids;
     private ProgressDialog dialog;
+    private String provider;
+    private AlertDialog.Builder gpsBuilder;
+    private LocationManager locationManager;
+    private final int GPS_REQ = 3299;
+    private ImageView notf;
+    private String order_cost="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,23 +115,97 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
         setContentView(R.layout.activity_order_delivery);
         Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
+        EventBus.getDefault().register(this);
         users = Users.getInstance();
         users.getUserData(this);
         dRef = FirebaseDatabase.getInstance().getReference();
         initView();
         getDataFromIntent();
         Create_AlertDialog();
+        OpenGps();
 
-        if (isServiceOk())
-        {
-            checkPermission();
-        }
 
     }
 
 
+    private void OpenGps() {
+        provider = LocationManager.GPS_PROVIDER;
+        locationManager= (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(provider))
+        {
+            gpsBuilder = new AlertDialog.Builder(this);
+            gpsBuilder.setTitle("Gps");
+            gpsBuilder.setMessage("قم بفتح gps لتتمكن من إستخدام التطبيق....");
+            gpsBuilder.setCancelable(false);
+            gpsBuilder.setPositiveButton("Gps Settings", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    AlertDialog dialog = gpsBuilder.create();
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    dialog.dismiss();
+                    startActivityForResult(intent,GPS_REQ);
+                }
+            });
+
+            gpsBuilder.show();
+        }else
+        {
+            if (isServiceOk())
+            {
+                checkPermission();
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Driver_delivered_Order(Finishied_Order_Model finishied_order_model)
+    {
+        CreateCustomAlertDialog(finishied_order_model);
+    }
+
+    private void CreateCustomAlertDialog(final Finishied_Order_Model finishied_order_model) {
+        View view = LayoutInflater.from(this).inflate(R.layout.custom_alert_dialog,null);
+        CircleImageView driver_img = view.findViewById(R.id.driver_image);
+        TextView driver_name = view.findViewById(R.id.driver_name);
+        TextView order_details = view.findViewById(R.id.order_details);
+
+        Picasso.with(OrderDeliveryActivity.this).load(Uri.parse(Tags.ImgPath+finishied_order_model.getDriver_image())).into(driver_img);
+        driver_name.setText(finishied_order_model.getDriver_name());
+        order_details.setText(finishied_order_model.getOrder_details());
+        Button addRateBtn = view.findViewById(R.id.add_rate);
+        final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(OrderDeliveryActivity.this)
+                .setCancelable(false)
+                .setView(view)
+                .create();
+
+        alertDialog.show();
+        addRateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(OrderDeliveryActivity.this,AddRateActivity.class);
+                intent.putExtra("driver_id",finishied_order_model.getDriver_id());
+                intent.putExtra("order_id",finishied_order_model.getOrder_id());
+                intent.putExtra("driver_name",finishied_order_model.getDriver_name());
+                intent.putExtra("driver_image",finishied_order_model.getDriver_image());
+                startActivity(intent);
+                alertDialog.dismiss();
 
 
+            }
+        });
+
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GPS_REQ )
+        {
+            if (isServiceOk())
+            {
+                checkPermission();
+            }
+        }
+    }
     private void initView()
     {
         drivers_ids = new ArrayList<>();
@@ -127,7 +218,31 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
         cancelBtn  = findViewById(R.id.cancelBtn);
         chatBtn    = findViewById(R.id.chatBtn);
         deliveryBtn= findViewById(R.id.deliveryBtn);
+        notf = findViewById(R.id.notf);
+        notf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (userModel.getUser_type().equals(Tags.Client))
+                {
+                    Intent intent = new Intent(OrderDeliveryActivity.this,ClientNotificationActivity.class);
+                    startActivity(intent);
+                }else if (userModel.getUser_type().equals(Tags.Driver))
+                {
+                    Intent intent = new Intent(OrderDeliveryActivity.this,DriverNotificationActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
+        if (userModel.getUser_type().equals(Tags.Client))
+        {
+            deliveryBtn.setVisibility(View.GONE);
 
+        }
+        else
+            {
+                deliveryBtn.setVisibility(View.VISIBLE);
+
+            }
         deliveryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -193,14 +308,14 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
                         {
                             finish();
                             //driver
-                        }else if (user_type.equals("2"))
+                        }/*else if (user_type.equals("2"))
                         {
                             Intent intent = new Intent(OrderDeliveryActivity.this,AddRateActivity.class);
                             intent.putExtra("order",myOrderModel);
                             startActivity(intent);
                             finish();
                             //client
-                        }
+                        }*/
                     }
                 }
             }
@@ -249,8 +364,11 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
                             intent.putExtra("chat_type", chat_type);
                             intent.putExtra("curr_photo", curr_img);
                             intent.putExtra("chat_photo", chat_img);
+                            intent.putExtra("order_cost",order_cost);
                             intent.putExtra("order_id", myOrderModel.getOrder_id());
+                            intent.putExtra("order_details",myOrderModel.getOrder_details());
                             startActivity(intent);
+                            finish();
                         }
                     });
                 }else
@@ -262,8 +380,12 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
                         intent.putExtra("chat_type", chat_type);
                         intent.putExtra("curr_photo", curr_img);
                         intent.putExtra("chat_photo", chat_img);
+                        intent.putExtra("order_cost",order_cost);
                         intent.putExtra("order_id", myOrderModel.getOrder_id());
+                        intent.putExtra("order_details",myOrderModel.getOrder_details());
+
                         startActivity(intent);
+                        finish();
                     }
 
 
@@ -299,6 +421,7 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
                 chat_type = Tags.Driver;
                 curr_img = userModel.getUser_photo();
                 chat_img = myOrderModel.getDriver_photo();
+                order_cost = myOrderModel.getCost();
 
             }else if (userModel.getUser_type().equals(Tags.Driver))
             {
@@ -308,6 +431,8 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
                 chat_type = Tags.Client;
                 curr_img = userModel.getUser_photo();
                 chat_img = myOrderModel.getClient_photo();
+                order_cost = myOrderModel.getCost();
+
             }
             updateUi(myOrderModel);
         }
@@ -532,9 +657,16 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
             drivers_ids = new ArrayList<>();
             for (int i=0;i<availableDriversModelList.size();i++)
             {
+
                 AvailableDriversModel driversModel = availableDriversModelList.get(i);
-                double dis = distance(client_latLng.latitude,client_latLng.longitude,Double.parseDouble(driversModel.getUser_google_lat()),Double.parseDouble(driversModel.getUser_google_long()));
-                map.put(driversModel.getDriver_id(),dis);
+                if (client_latLng.latitude!=0.0 || client_latLng.longitude!=0.0 &&
+                        driversModel.getUser_google_lat()!=null||!TextUtils.isEmpty(driversModel.getUser_google_lat()) ||
+                        driversModel.getUser_google_long()!=null||!TextUtils.isEmpty(driversModel.getUser_google_long()) )
+                {
+                    double dis = distance(client_latLng.latitude,client_latLng.longitude,Double.parseDouble(driversModel.getUser_google_lat()),Double.parseDouble(driversModel.getUser_google_long()));
+                    map.put(driversModel.getDriver_id(),dis);
+                }
+
             }
             for (String key :map.keySet())
             {
@@ -845,5 +977,9 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

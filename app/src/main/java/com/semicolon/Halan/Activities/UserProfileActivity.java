@@ -1,22 +1,37 @@
 package com.semicolon.Halan.Activities;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lamudi.phonefield.PhoneInputLayout;
+import com.semicolon.Halan.Models.Finishied_Order_Model;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
@@ -26,9 +41,14 @@ import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
 import com.squareup.picasso.Picasso;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,22 +56,30 @@ import retrofit2.Response;
 
 public class UserProfileActivity extends AppCompatActivity implements Users.UserData,View.OnClickListener {
 
-    Users users;
+    private Users users;
     private UserModel userModel;
-    private ImageView imageView,edtname,edtemail,edtphone;
-    TextView name,email,phone;
+    private CircleImageView img_profile;
+    private RelativeLayout container;
+    private RatingBar rateBar;
+    private TextView rate,order_num,txt_name,txt_user_name,txt_email,txt_phone,txt_age,txt_gender;
+    private LinearLayout user_name_container,user_email_container,user_phone_container,user_age_container,user_gender_container;
     private Preferences preferences;
     private final int IMG_REQ = 100;
     private String enCodedImage;
     private Bitmap bitmap;
     private ImageView back;
+    private AlertDialog alertDialog;
+    private String gender="",curr_gender="";
+    private ProgressDialog dialog;
+    private LinearLayout fb,tw,in,sn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
-
+        EventBus.getDefault().register(this);
         initView();
         users=Users.getInstance();
         preferences=new Preferences(this);
@@ -67,28 +95,83 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
 
     }
     private void UpdateUi(UserModel userModel) {
-        name.setText(userModel.getUser_name());
-        phone.setText(userModel.getUser_phone());
-        email.setText(userModel.getUser_email());
-        Picasso.with(this).load(Uri.parse(Tags.ImgPath + userModel.getUser_photo())).placeholder(R.drawable.user_profile).into(imageView);
+        if (userModel.getUser_type().equals(Tags.Client))
+        {
+            container.setVisibility(View.INVISIBLE);
+        }else if (userModel.getUser_type().equals(Tags.Driver))
+        {
+            container.setVisibility(View.VISIBLE);
+
+        }
+        rateBar.setEnabled(false);
+        rateBar.setFocusable(false);
+        rateBar.setRating((float) userModel.getStars_evaluation());
+        rate.setText(String.valueOf(userModel.getRate_evaluation()));
+        order_num.setText(String.valueOf(userModel.getOrder_count()));
+        txt_name.setText(userModel.getName());
+        txt_user_name.setText(userModel.getUser_name());
+        txt_email.setText(userModel.getUser_email());
+        txt_phone.setText(userModel.getUser_phone());
+        txt_age.setText(userModel.getUser_age());
+        if (userModel.getUser_gender().equals(Tags.gender_male))
+        {
+            txt_gender.setText(getString(R.string.male));
+
+        }else if (userModel.getUser_gender().equals(Tags.gender_female))
+        {
+            txt_gender.setText(getString(R.string.female));
+
+        }
+        Picasso.with(this).load(Uri.parse(Tags.ImgPath + userModel.getUser_photo())).placeholder(R.drawable.user_profile).into(img_profile);
 
     }
 
     private void initView() {
+        container = findViewById(R.id.container);
+        rateBar = findViewById(R.id.rateBar);
+        LayerDrawable drawable = (LayerDrawable) rateBar.getProgressDrawable();
+        drawable.getDrawable(0).setColorFilter(ContextCompat.getColor(this,R.color.gray3), PorterDuff.Mode.SRC_ATOP);
+        drawable.getDrawable(1).setColorFilter(ContextCompat.getColor(this,R.color.rate), PorterDuff.Mode.SRC_ATOP);
+        drawable.getDrawable(2).setColorFilter(ContextCompat.getColor(this,R.color.rate), PorterDuff.Mode.SRC_ATOP);
+        rate = findViewById(R.id.rate);
+        order_num = findViewById(R.id.order_num);
+        txt_name = findViewById(R.id.txt_name);
+        txt_user_name = findViewById(R.id.txt_user_name);
+        txt_email = findViewById(R.id.txt_email);
+        txt_phone = findViewById(R.id.txt_phone);
+        txt_age = findViewById(R.id.txt_age);
+        txt_gender = findViewById(R.id.txt_gender);
         back = findViewById(R.id.back);
-        imageView=findViewById(R.id.img_profile);
-        name=findViewById(R.id.user_name);
-        phone=findViewById(R.id.txt_phone);
-        email=findViewById(R.id.txt_email);
+        img_profile=findViewById(R.id.img_profile);
 
-        edtname=findViewById(R.id.img_username);
-        edtemail=findViewById(R.id.img_email);
-        edtphone=findViewById(R.id.img_phone);
+        fb =findViewById(R.id.fb);
+        tw = findViewById(R.id.tw);
+        in = findViewById(R.id.in);
+        sn = findViewById(R.id.sn);
 
-        edtname.setOnClickListener(this);
-        edtemail.setOnClickListener(this);
-        edtphone.setOnClickListener(this);
-        imageView.setOnClickListener(this);
+        user_name_container = findViewById(R.id.user_name_Container);
+        user_email_container= findViewById(R.id.user_email_Container);
+        user_phone_container= findViewById(R.id.user_phone_Container);
+        user_age_container  = findViewById(R.id.user_age_Container);
+        user_gender_container = findViewById(R.id.user_gender_Container);
+
+
+        user_name_container.setOnClickListener(this);
+        user_email_container.setOnClickListener(this);
+        user_phone_container.setOnClickListener(this);
+        user_age_container.setOnClickListener(this);
+        user_gender_container.setOnClickListener(this);
+
+
+
+        fb.setOnClickListener(this);
+        tw.setOnClickListener(this);
+        in.setOnClickListener(this);
+        sn.setOnClickListener(this);
+        txt_name.setOnClickListener(this);
+        img_profile.setOnClickListener(this);
+
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,37 +180,120 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
         });
 
     }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Driver_delivered_Order(Finishied_Order_Model finishied_order_model)
+    {
+        CreateCustomAlertDialog(finishied_order_model);
+    }
 
+    private void CreateProgressDialog(String msg)
+    {
+        ProgressBar bar = new ProgressBar(this);
+        Drawable drawable = bar.getIndeterminateDrawable().mutate();
+        drawable.setColorFilter(ContextCompat.getColor(this,R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+        dialog = new ProgressDialog(this);
+        dialog.setIndeterminate(true);
+        dialog.setMessage(msg);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setIndeterminateDrawable(drawable);
+        dialog.show();
+    }
+    private void CreateCustomAlertDialog(final Finishied_Order_Model finishied_order_model) {
+        View view = LayoutInflater.from(this).inflate(R.layout.custom_alert_dialog,null);
+        CircleImageView driver_img = view.findViewById(R.id.driver_image);
+        TextView driver_name = view.findViewById(R.id.driver_name);
+        TextView order_details = view.findViewById(R.id.order_details);
+
+        Picasso.with(UserProfileActivity.this).load(Uri.parse(Tags.ImgPath+finishied_order_model.getDriver_image())).into(driver_img);
+        driver_name.setText(finishied_order_model.getDriver_name());
+        order_details.setText(finishied_order_model.getOrder_details());
+        Button addRateBtn = view.findViewById(R.id.add_rate);
+        final AlertDialog alertDialog = new AlertDialog.Builder(UserProfileActivity.this)
+                .setCancelable(false)
+                .setView(view)
+                .create();
+
+        alertDialog.show();
+        addRateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(UserProfileActivity.this,AddRateActivity.class);
+                intent.putExtra("driver_id",finishied_order_model.getDriver_id());
+                intent.putExtra("order_id",finishied_order_model.getOrder_id());
+                intent.putExtra("driver_name",finishied_order_model.getDriver_name());
+                intent.putExtra("driver_image",finishied_order_model.getDriver_image());
+                startActivity(intent);
+                alertDialog.dismiss();
+
+
+            }
+        });
+
+    }
     @Override
     public void onClick(View view) {
 
         switch (view.getId())
         {
-            case R.id.img_username:
-                  updateName();
-                break;
-            case R.id.img_email:
-                updateEmail();
-                break;
-            case R.id.img_phone:
-                updatePhone();
-            break;
             case R.id.img_profile:
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
                 startActivityForResult(intent.createChooser(intent,getString(R.string.choose_image)),IMG_REQ);
-              //  sendImageToServer();
                 break;
+            case R.id.txt_name:
+                updateUserData(Tags.update_name);
+                break;
+            case R.id.user_name_Container:
+                updateUserData(Tags.update_username);
+
+                break;
+            case R.id.user_email_Container:
+                updateUserData(Tags.update_email);
+
+                break;
+            case R.id.user_phone_Container:
+                updateUserData(Tags.update_phone);
+
+                break;
+            case R.id.user_age_Container:
+                updateUserData(Tags.update_age_);
+
+                break;
+            case R.id.user_gender_Container:
+                updateUserData(Tags.update_gender_);
+
+                break;
+            case R.id.tw:
+                Intent intent_tw = new Intent(UserProfileActivity.this,WebViewActivity.class);
+                intent_tw.putExtra("link","https://twitter.com/halnKSA_");
+                startActivity(intent_tw);
+                break;
+            case R.id.in:
+                Intent intent_in = new Intent(UserProfileActivity.this,WebViewActivity.class);
+                intent_in.putExtra("link","https://www.instagram.com/halnksa_/");
+                startActivity(intent_in);
+                break;
+            case R.id.fb:
+                Intent intent_fb = new Intent(UserProfileActivity.this,WebViewActivity.class);
+                intent_fb.putExtra("link","https://www.facebook.com/Haln-%D8%AD%D8%A7%D9%84%D8%A7-375968289589678/");
+                startActivity(intent_fb);
+                break;
+            case R.id.sn:
+                Intent intent_sn = new Intent(UserProfileActivity.this,WebViewActivity.class);
+                intent_sn.putExtra("link","https://www.snapchat.com/add/halanksa");
+                startActivity(intent_sn);
+                break;
+
 
         }
 
     }
 
-    private void sendDataToServer()
+    private void sendDataToServer(String id, String photo, String name, String user_name, String email , String phone, final String gender, String age)
     {
-
         Services services= Api.getClient(Tags.BASE_URL).create(Services.class);
-        Call<UserModel> call=services.UpdateClient(userModel.getUser_id(),name.getText().toString(),phone.getText().toString(),email.getText().toString(),"");
+        Call<UserModel> call=services.UpdateClient(id,user_name,phone,email,photo,name,age,gender);
         call.enqueue(new Callback<UserModel>() {
             @Override
             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
@@ -135,18 +301,24 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                 {
                     if (response.body().getSuccess()==1){
 
+
                         preferences.UpdatePref(response.body());
                         users.setUserData(response.body());
+                        UpdateUi(response.body());
+
+                        dialog.dismiss();
                      //   Toast.makeText(UserProfileActivity.this, ""+userModel.getUser_name(), Toast.LENGTH_SHORT).show();
                      //   Log.e("name",userModel.getUser_name());
                         Toast.makeText(UserProfileActivity.this, R.string.data_send, Toast.LENGTH_SHORT).show();
                     }
                     else
                     {
+                        dialog.dismiss();
                         Toast.makeText(UserProfileActivity.this, R.string.failed, Toast.LENGTH_SHORT).show();
 
                     }
                 }else {
+                    dialog.dismiss();
                     Toast.makeText(UserProfileActivity.this, ""+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
 
                 }
@@ -154,6 +326,7 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
 
             @Override
             public void onFailure(Call<UserModel> call, Throwable t) {
+                dialog.dismiss();
                 Log.e("mmmmm",t.getMessage()+"");
                 Toast.makeText(UserProfileActivity.this, ""+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
 
@@ -163,10 +336,12 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
     }
     private void sendImageToServer()
     {
-        enCode(bitmap);
+        CreateProgressDialog(getString(R.string.upd_photo));
+
+        enCodedImage = enCode(bitmap);
 
         Services services= Api.getClient(Tags.BASE_URL).create(Services.class);
-        Call<UserModel> call=services.UpdateClient(userModel.getUser_id(),name.getText().toString(),phone.getText().toString(),email.getText().toString(),enCodedImage);
+        Call<UserModel> call=services.UpdateClient(userModel.getUser_id(),userModel.getUser_name(),userModel.getUser_phone(),userModel.getUser_email(),enCodedImage,userModel.getName(),userModel.getUser_age(),userModel.getUser_gender());
         call.enqueue(new Callback<UserModel>() {
             @Override
             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
@@ -176,16 +351,23 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
 
                         preferences.UpdatePref(response.body());
                         users.setUserData(response.body());
-                       // Toast.makeText(UserProfileActivity.this, ""+userModel.getUser_name(), Toast.LENGTH_SHORT).show();
+                        UpdateUi(response.body());
+
+                        // Toast.makeText(UserProfileActivity.this, ""+userModel.getUser_name(), Toast.LENGTH_SHORT).show();
                       //  Log.e("name",userModel.getUser_name());
+                        dialog.dismiss();
                         Toast.makeText(UserProfileActivity.this, R.string.data_send, Toast.LENGTH_SHORT).show();
                     }
                     else
                     {
+                        dialog.dismiss();
+
                         Toast.makeText(UserProfileActivity.this, R.string.failed, Toast.LENGTH_SHORT).show();
 
                     }
                 }else {
+                    dialog.dismiss();
+
                     Toast.makeText(UserProfileActivity.this, ""+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
 
                 }
@@ -194,92 +376,318 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
             @Override
             public void onFailure(Call<UserModel> call, Throwable t) {
                 Log.e("mmmmm",t.getMessage()+"");
+                dialog.dismiss();
+
                 Toast.makeText(UserProfileActivity.this, ""+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
 
             }
         });
 
     }
-    private void updateName()
+    private void updateUserData(String fieldType)
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileActivity.this);
-        builder.setTitle(R.string.update_username);
-        final EditText input = new EditText(UserProfileActivity.this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_TEXT);
-        input.setHint(getString(R.string.enter_new_username));
-        builder.setView(input);
+        switch (fieldType)
+        {
+            case Tags.update_name:
+                View view_name = LayoutInflater.from(this).inflate(R.layout.custom_dialog_update_txt,null);
+                TextView title_name = view_name.findViewById(R.id.title);
+                final EditText et_name = view_name.findViewById(R.id.et);
+                et_name.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                Button name_updateBtn = view_name.findViewById(R.id.updateBtn);
+                Button name_cancelBtn = view_name.findViewById(R.id.cancelBtn);
+                name_updateBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (TextUtils.isEmpty(et_name.getText().toString()))
+                        {
+                            et_name.setError(getString(R.string.enter_name));
+                        }else if (txt_name.getText().toString().equals(et_name.getText().toString()))
+                        {
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                name.setText(input.getText().toString());
-                sendDataToServer();
+                            Toast.makeText(UserProfileActivity.this, R.string.nochange, Toast.LENGTH_LONG).show();
+                        }
+                        else
+                            {
+                                CreateProgressDialog(getString(R.string.upd_name));
 
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+                                sendDataToServer(userModel.getUser_id(),"",et_name.getText().toString(),userModel.getUser_name(),userModel.getUser_email(),userModel.getUser_phone(),userModel.getUser_gender(),userModel.getUser_age());
+                                alertDialog.dismiss();
+                            }
+                    }
+                });
+                name_cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialog.dismiss();
 
-        builder.show();
+                    }
+                });
+                title_name.setText(R.string.edit_name);
+                alertDialog = new AlertDialog.Builder(this)
+                        .setCancelable(true)
+                        .setView(view_name)
+                        .create();
+                alertDialog.show();
+
+                break;
+            case Tags.update_username:
+                View view_username = LayoutInflater.from(this).inflate(R.layout.custom_dialog_update_txt,null);
+                TextView title_username = view_username.findViewById(R.id.title);
+                final EditText et_username = view_username.findViewById(R.id.et);
+                et_username.setInputType(InputType.TYPE_CLASS_TEXT);
+                Button username_updateBtn = view_username.findViewById(R.id.updateBtn);
+                Button username_cancelBtn = view_username.findViewById(R.id.cancelBtn);
+                username_updateBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (TextUtils.isEmpty(et_username.getText().toString()))
+                        {
+                            et_username.setError(getString(R.string.enter_username));
+                        }else if (txt_user_name.getText().toString().equals(et_username.getText().toString()))
+                        {
+
+                            Toast.makeText(UserProfileActivity.this, R.string.nochange, Toast.LENGTH_LONG).show();
+                        }else
+                        {
+                            CreateProgressDialog(getString(R.string.upd_un));
+
+                            sendDataToServer(userModel.getUser_id(),"",userModel.getName(),et_username.getText().toString(),userModel.getUser_email(),userModel.getUser_phone(),userModel.getUser_gender(),userModel.getUser_age());
+                            alertDialog.dismiss();
+                        }
+                    }
+                });
+                username_cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialog.dismiss();
+
+                    }
+                });
+                title_username.setText(R.string.edit_un);
+                alertDialog = new AlertDialog.Builder(this)
+                        .setCancelable(true)
+                        .setView(view_username)
+                        .create();
+                alertDialog.show();
+                break;
+            case Tags.update_email:
+                View view_email = LayoutInflater.from(this).inflate(R.layout.custom_dialog_update_txt,null);
+                TextView title_email = view_email.findViewById(R.id.title);
+                final EditText et_email = view_email.findViewById(R.id.et);
+                et_email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                Button email_updateBtn = view_email.findViewById(R.id.updateBtn);
+                Button email_cancelBtn = view_email.findViewById(R.id.cancelBtn);
+                email_updateBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (TextUtils.isEmpty(et_email.getText().toString()))
+                        {
+                            et_email.setError(getString(R.string.enter_email));
+                        }else if(!Patterns.EMAIL_ADDRESS.matcher(et_email.getText().toString()).matches())
+                        {
+                            et_email.setError(getString(R.string.inv_email));
+
+                        }else if (txt_email.getText().toString().equals(et_email.getText().toString()))
+                        {
+
+                            Toast.makeText(UserProfileActivity.this, R.string.nochange, Toast.LENGTH_LONG).show();
+                        }
+
+                        else
+                        {
+                            CreateProgressDialog(getString(R.string.upd_email));
+
+                            sendDataToServer(userModel.getUser_id(),"",userModel.getName(),userModel.getUser_name(),et_email.getText().toString(),userModel.getUser_phone(),userModel.getUser_gender(),userModel.getUser_age());
+                            alertDialog.dismiss();
+                        }
+                    }
+                });
+                email_cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialog.dismiss();
+
+                    }
+                });
+                title_email.setText(R.string.edit_email);
+                alertDialog = new AlertDialog.Builder(this)
+                        .setCancelable(true)
+                        .setView(view_email)
+                        .create();
+                alertDialog.show();
+                break;
+            case Tags.update_phone:
+                View view_phone = LayoutInflater.from(this).inflate(R.layout.custom_dialog_phone,null);
+                TextView title_phone = view_phone.findViewById(R.id.title);
+                final PhoneInputLayout et_phone = view_phone.findViewById(R.id.phone);
+                Button phone_updateBtn = view_phone.findViewById(R.id.updateBtn);
+                Button phone_cancelBtn = view_phone.findViewById(R.id.cancelBtn);
+                phone_updateBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (TextUtils.isEmpty(et_phone.getPhoneNumber()))
+                        {
+                            et_phone.getTextInputLayout().getEditText().setError(getString(R.string.enter_phone));
+                        }else if (!et_phone.isValid())
+                        {
+                            et_phone.getTextInputLayout().getEditText().setError(getString(R.string.inv_phone));
+
+                        }else if (txt_phone.getText().toString().equals(et_phone.getPhoneNumber()))
+                        {
+
+                            Toast.makeText(UserProfileActivity.this, R.string.nochange, Toast.LENGTH_LONG).show();
+                        }
+                        else
+                        {
+                            CreateProgressDialog(getString(R.string.upd_phone));
+
+                            sendDataToServer(userModel.getUser_id(),"",userModel.getName(),userModel.getUser_name(),userModel.getUser_email(),et_phone.getPhoneNumber(),userModel.getUser_gender(),userModel.getUser_age());
+                            alertDialog.dismiss();
+                        }
+                    }
+                });
+                phone_cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialog.dismiss();
+
+                    }
+                });
+                title_phone.setText(R.string.edit_phone);
+                alertDialog = new AlertDialog.Builder(this)
+                        .setCancelable(true)
+                        .setView(view_phone)
+                        .create();
+                alertDialog.show();
+                break;
+            case Tags.update_age_:
+                View view_age = LayoutInflater.from(this).inflate(R.layout.custom_dialog_update_txt,null);
+                TextView title_age = view_age.findViewById(R.id.title);
+                final EditText et_age = view_age.findViewById(R.id.et);
+                et_age.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                Button age_updateBtn = view_age.findViewById(R.id.updateBtn);
+                Button age_cancelBtn = view_age.findViewById(R.id.cancelBtn);
+                age_updateBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (TextUtils.isEmpty(et_age.getText().toString()))
+                        {
+                            et_age.setError(getString(R.string.enter_age));
+                        }else if (txt_age.getText().toString().equals(et_age.getText().toString()))
+                        {
+
+                            Toast.makeText(UserProfileActivity.this, R.string.nochange, Toast.LENGTH_LONG).show();
+                        }
+                        else
+                        {
+                            CreateProgressDialog(getString(R.string.upd_age));
+
+                            sendDataToServer(userModel.getUser_id(),"",userModel.getName(),userModel.getUser_name(),userModel.getUser_email(),userModel.getUser_phone(),userModel.getUser_gender(),et_age.getText().toString());
+                            alertDialog.dismiss();
+                        }
+                    }
+                });
+                age_cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialog.dismiss();
+
+                    }
+                });
+                title_age.setText(R.string.edit_age);
+                alertDialog = new AlertDialog.Builder(this)
+                        .setCancelable(true)
+                        .setView(view_age)
+                        .create();
+                alertDialog.show();
+                break;
+            case Tags.update_gender_:
+                View view_gender = LayoutInflater.from(this).inflate(R.layout.custom_dialog_rb,null);
+
+                RadioButton mail = view_gender.findViewById(R.id.maleBtn);
+                RadioButton female =view_gender.findViewById(R.id.femaleBtn);
+                TextView gender_title = view_gender.findViewById(R.id.title);
+
+                if (mail.isChecked())
+                {
+                    gender = Tags.gender_male;
+                    Log.e("gender2",gender);
+
+                }else if (female.isChecked())
+                {
+                    gender = Tags.gender_female;
+                    Log.e("gender2",gender);
+
+                }
+
+                mail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        gender = Tags.gender_male;
+                        Log.e("gender2",gender);
+
+
+                    }
+                });
+                female.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        gender = Tags.gender_female;
+                        Log.e("gender2",gender);
+
+
+                    }
+                });
+                Button gender_updateBtn = view_gender.findViewById(R.id.updateBtn);
+                Button gender_cancelBtn = view_gender.findViewById(R.id.cancelBtn);
+                gender_updateBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.e("gender1",userModel.getUser_gender());
+                        Log.e("gender2",gender);
+                        if (txt_gender.getText().toString().equals(getString(R.string.male)))
+                        {
+                            curr_gender = Tags.gender_male;
+                        }else if (txt_gender.getText().toString().equals(getString(R.string.female)))
+                        {
+                            curr_gender = Tags.gender_female;
+
+                        }
+                        if (curr_gender.equals(gender))
+                        {
+
+                            Toast.makeText(UserProfileActivity.this, R.string.nochange, Toast.LENGTH_LONG).show();
+
+                        }else
+                            {
+                                CreateProgressDialog(getString(R.string.upd_gender));
+
+                                sendDataToServer(userModel.getUser_id(),"",userModel.getName(),userModel.getUser_name(),userModel.getUser_email(),userModel.getUser_phone(),gender,userModel.getUser_age());
+                                alertDialog.dismiss();
+                            }
+
+                    }
+                });
+                gender_cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialog.dismiss();
+
+                    }
+                });
+                gender_title.setText(R.string.edit_gender);
+                alertDialog = new AlertDialog.Builder(this)
+                        .setCancelable(true)
+                        .setView(view_gender)
+                        .create();
+                alertDialog.show();
+                break;
+        }
     }
 
-    private void updatePhone()
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileActivity.this);
-        builder.setTitle(R.string.update_phone);
-        final EditText input = new EditText(UserProfileActivity.this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_PHONE);
-        input.setHint(getString(R.string.enter_new_phone));
-        builder.setView(input);
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                phone.setText(input.getText().toString());
-                sendDataToServer();
 
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-    }
-
-    private void updateEmail()
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileActivity.this);
-        builder.setTitle(R.string.update_email);
-        final EditText input = new EditText(UserProfileActivity.this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        input.setHint(getString(R.string.enter_new_email));
-        builder.setView(input);
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                email.setText(input.getText().toString());
-                sendDataToServer();
-
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -290,8 +698,8 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
             Uri uri = data.getData();
             try {
                 bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-                imageView.setImageBitmap(bitmap);
-               enCode(bitmap);
+                img_profile.setImageBitmap(bitmap);
+               //enCode(bitmap);
                sendImageToServer();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -303,14 +711,17 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG,90,outputStream);
         byte [] bytes = outputStream.toByteArray();
-
-        enCodedImage = Base64.encodeToString(bytes,Base64.DEFAULT);
-
-        return enCodedImage;
+        return Base64.encodeToString(bytes,Base64.DEFAULT);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

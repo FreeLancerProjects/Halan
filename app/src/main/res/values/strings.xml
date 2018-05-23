@@ -1,5 +1,12 @@
 <resources>
-    <string name="google_maps_key">AIzaSyDZQnx0ZrSv6H8AtVeMFPEJn8MCChrAC4M</string>
+    <string name="google_maps_key"> AIzaSyAdyH6oTKLIRo6UudRk75YPbBs_6umhqTs </string>
+    <!--<string name="google_maps_key"> AIzaSyA_DsjDmJV3Y7p2FmMYX16TSNVNsM6KaEc </string>-->
+
+    <string name="place_nearby_key1">AIzaSyDWNDPYtBks7FSHNU_NYCOxuOoQCBqURdk</string>
+
+
+
+
     <string name="app_name">7alan</string>
     <string name="driver">Driver</string>
     <string name="client">Client</string>
@@ -57,43 +64,43 @@
     <string name="rules">Rules</string>
     <string name="logout">Logout</string>
     <string name="search_plc_details">Fast food store</string>
-    <string name="enter_city">enter city</string>
-    <string name="enter_identity_number">enter identity number</string>
-    <string name="enter_vehicle_number">enter vehicle number</string>
-    <string name="enter_car_color">enter car color</string>
-    <string name="enter_car_model">enter car model</string>
-    <string name="profile_page">profile page</string>
-    <string name="connection">check network connection</string>
-    <string name="cfl">can\'t find location</string>
+    <string name="enter_city">Enter city</string>
+    <string name="enter_identity_number">Enter identity number</string>
+    <string name="enter_vehicle_number">Enter vehicle number</string>
+    <string name="enter_car_color">Enter car color</string>
+    <string name="enter_car_model">Enter car model</string>
+    <string name="profile_page">Profile page</string>
+    <string name="connection">Check network connection</string>
+    <string name="cfl">Can\'t find location</string>
     <string name="rate">Driver Rate</string>
-    <string name="enter_rate">enter rate</string>
+    <string name="enter_rate">Enter rate</string>
     <string name="Add_rate">rate</string>
     <string name="km">Km</string>
     <string name="Subject">Subject</string>
-    <string name="message">message</string>
-    <string name="call">call</string>
+    <string name="message">Message</string>
+    <string name="call">Call</string>
     <string name="send">send</string>
-    <string name="transfer_money"> transfer_money</string>
-    <string name="date"> trans date</string>
-    <string name="bank"> trans bank</string>
-    <string name="code"> discount code</string>
+    <string name="transfer_money"> Transfer money</string>
+    <string name="date"> Transfer date</string>
+    <string name="bank"> Transfer bank</string>
+    <string name="code"> Discount code</string>
     <string name="order_detail"> order detail</string>
     <string name="car_number"> car number</string>
-    <string name="time">trans time</string>
+    <string name="time">Transfer time</string>
     <string name="close">close</string>
     <string name="yes">Ok</string>
     <string name="cancel">Cancel</string>
-    <string name="enter_new_username"> enter_new_username </string>
-    <string name="update_username">update username</string>
-    <string name="enter_new_phone">enter new phone number</string>
-    <string name="update_phone">update phone</string>
-    <string name="update_email">update  email</string>
-    <string name="enter_new_email">enter new email</string>
-    <string name="loc_notfounded">can\'t find location</string>
+    <string name="enter_new_username"> Enter_new_username </string>
+    <string name="update_username">Update username</string>
+    <string name="enter_new_phone">Enter new phone number</string>
+    <string name="update_phone">Update phone</string>
+    <string name="update_email">Update  email</string>
+    <string name="enter_new_email">Enter new email</string>
+    <string name="loc_notfounded">Can\'t find location</string>
     <string name="already_driver">You are already signed in as a driver</string>
     <string name="serv_aval_drivers">Sorry this service is available to drivers only</string>
-    <string name="enter_subject">enter subject</string>
-    <string name="enter_message">enter your message</string>
+    <string name="enter_subject">Enter subject</string>
+    <string name="enter_message">Enter your message</string>
     <string name="my_order">My Orders</string>
     <string name="CurrentOrders">Current</string>
     <string name="PreviousOrders">Previous</string>
@@ -162,6 +169,50 @@
     <string name="send_data">sending data ..</string>
     <string name="success">sending data success</string>
     <string name="photo_sent">photo sent to you</string>
+    <string name="order_delivered">Your order successfully delivered</string>
+    <string name="name">Name</string>
+    <string name="age">Age</string>
+    <string name="enter_name">Enter your name</string>
+    <string name="enter_age">Enter your age</string>
+    <string name="order_num">Orders</string>
+    <string name="gender">Gender</string>
+    <string name="update">update</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="edit_name">Edit Name</string>
+    <string name="edit_un">Edit Username</string>
+    <string name="edit_email">Edit email</string>
+    <string name="edit_phone">Edit phone number</string>
+    <string name="edit_age">Edit age</string>
+    <string name="edit_gender">Edit gender</string>
+    <string name="nochange">No changes occur</string>
+    <string name="upd_photo">Updating Photo...</string>
+    <string name="upd_name">Updating Name...</string>
+    <string name="upd_un">Updating Username...</string>
+    <string name="upd_email">Updating Email...</string>
+    <string name="upd_phone">Updating Phone number...</string>
+    <string name="upd_age">Updating Age...</string>
+    <string name="upd_gender">Updating Gender...</string>
+    <string name="log_out">Logout...</string>
+    <string name="enter_transmoney">Enter transfer money</string>
+    <string name="enter_transdate">Enter transfer date</string>
+    <string name="enter_transbank">Enter transfer bank</string>
+    <string name="enter_discode">Enter discount code</string>
+    <string name="total_cost">Total cost</string>
+    <string name="bill_cost">Bill cost</string>
+    <string name="sent_photo">Photo sent to you</string>
+    <string name="cu_sn">Contact us on snapchat</string>
+    <string name="cu_in">Contact us on instagram</string>
+    <string name="cu_fb">Contact us on facebook</string>
+    <string name="cu_tw">Contact us on twitter</string>
+    <string name="nearby">Nearby</string>
+    <string name="nearby_place">Nearby</string>
+    <string name="enter_stroe">Enter Store name</string>
+    <string name="ent_ored_det">Enter order details</string>
 
+    <string-array name="gender">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
 
 </resources>

@@ -8,6 +8,9 @@ public class UserModel {
 
     private String user_id;
     private String user_type;
+    private String user_full_name;
+    private String user_age;
+    private String user_gender;
     private String user_name;
     private String user_phone;
     private String user_email;
@@ -26,6 +29,9 @@ public class UserModel {
     private String user_google_lat  ;
     private String user_google_long ;
     private String user_pass        ;
+    private double rate_evaluation;
+    private int stars_evaluation;
+    private int order_count;
 
     private int success;
     private String our_phone_number;
@@ -33,11 +39,13 @@ public class UserModel {
     public UserModel() {
     }
 
-    public UserModel(String user_id, String user_type, String user_name, String user_pass, String user_phone, String user_email, String user_token_id, String user_photo, String user_city, String user_national_num, String user_car_num, String user_car_model, String user_car_color, String user_car_license, String user_car_form, String user_car_photo, String user_confirm_code, String date_registration, String user_google_lat, String user_google_long, int success) {
+    public UserModel(String user_id, String user_type, String name, String user_age, String user_gender, String user_name, String user_phone, String user_email, String user_token_id, String user_photo, String user_city, String user_national_num, String user_car_num, String user_car_model, String user_car_color, String user_car_license, String user_car_form, String user_car_photo, String user_confirm_code, String date_registration, String user_google_lat, String user_google_long, String user_pass, double rate_evaluation, int stars_evaluation, int order_count, int success, String our_phone_number) {
         this.user_id = user_id;
         this.user_type = user_type;
+        this.user_full_name = name;
+        this.user_age = user_age;
+        this.user_gender = user_gender;
         this.user_name = user_name;
-        this.user_pass = user_pass;
         this.user_phone = user_phone;
         this.user_email = user_email;
         this.user_token_id = user_token_id;
@@ -54,7 +62,36 @@ public class UserModel {
         this.date_registration = date_registration;
         this.user_google_lat = user_google_lat;
         this.user_google_long = user_google_long;
+        this.user_pass = user_pass;
+        this.rate_evaluation = rate_evaluation;
+        this.stars_evaluation = stars_evaluation;
+        this.order_count = order_count;
         this.success = success;
+        this.our_phone_number = our_phone_number;
+    }
+
+    public String getName() {
+        return user_full_name;
+    }
+
+    public void setName(String name) {
+        this.user_full_name = name;
+    }
+
+    public String getUser_age() {
+        return user_age;
+    }
+
+    public void setUser_age(String user_age) {
+        this.user_age = user_age;
+    }
+
+    public String getUser_gender() {
+        return user_gender;
+    }
+
+    public void setUser_gender(String user_gender) {
+        this.user_gender = user_gender;
     }
 
     public String getOur_phone_number() {
@@ -223,6 +260,30 @@ public class UserModel {
 
     public void setUser_google_long(String user_google_long) {
         this.user_google_long = user_google_long;
+    }
+
+    public double getRate_evaluation() {
+        return rate_evaluation;
+    }
+
+    public void setRate_evaluation(double rate_evaluation) {
+        this.rate_evaluation = rate_evaluation;
+    }
+
+    public int getStars_evaluation() {
+        return stars_evaluation;
+    }
+
+    public void setStars_evaluation(int stars_evaluation) {
+        this.stars_evaluation = stars_evaluation;
+    }
+
+    public int getOrder_count() {
+        return order_count;
+    }
+
+    public void setOrder_count(int order_count) {
+        this.order_count = order_count;
     }
 
     public int getSuccess() {

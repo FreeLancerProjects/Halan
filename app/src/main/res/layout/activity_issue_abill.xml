@@ -79,23 +79,52 @@
         </FrameLayout>
     </FrameLayout>
 
-    <EditText
-        android:id="@+id/bill_price"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_below="@+id/img_container"
-        android:background="@drawable/details_et"
-        android:hint="@string/enter_bill_price"
-        android:textStyle="bold"
-        android:textSize="13sp"
-        android:paddingRight="5dp"
-        android:paddingLeft="5dp"
+        android:layout_marginTop="30dp"
 
-        />
+        >
+        <EditText
+            android:id="@+id/bill_price"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/details_et"
+            android:hint="@string/enter_bill_price"
+            android:textStyle="bold"
+            android:textSize="13sp"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
+            android:inputType="numberDecimal"
+
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
+            android:textColor="@color/black"
+            android:text="@string/Cost_the_way"
+            android:layout_marginTop="8dp"
+
+            />
+        <TextView
+            android:id="@+id/cost"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/details_et"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+
+            />
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/issue_bill_btn"
         android:layout_width="match_parent"

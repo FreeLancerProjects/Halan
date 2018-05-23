@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    >
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -26,8 +31,14 @@
                 android:background="@color/colorPrimary"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                />
+                app:contentInsetEnd="0dp"
+                app:contentInsetLeft="0dp"
+                app:contentInsetRight="0dp"
+                app:contentInsetStart="0dp"
+                >
 
+
+            </android.support.v7.widget.Toolbar>
         </LinearLayout>
 
 
@@ -35,11 +46,24 @@
     <RelativeLayout
         android:id="@+id/search_container"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="85dp"
         android:background="@color/colorPrimary"
 
 
         >
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:buttonTint="@color/white"
+            android:text="@string/nearby_place"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:layout_alignParentTop="true"
+            />
+
         <AutoCompleteTextView
             android:id="@+id/search"
             android:layout_width="match_parent"
@@ -57,12 +81,17 @@
             android:textColor="@color/gray3"
             android:drawablePadding="5dp"
             android:imeOptions="actionSearch"
-            android:layout_alignParentTop="true"
             android:textStyle="bold"
+            android:layout_below="@+id/checkbox"
 
             />
+
     </RelativeLayout>
+
     <include layout="@layout/content_home" />
 
 
 </LinearLayout>
+    <include layout="@layout/bottm_sheet"/>
+
+</android.support.design.widget.CoordinatorLayout>

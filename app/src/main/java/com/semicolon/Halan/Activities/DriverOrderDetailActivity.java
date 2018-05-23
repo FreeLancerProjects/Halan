@@ -1,5 +1,6 @@
 package com.semicolon.Halan.Activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -7,16 +8,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.semicolon.Halan.Models.Finishied_Order_Model;
 import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Tags;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.anwarshahriar.calligrapher.Calligrapher;
@@ -35,7 +42,7 @@ public class DriverOrderDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_driver_order_detail);
         Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
-
+        EventBus.getDefault().register(this);
         initView();
         getDataFromIntent();
     }
@@ -44,6 +51,7 @@ public class DriverOrderDetailActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Picasso.with(this).cancelRequest(target);
+        EventBus.getDefault().unregister(this);
     }
 
     private void initView() {
@@ -122,4 +130,44 @@ public class DriverOrderDetailActivity extends AppCompatActivity {
 
 
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Driver_delivered_Order(Finishied_Order_Model finishied_order_model)
+    {
+        CreateCustomAlertDialog(finishied_order_model);
+    }
+
+    private void CreateCustomAlertDialog(final Finishied_Order_Model finishied_order_model) {
+        View view = LayoutInflater.from(this).inflate(R.layout.custom_alert_dialog,null);
+        CircleImageView driver_img = view.findViewById(R.id.driver_image);
+        TextView driver_name = view.findViewById(R.id.driver_name);
+        TextView order_details = view.findViewById(R.id.order_details);
+
+        Picasso.with(DriverOrderDetailActivity.this).load(Uri.parse(Tags.ImgPath+finishied_order_model.getDriver_image())).into(driver_img);
+        driver_name.setText(finishied_order_model.getDriver_name());
+        order_details.setText(finishied_order_model.getOrder_details());
+        Button addRateBtn = view.findViewById(R.id.add_rate);
+        final AlertDialog alertDialog = new AlertDialog.Builder(DriverOrderDetailActivity.this)
+                .setCancelable(false)
+                .setView(view)
+                .create();
+
+        alertDialog.show();
+        addRateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DriverOrderDetailActivity.this,AddRateActivity.class);
+                intent.putExtra("driver_id",finishied_order_model.getDriver_id());
+                intent.putExtra("order_id",finishied_order_model.getOrder_id());
+                intent.putExtra("driver_name",finishied_order_model.getDriver_name());
+                intent.putExtra("driver_image",finishied_order_model.getDriver_image());
+                startActivity(intent);
+                alertDialog.dismiss();
+
+
+            }
+        });
+
+    }
+
 }

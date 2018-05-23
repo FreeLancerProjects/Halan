@@ -7,6 +7,7 @@ package com.semicolon.Halan.Services;
 public class Tags {
     public static final String BASE_URL = "http://fekraapp.semicolonsoft.com/hala/";
     public static final String Map_BaseUrl ="https://maps.googleapis.com/";
+    public static final String PLACE_URL ="https://maps.googleapis.com/";
     public static final String ImgPath  = "http://fekraapp.semicolonsoft.com/hala/uploads/images/";
     public static final String Driver="1";
     public static final String Client="2";
@@ -25,12 +26,20 @@ public class Tags {
     public static final String txt_content_type="text";
     public static final String img_content_type="image";
     public static final String chat="chat";
-
-
+    public static final String driver_finish_order="driver_finish_order";
     public static final String current_order="0";
     public static final String prev_order="1";
     public static final String txt_msg_type="text";
     public static final String img_msg_type="image";
+    public static final String gender_male="1";
+    public static final String gender_female="2";
+
+    public static final String update_name="0";
+    public static final String update_username="1";
+    public static final String update_email="2";
+    public static final String update_phone="3";
+    public static final String update_gender_="4";
+    public static final String update_age_="5";
 
 
 

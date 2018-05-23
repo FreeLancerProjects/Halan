@@ -36,7 +36,8 @@
                     android:background="@drawable/delivery_btn_bg"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="8dp"                    android:textColor="@color/white"
+                    android:layout_marginLeft="8dp"
+                    android:textColor="@color/white"
                     android:text="@string/delv_comp"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
@@ -68,6 +69,26 @@
         android:layout_above="@+id/container"
         android:layout_below="@+id/appBar"
         />
+    <FrameLayout
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_above="@+id/container"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        >
+        <ImageView
+            android:id="@+id/notf"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:padding="10dp"
+            android:background="@drawable/fab_bg"
+            android:clickable="true"
+            android:src="@drawable/not_icon"
+            android:layout_gravity="center"
+            />
+    </FrameLayout>
     <LinearLayout
         android:id="@+id/container"
         android:layout_width="match_parent"

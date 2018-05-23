@@ -12,13 +12,17 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -26,10 +30,12 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -37,10 +43,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +60,7 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
@@ -67,11 +76,20 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.maps.android.PolyUtil;
 import com.semicolon.Halan.Adapters.PlaceAutocompleteAdapter;
 import com.semicolon.Halan.Models.AvailableDriversModel;
+import com.semicolon.Halan.Models.ClientLastOrderModel;
+import com.semicolon.Halan.Models.DriverAcceptModel;
+import com.semicolon.Halan.Models.Finishied_Order_Model;
 import com.semicolon.Halan.Models.PlaceModel;
 import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.TokenModel;
@@ -138,7 +156,7 @@ public class HomeActivity extends AppCompatActivity
     private TextView txt_order_from,txt_order_to,cost,distance;
     private double dist;
     private Preferences preferences;
-    private AlertDialog.Builder builder,builder2;
+    private AlertDialog.Builder builder,builder2,gpsBuilder;
     private Users users;
     private LinearLayout profileContainer;
     private ProgressDialog dialog;
@@ -148,28 +166,148 @@ public class HomeActivity extends AppCompatActivity
     private AlertDialog notalertDialog;
     private NetworkConnection connection;
     private TriStateToggleButton toggleBtn;
-
+    private String provider;
+    private LocationManager locationManager;
+    private final int GPS_REQ=21258;
+    private CardView not_data_cardview;
+    private LinearLayout bottom_sheet;
+    private BottomSheetBehavior behavior;
+    private RatingBar not_rateBar,not_rateBar_details;
+    private CircleImageView not_driver_img,not_driver_img_details;
+    private TextView not_driver_name,not_driver_name_details,not_time,not_time_details,not_driver_rate,not_driver_rate_details,not_order_details,not_date_details,not_cost_details;
+    private Button not_accept_btn,not_refuse_btn;
+    private ClientLastOrderModel clientLastOrderModel;
+    private DatabaseReference dRef;
+    private ProgressDialog dialog_logout;
+    private String country_code="sa";
+    private AutocompleteFilter filter=null;
+    private CheckBox checkBox;
+    private final int NEARBY_REQ=8525;
+    private String myLocality="";
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
         connection = NetworkConnection.getInstance();
+        dRef = FirebaseDatabase.getInstance().getReference();
+
         preferences = new Preferences(this);
+        users = Users.getInstance();
+        users.getUserData(this);
         initView();
         EventBus.getDefault().register(this);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        users = Users.getInstance();
-        users.getUserData(this);
+
         UpdateToken();
-        if (IsServicesOk()) {
-            checkPermission();
+        OpenGps();
+        CreateProgressDialog();
+
+
+    }
+
+    private void OpenGps() {
+        provider = LocationManager.GPS_PROVIDER;
+        locationManager= (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(provider))
+        {
+            gpsBuilder = new AlertDialog.Builder(this);
+            gpsBuilder.setTitle("Gps");
+            gpsBuilder.setMessage("قم بفتح gps لتتمكن من إستخدام التطبيق....");
+            gpsBuilder.setCancelable(false);
+            gpsBuilder.setPositiveButton("Gps Settings", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    AlertDialog dialog = gpsBuilder.create();
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    dialog.dismiss();
+                    startActivityForResult(intent,GPS_REQ);
+                }
+            });
+
+            gpsBuilder.show();
+        }else
+            {
+                if (IsServicesOk()) {
+                    checkPermission();
+                }
+            }
+    }
+
+    private void  initFilter(String country_code)
+    {
+        GeoDataClient geoDataClient = Places.getGeoDataClient(this,null);
+
+        filter = new AutocompleteFilter.Builder()
+                .setCountry(country_code)
+                .build();
+        if (connection.getConnection(this))
+        {
+
+            adapter = new PlaceAutocompleteAdapter(this,geoDataClient,latLngBounds,filter);
+            search_view.setAdapter(adapter);
+
+        }else
+        {
+            Toast.makeText(this, R.string.connectiom, Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GPS_REQ )
+        {
+            if (IsServicesOk()) {
+                checkPermission();
+            }
+        }else if (requestCode==NEARBY_REQ)
+        {
+            if (resultCode==RESULT_OK && data !=null)
+            {
+                try {
+                    search_view.setText(null);
+                    checkBox.setChecked(false);
+                    double lat = data.getDoubleExtra("lat",0.0);
+                    double lng = data.getDoubleExtra("lng",0.0);
+                    String place_name = data.getStringExtra("name");
+                    latLng = new LatLng(lat,lng);
+                    from = place_name;
+                    txt_order_from.setText(from);
+                    Geocoder geocoder = new Geocoder(HomeActivity.this);
+                    List<Address> addressList = null;
+
+                    addressList = geocoder.getFromLocation(mylatLng.latitude,mylatLng.longitude,1);
+
+                    if (addressList.size()>0)
+                    {
+                        to = addressList.get(0).getAddressLine(0);
+                        txt_order_to.setText(to);
+                    }
+                    CreateProgDialog(getString(R.string.locating));
+
+                    dialog.show();
+
+                    getDirection(mylatLng,latLng);
+                    //dist = distance(mylatLng.latitude,mylatLng.longitude,latLng.latitude,latLng.longitude);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }catch (NullPointerException e){}
+
+            }else
+                {
+                    checkBox.setChecked(false);
+
+                }
+
         }
     }
+
     private void CreateNotAlertDialog()
     {
         notalertDialog = new AlertDialog.Builder(this)
@@ -177,7 +315,6 @@ public class HomeActivity extends AppCompatActivity
                 .setPositiveButton(R.string.accepttxt, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        preferences.Update_UserState("");
                         Logout();
                         notalertDialog.dismiss();
                     }
@@ -186,12 +323,34 @@ public class HomeActivity extends AppCompatActivity
                 .create();
 
     }
+    private void CreateProgressDialog()
+    {
+        ProgressBar bar = new ProgressBar(this);
+        Drawable drawable = bar.getIndeterminateDrawable().mutate();
+        drawable.setColorFilter(ContextCompat.getColor(this,R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+        dialog_logout = new ProgressDialog(this);
+        dialog_logout.setIndeterminate(true);
+        dialog_logout.setMessage(getString(R.string.log_out));
+        dialog_logout.setCancelable(true);
+        dialog_logout.setCanceledOnTouchOutside(false);
+        dialog_logout.setIndeterminateDrawable(drawable);
+    }
     @Override
     protected void onStart()
     {
         super.onStart();
         users = Users.getInstance();
         users.getUserData(this);
+        try {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    getLastOrder(userModel.getUser_id());
+
+                }
+            },1500);
+        }catch (NullPointerException e)
+        {}
 
 
 
@@ -267,8 +426,93 @@ public class HomeActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         nav_view = findViewById(R.id.nav_view);
+
         ///////////////////////client///////////////////////////////////
 
+        not_data_cardview = findViewById(R.id.not_data_cardview);
+        not_data_cardview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                not_data_cardview.setVisibility(View.GONE);
+            }
+        });
+        ///////////////////////////////////////////////////////////////
+        bottom_sheet = findViewById(R.id.bottom_sheet);
+        not_rateBar = findViewById(R.id.not_rateBar);
+        LayerDrawable drawable = (LayerDrawable) not_rateBar.getProgressDrawable();
+        drawable.getDrawable(0).setColorFilter(ContextCompat.getColor(this,R.color.gray3), PorterDuff.Mode.SRC_ATOP);
+
+        drawable.getDrawable(1).setColorFilter(ContextCompat.getColor(this,R.color.rate), PorterDuff.Mode.SRC_ATOP);
+        drawable.getDrawable(2).setColorFilter(ContextCompat.getColor(this,R.color.rate), PorterDuff.Mode.SRC_ATOP);
+        behavior = BottomSheetBehavior.from(bottom_sheet);
+        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState)
+                {
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        not_data_cardview.setVisibility(View.GONE);
+                        break;
+                     case BottomSheetBehavior.STATE_HIDDEN:
+                         not_data_cardview.setVisibility(View.VISIBLE);
+                         break;
+                     case BottomSheetBehavior.STATE_DRAGGING:
+                         behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                         not_data_cardview.setVisibility(View.VISIBLE);
+
+                         break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+
+        not_rateBar_details = findViewById(R.id.not_rateBar_detail);
+        LayerDrawable drawable2 = (LayerDrawable) not_rateBar_details.getProgressDrawable();
+        drawable2.getDrawable(0).setColorFilter(ContextCompat.getColor(this,R.color.gray3), PorterDuff.Mode.SRC_ATOP);
+
+        drawable2.getDrawable(1).setColorFilter(ContextCompat.getColor(this,R.color.rate), PorterDuff.Mode.SRC_ATOP);
+        drawable2.getDrawable(2).setColorFilter(ContextCompat.getColor(this,R.color.rate), PorterDuff.Mode.SRC_ATOP);
+
+        not_driver_img = findViewById(R.id.not_driver_img);
+        not_driver_img_details = findViewById(R.id.not_driver_img_detail);
+        not_driver_name= findViewById(R.id.not_driver_name);
+        not_driver_name_details = findViewById(R.id.not_driver_name_detail);
+        not_time = findViewById(R.id.not_time);
+        not_time_details = findViewById(R.id.not_time_details);
+        not_driver_rate = findViewById(R.id.not_driver_rate);
+        not_driver_rate_details = findViewById(R.id.not_driver_rate_detail);
+        not_order_details = findViewById(R.id.not_order_details);
+        not_date_details = findViewById(R.id.not_date_details);
+        not_cost_details = findViewById(R.id.not_cost_details);
+        not_accept_btn = findViewById(R.id.not_accept);
+        not_refuse_btn = findViewById(R.id.not_refuse);
+        not_accept_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                not_accept_btn.setEnabled(false);
+                not_refuse_btn.setEnabled(false);
+                Accept_order(clientLastOrderModel);
+            }
+        });
+
+        not_refuse_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                not_accept_btn.setEnabled(false);
+                not_refuse_btn.setEnabled(false);
+
+                Refuse_order(clientLastOrderModel);
+
+            }
+        });
+
+
+        ////////////////////////////////////////////////////////////////
         search_container = findViewById(R.id.search_container);
         costContainer = findViewById(R.id.costContainer);
         locContainer  = findViewById(R.id.locContainer);
@@ -282,6 +526,20 @@ public class HomeActivity extends AppCompatActivity
         locContainer.setVisibility(View.GONE);
         costContainer.setVisibility(View.GONE);
 
+        /*notf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (userModel.getUser_type().equals(Tags.Client))
+                {
+                    Intent intent = new Intent(HomeActivity.this,ClientNotificationActivity.class);
+                    startActivity(intent);
+                }else
+                {
+                    Intent intent = new Intent(HomeActivity.this,DriverNotificationActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });*/
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -289,7 +547,7 @@ public class HomeActivity extends AppCompatActivity
 
                 if (TextUtils.isEmpty(txt_order.getText().toString()))
                 {
-                    txt_order.setError("أدخل تفاصيل الطلب");
+                    txt_order.setError(getString(R.string.ent_ored_det));
                 }else
                     {
 
@@ -389,21 +647,14 @@ public class HomeActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent=new Intent(HomeActivity.this,UserProfileActivity.class);
                 startActivity(intent);
+                drawer.closeDrawer(GravityCompat.START);
+
             }
         });
         search_view = findViewById(R.id.search);
         search_view.setOnItemClickListener(itemClickListener);
-        GeoDataClient geoDataClient = Places.getGeoDataClient(this,null);
-
-        if (connection.getConnection(this))
-        {
-            adapter = new PlaceAutocompleteAdapter(this,geoDataClient,latLngBounds,null);
-            search_view.setAdapter(adapter);
-
-        }else
-            {
-                Toast.makeText(this, R.string.connectiom, Toast.LENGTH_SHORT).show();
-            }
+        checkBox = findViewById(R.id.checkbox);
+        initFilter(country_code);
 
         search_view.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -412,11 +663,44 @@ public class HomeActivity extends AppCompatActivity
                         ||i==EditorInfo.IME_ACTION_SEARCH
                         ||keyEvent.getAction()==KeyEvent.ACTION_DOWN
                         ||keyEvent.getAction()==KeyEvent.KEYCODE_ENTER)
+
                 {
 
                 }
                 return false;
             }
+        });
+
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    if (checkBox.isChecked())
+                    {
+                        if (mylatLng!=null)
+                        {
+                            if (TextUtils.isEmpty(search_view.getText().toString()))
+                            {
+                                Toast.makeText(HomeActivity.this, R.string.enter_stroe, Toast.LENGTH_SHORT).show();
+                                checkBox.setChecked(false);
+                            }else
+                            {
+                                Intent intent = new Intent(HomeActivity.this,NearbyPlacesActivity.class);
+                                intent.putExtra("query",search_view.getText().toString());
+                                intent.putExtra("lat",mylatLng.latitude);
+                                intent.putExtra("lng",mylatLng.longitude);
+                                startActivityForResult(intent,NEARBY_REQ);
+                            }
+
+                        }else
+                            {
+                                checkBox.setChecked(false);
+
+                            }
+                        //Toast.makeText(HomeActivity.this, ""+search_view.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+
         });
         apiClient = new GoogleApiClient
                 .Builder(this)
@@ -425,6 +709,286 @@ public class HomeActivity extends AppCompatActivity
                 .enableAutoManage(this,this)
                 .build();
 
+
+    }
+
+    private void Refuse_order(ClientLastOrderModel clientLastOrderModel) {
+        Map<String,String> map = new HashMap<>();
+        map.put("action","2");
+        map.put("message_id",clientLastOrderModel.getMessage_id());
+        map.put("order_id_fk",clientLastOrderModel.getOrder_id());
+        map.put("driver_id_fk",clientLastOrderModel.getDriver_id_fk());
+        map.put("user_id",userModel.getUser_id());
+
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.sendClientRequest_Refuse(map);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful())
+                {
+                    if (response.body().getSuccess()==1)
+                    {
+                        Toast.makeText(HomeActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();
+                        not_data_cardview.setVisibility(View.GONE);
+                        bottom_sheet.setVisibility(View.GONE);                    }else
+                    {
+                        not_accept_btn.setEnabled(true);
+                        not_refuse_btn.setEnabled(true);
+                        Toast.makeText(HomeActivity.this, R.string.respons_not_send, Toast.LENGTH_LONG).show();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                not_accept_btn.setEnabled(true);
+                not_refuse_btn.setEnabled(true);
+                Log.e("Error",t.getMessage());
+                Toast.makeText(HomeActivity.this, getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void Accept_order(ClientLastOrderModel clientLastOrderModel) {
+        Map<String,String> map = new HashMap<>();
+        map.put("action","1");
+        map.put("message_id",clientLastOrderModel.getMessage_id());
+        map.put("order_id_fk",clientLastOrderModel.getOrder_id());
+        map.put("driver_id_fk",clientLastOrderModel.getDriver_id_fk());
+        map.put("user_id",userModel.getUser_id());
+
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.sendClientRequest_Accept(map);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful())
+                {
+                    if (response.body().getSuccess()==1)
+                    {
+                        Toast.makeText(HomeActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();
+                        not_data_cardview.setVisibility(View.GONE);
+                        bottom_sheet.setVisibility(View.GONE);
+                        CreateChat();
+                        //finish();
+                    }else
+                    {
+                        not_accept_btn.setEnabled(true);
+                        not_refuse_btn.setEnabled(true);
+                        Toast.makeText(HomeActivity.this, R.string.respons_not_send, Toast.LENGTH_LONG).show();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                Log.e("Error",t.getMessage());
+                not_accept_btn.setEnabled(true);
+                not_refuse_btn.setEnabled(true);
+                Toast.makeText(HomeActivity.this, getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void CreateChat() {
+        dRef.child("typing").child(userModel.getUser_id()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (!dataSnapshot.hasChild(clientLastOrderModel.getDriver_id_fk())) {
+                    String path1 = "/" + userModel.getUser_id() + "/" + clientLastOrderModel.getDriver_id_fk();
+                    String path2 = "/" + clientLastOrderModel.getDriver_id_fk() + "/" + userModel.getUser_id();
+
+                    Map dataMap = new HashMap();
+                    dataMap.put("type", false);
+
+                    Map map = new HashMap();
+                    map.put(path1, dataMap);
+                    map.put(path2, dataMap);
+
+                    dRef.child("typing").updateChildren(map).addOnSuccessListener(new OnSuccessListener() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            Intent intent = new Intent(HomeActivity.this, ChatActivity.class);
+                            intent.putExtra("curr_id", userModel.getUser_id());
+                            intent.putExtra("chat_id", clientLastOrderModel.getDriver_id_fk());
+                            intent.putExtra("curr_type", userModel.getUser_type());
+                            intent.putExtra("chat_type", Tags.Driver);
+                            intent.putExtra("curr_photo", userModel.getUser_photo());
+                            intent.putExtra("chat_photo", clientLastOrderModel.getDriver_image());
+                            intent.putExtra("order_id", clientLastOrderModel.getOrder_id());
+                            startActivity(intent);
+                        }
+                    });
+                }else
+                {
+                    Intent intent = new Intent(HomeActivity.this, ChatActivity.class);
+                    intent.putExtra("curr_id", userModel.getUser_id());
+                    intent.putExtra("chat_id", clientLastOrderModel.getDriver_id_fk());
+                    intent.putExtra("curr_type", userModel.getUser_type());
+                    intent.putExtra("chat_type", Tags.Driver);
+                    intent.putExtra("curr_photo", userModel.getUser_photo());
+                    intent.putExtra("chat_photo", clientLastOrderModel.getDriver_image());
+                    intent.putExtra("order_id", clientLastOrderModel.getOrder_id());
+                    startActivity(intent);
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        /*Intent intent = new Intent(OrderDeliveryActivity.this, ChatActivity.class);
+        intent.putExtra("curr_id", curr_id);
+        intent.putExtra("chat_id", chat_id);
+        intent.putExtra("curr_type", curr_type);
+        intent.putExtra("chat_type", chat_type);
+        intent.putExtra("curr_photo", curr_img);
+        intent.putExtra("chat_photo", chat_img);
+        intent.putExtra("order_id", myOrderModel.getOrder_id());
+        startActivity(intent);*/
+    }
+
+    private void getLastOrder(String user_id)
+    {
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<List<ClientLastOrderModel>> call = services.getClient_LastOrder(user_id);
+        call.enqueue(new Callback<List<ClientLastOrderModel>>() {
+            @Override
+            public void onResponse(Call<List<ClientLastOrderModel>> call, Response<List<ClientLastOrderModel>> response) {
+
+                if (response.isSuccessful())
+                {
+                    if (response.body().size()>0)
+                    {
+                        ClientLastOrderModel lastOrderModel = response.body().get(0);
+
+                        UpdateLast_order_ui(lastOrderModel);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ClientLastOrderModel>> call, Throwable t) {
+                Toast.makeText(HomeActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("error",t.getMessage());
+                Toast.makeText(HomeActivity.this, R.string.something_haywire, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+    private void UpdateLast_order_ui(ClientLastOrderModel lastOrderModel)
+    {
+        Picasso.with(this).load(Uri.parse(Tags.ImgPath+lastOrderModel.getDriver_image())).into(not_driver_img);
+        Picasso.with(this).load(Uri.parse(Tags.ImgPath+lastOrderModel.getDriver_image())).into(not_driver_img_details);
+        not_driver_name.setText(lastOrderModel.getDriver_name());
+        not_driver_name_details.setText(lastOrderModel.getDriver_name());
+        not_time.setText(lastOrderModel.getOrder_replay_from_minute());
+        not_time_details.setText(lastOrderModel.getOrder_replay_from_minute());
+        not_rateBar.setRating((float)lastOrderModel.getStars_evaluation());
+        not_rateBar_details.setRating((float)lastOrderModel.getStars_evaluation());
+        not_driver_rate.setText(String.valueOf(lastOrderModel.getRate_evaluation()));
+        not_driver_rate_details.setText(String.valueOf(lastOrderModel.getRate_evaluation()));
+        not_order_details.setText(lastOrderModel.getOrder_details());
+        not_date_details.setText(lastOrderModel.getOrder_date());
+        not_cost_details.setText(lastOrderModel.getOrder_cost());
+        not_data_cardview.setVisibility(View.VISIBLE);
+        bottom_sheet.setVisibility(View.VISIBLE);
+        this.clientLastOrderModel = lastOrderModel;
+
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getLast_order_not(DriverAcceptModel driverAcceptModel)
+    {
+        getLastOrder(driverAcceptModel.getUser_id());
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Token_Refereshed(TokenModel tokenModel)
+    {
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("user",MODE_PRIVATE);
+        final String user_id = preferences.getString("user_id","");
+        final String token   = tokenModel.getToken();
+        String session = preferences.getString("session","");
+
+        if (!TextUtils.isEmpty(session)||session!=null)
+        {
+            if (session.equals(Tags.login))
+            {
+                Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+                Services services = retrofit.create(Services.class);
+                Call<ResponseModel> call = services.Update_token(user_id, token);
+                call.enqueue(new Callback<ResponseModel>() {
+                    @Override
+                    public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                        if (response.isSuccessful())
+                        {
+                            if (response.body().getSuccess()==1)
+                            {
+                                Log.e("updated","token updated successfully");
+                            }else
+                            {
+                                Log.e("failed","token updated failed");
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseModel> call, Throwable t) {
+                        Log.e("Error",t.getMessage());
+
+                    }
+                });
+            }
+        }
+
+
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Driver_delivered_Order(Finishied_Order_Model finishied_order_model)
+    {
+        CreateCustomAlertDialog(finishied_order_model);
+    }
+
+    private void CreateCustomAlertDialog(final Finishied_Order_Model finishied_order_model) {
+        View view = LayoutInflater.from(this).inflate(R.layout.custom_alert_dialog,null);
+        CircleImageView driver_img = view.findViewById(R.id.driver_image);
+        TextView driver_name = view.findViewById(R.id.driver_name);
+        TextView order_details = view.findViewById(R.id.order_details);
+
+        Picasso.with(HomeActivity.this).load(Uri.parse(Tags.ImgPath+finishied_order_model.getDriver_image())).into(driver_img);
+        driver_name.setText(finishied_order_model.getDriver_name());
+        order_details.setText(finishied_order_model.getOrder_details());
+        Button addRateBtn = view.findViewById(R.id.add_rate);
+        final AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this)
+                .setCancelable(false)
+                .setView(view)
+                .create();
+
+        alertDialog.show();
+        addRateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this,AddRateActivity.class);
+                intent.putExtra("driver_id",finishied_order_model.getDriver_id());
+                intent.putExtra("order_id",finishied_order_model.getOrder_id());
+                intent.putExtra("driver_name",finishied_order_model.getDriver_name());
+                intent.putExtra("driver_image",finishied_order_model.getDriver_image());
+                startActivity(intent);
+                alertDialog.dismiss();
+
+
+            }
+        });
 
     }
 
@@ -486,6 +1050,7 @@ public class HomeActivity extends AppCompatActivity
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                dialog_logout.show();
                 Logout();
             }
         });
@@ -617,6 +1182,7 @@ public class HomeActivity extends AppCompatActivity
        {
            if (permission_granted)
            {
+               mMap.clear();
                mMap.setMyLocationEnabled(true);
                Task<Location> lastLocation = fusedLocationProviderClient.getLastLocation();
                lastLocation.addOnCompleteListener(new OnCompleteListener<Location>() {
@@ -625,16 +1191,50 @@ public class HomeActivity extends AppCompatActivity
                        if (task.isSuccessful())
                        {
                            Location location = task.getResult();
-
-                           try {
-
-                               mylatLng  = new LatLng(location.getLatitude(),location.getLongitude());
-                               AddMarker(mylatLng,"");
-                           }catch (NullPointerException e)
+                           if (location!=null)
                            {
-                               Toast.makeText(HomeActivity.this, R.string.loc_notfounded, Toast.LENGTH_SHORT).show();
+                               try {
 
+                                   mylatLng  = new LatLng(location.getLatitude(),location.getLongitude());
+                                   AddMarker(mylatLng,"");
+
+                                   Geocoder geocoder = new Geocoder(HomeActivity.this);
+                                   List<Address> addressList = geocoder.getFromLocation(mylatLng.latitude,mylatLng.longitude,1);
+                                   if (addressList!=null && addressList.size()>0)
+                                   {
+                                       Address address = addressList.get(0);
+
+                                       if (address!=null)
+                                       {
+                                           Log.e("country code",address.getCountryCode());
+                                           Log.e("address1",address.getLocality());
+
+
+
+                                           country_code= address.getCountryCode();
+                                           myLocality = address.getLocality();
+
+                                           initFilter(country_code);
+                                       }else
+                                           {
+                                               initFilter(country_code);
+
+                                           }
+                                   }else
+                                       {
+                                           initFilter(country_code);
+
+                                       }
+
+                               }catch (NullPointerException e)
+                               {
+                                   Toast.makeText(HomeActivity.this, R.string.loc_notfounded, Toast.LENGTH_SHORT).show();
+
+                               } catch (IOException e) {
+                                   e.printStackTrace();
+                               }
                            }
+
 
 
                        }
@@ -718,10 +1318,19 @@ public class HomeActivity extends AppCompatActivity
             case R.id.orders:
                 Intent intent2=new Intent(this,MyOrdersActivity.class);
                 startActivity(intent2);
+
                 break;
             case R.id.notification:
+                if (userModel.getUser_type().equals(Tags.Client))
+                {
                     Intent intent = new Intent(HomeActivity.this,ClientNotificationActivity.class);
                     startActivity(intent);
+                }else
+                    {
+                        Intent intent = new Intent(HomeActivity.this,DriverNotificationActivity.class);
+                        startActivity(intent);
+                    }
+
                     break;
             case R.id.rule:
                 Intent intent3 = new Intent(HomeActivity.this,RulesActivity.class);
@@ -733,11 +1342,43 @@ public class HomeActivity extends AppCompatActivity
     }
     private void Logout()
     {
-        preferences.ClearPref();
-        preferences.UpdateSoundPref("");
-        Intent intent = new Intent(HomeActivity.this,Activity_Client_Login.class);
-        startActivity(intent);
-        finish();
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.LogOut(userModel.getUser_id());
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+
+                if(response.isSuccessful())
+                {
+                    if (response.body().getSuccess()==1)
+                    {
+                        dialog_logout.dismiss();
+
+                        preferences.Update_UserState("");
+                        preferences.ClearPref();
+                        preferences.UpdateSoundPref("");
+                        Intent intent = new Intent(HomeActivity.this,Activity_Client_Login.class);
+                        startActivity(intent);
+                        finish();
+                    }else
+                        {
+                            dialog_logout.dismiss();
+
+                        }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                Log.e("error",t.getMessage());
+                dialog_logout.dismiss();
+                Toast.makeText(HomeActivity.this, R.string.something_haywire, Toast.LENGTH_LONG).show();
+
+
+            }
+        });
+
     }
     @Override
     public void UserDataSuccess(UserModel userModel1)
@@ -782,48 +1423,7 @@ public class HomeActivity extends AppCompatActivity
 
 
     }
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void Token_Refereshed(TokenModel tokenModel)
-    {
-        SharedPreferences preferences = getApplicationContext().getSharedPreferences("user",MODE_PRIVATE);
-        final String user_id = preferences.getString("user_id","");
-        final String token   = tokenModel.getToken();
-        String session = preferences.getString("session","");
 
-        if (!TextUtils.isEmpty(session)||session!=null)
-        {
-            if (session.equals(Tags.login))
-            {
-                Retrofit retrofit = Api.getClient(Tags.BASE_URL);
-                Services services = retrofit.create(Services.class);
-                Call<ResponseModel> call = services.Update_token(user_id, token);
-                call.enqueue(new Callback<ResponseModel>() {
-                    @Override
-                    public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
-                        if (response.isSuccessful())
-                        {
-                            if (response.body().getSuccess()==1)
-                            {
-                                Log.e("updated","token updated successfully");
-                            }else
-                            {
-                                Log.e("failed","token updated failed");
-
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseModel> call, Throwable t) {
-                        Log.e("Error",t.getMessage());
-
-                    }
-                });
-            }
-        }
-
-
-    }
     private void HideKeyBoard()
     {
         InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -847,43 +1447,49 @@ public class HomeActivity extends AppCompatActivity
         @Override
         public void onResult(@NonNull PlaceBuffer places) {
 
-            if (!places.getStatus().isSuccess())
-            {
-                places.release();
-                return;
-            }
-            Place place = places.get(0);
-            try
-            {
-                HideKeyBoard();
-                latLng = place.getLatLng();
-                from = place.getName()+","+place.getAddress();
-                txt_order_from.setText(from);
-                Geocoder geocoder = new Geocoder(HomeActivity.this);
-                List<Address> addressList = geocoder.getFromLocation(mylatLng.latitude,mylatLng.longitude,1);
-                if (addressList.size()>0)
+            try {
+                if (!places.getStatus().isSuccess())
                 {
-                    to = addressList.get(0).getAddressLine(0);
-                    txt_order_to.setText(to);
+                    places.release();
+                    return;
                 }
-                CreateProgDialog(getString(R.string.locating));
+                Place place = places.get(0);
+                try
+                {
+                    HideKeyBoard();
+                    latLng = place.getLatLng();
+                    from = place.getName()+","+place.getAddress();
+                    txt_order_from.setText(from);
+                    Geocoder geocoder = new Geocoder(HomeActivity.this);
+                    List<Address> addressList = geocoder.getFromLocation(mylatLng.latitude,mylatLng.longitude,1);
+                    if (addressList.size()>0)
+                    {
+                        to = addressList.get(0).getAddressLine(0);
+                        txt_order_to.setText(to);
+                    }
+                    CreateProgDialog(getString(R.string.locating));
 
-                dialog.show();
+                    dialog.show();
 
-                getDirection(mylatLng,latLng);
-                //dist = distance(mylatLng.latitude,mylatLng.longitude,latLng.latitude,latLng.longitude);
+                    getDirection(mylatLng,latLng);
+                    //dist = distance(mylatLng.latitude,mylatLng.longitude,latLng.latitude,latLng.longitude);
 
 
-            }
-            catch (NullPointerException e)
+                }
+                catch (NullPointerException e)
+                {
+                    Toast.makeText(HomeActivity.this, R.string.cfl, Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+                places.release();
+            }catch (NullPointerException e)
             {
-                Toast.makeText(HomeActivity.this, R.string.cfl, Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
-                e.printStackTrace();
+
             }
 
-
-            places.release();
         }
     };
 
@@ -973,7 +1579,7 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Toast.makeText(this,R.string.something_haywire, Toast.LENGTH_SHORT).show();
     }
 
     private void ShowAvailable_Drivers()
@@ -1010,8 +1616,16 @@ public class HomeActivity extends AppCompatActivity
             for (int i=0;i<availableDriversModelList.size();i++)
             {
                 AvailableDriversModel driversModel = availableDriversModelList.get(i);
-                double dis = distance(mylatLng.latitude,mylatLng.longitude,Double.parseDouble(driversModel.getUser_google_lat()),Double.parseDouble(driversModel.getUser_google_long()));
-                map.put(driversModel.getDriver_id(),dis);
+                if (driversModel.getUser_google_lat()!=null||!TextUtils.isEmpty(driversModel.getUser_google_lat())
+                        && driversModel.getUser_google_long()!=null||!TextUtils.isEmpty(driversModel.getUser_google_long()))
+                {
+                    double dis = distance(mylatLng.latitude,mylatLng.longitude,Double.parseDouble(driversModel.getUser_google_lat()),Double.parseDouble(driversModel.getUser_google_long()));
+                    map.put(driversModel.getDriver_id(),dis);
+                }
+                /*Log.e("ana",mylatLng.latitude+"_"+mylatLng.longitude);
+                Log.e("drivers",driversModel.getUser_google_lat()+"_"+driversModel.getUser_google_long());
+*/
+
             }
             for (String key :map.keySet())
             {
@@ -1039,6 +1653,7 @@ public class HomeActivity extends AppCompatActivity
                     {
                         for (String key :map.keySet())
                         {
+
                             if (map.get(key)== sortedArray.get(i))
                             {
                                 drivers_ids.add(key);
@@ -1051,10 +1666,13 @@ public class HomeActivity extends AppCompatActivity
 
 
 
-
         }catch (IndexOutOfBoundsException e)
         {
             Log.e("error drivers","index < 0");
+        }
+        catch (NumberFormatException e)
+        {
+            //Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1108,5 +1726,9 @@ public class HomeActivity extends AppCompatActivity
         return (rad * 180.0 / Math.PI);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

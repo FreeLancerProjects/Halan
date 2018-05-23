@@ -1,154 +1,248 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_width="match_parent"
-    android:fillViewport="true"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
-    <RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context="com.semicolon.Halan.Activities.ContactUsActivity">
-        <android.support.design.widget.AppBarLayout
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:layout_alignParentTop="true"
+        android:id="@+id/appBar"
+        >
+        <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:contentInsetEnd="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
 
             >
-            <android.support.v7.widget.Toolbar
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimary"
-                app:contentInsetEnd="0dp"
-                app:contentInsetRight="0dp"
-                app:contentInsetLeft="0dp"
-                app:contentInsetStart="0dp"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/back"
+                    android:clickable="true"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/white_back"
+                    android:padding="13dp"
+                    android:layout_gravity="left|center_vertical"
 
-                >
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <ImageView
-                        android:id="@+id/back"
-                        android:clickable="true"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentLeft="true"
-                        android:src="@drawable/white_back"
-                        android:padding="13dp"
-                        android:layout_gravity="left|center_vertical"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:layout_centerHorizontal="true"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:text="@string/pay"/>
+            </RelativeLayout>
 
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:textColor="@color/white"
-                        android:layout_centerHorizontal="true"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:text="@string/pay"/>
-                </RelativeLayout>
-
-            </android.support.v7.widget.Toolbar>
-        </android.support.design.widget.AppBarLayout>
-
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+    <ScrollView
+        android:layout_below="@+id/appBar"
+        android:layout_above="@+id/btn_send"
+        android:layout_width="match_parent"
+        android:fillViewport="true"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+            >
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="40dp"
-            android:background="@drawable/client_login_container"
-            android:layout_height="wrap_content">
+            >
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/transfer_money"
-                android:padding="10dp"
-                android:textSize="14sp"
-                android:textColor="@color/black"/>
+                android:padding="5dp"
+                android:textSize="13sp"
+                android:textColor="@color/black"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+
+                />
             <EditText
                 android:id="@+id/edt_trans_money"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:padding="5dp"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:inputType="number"
-                android:textColor="@color/black"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_margin="5dp"
-            android:background="@drawable/client_login_container"
-            android:layout_height="wrap_content">
+                android:textColor="@color/black"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/client_login_container"
+                android:singleLine="true"
+                android:scrollHorizontally="true"
+
+                />
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/date"
                 android:padding="5dp"
-                android:textSize="14sp"
-                android:textColor="@color/black"/>
-            <EditText
-                android:id="@+id/edt_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:textSize="14sp"
-                android:textColor="@color/black"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_margin="5dp"
-            android:background="@drawable/client_login_container"
-            android:layout_height="wrap_content">
+                android:textSize="13sp"
+                android:textColor="@color/black"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                />
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_date"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:padding="5dp"
+                android:textSize="13sp"
+                android:textColor="@color/black"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/client_login_container"
+                android:layout_marginBottom="5dp"
+                android:singleLine="true"
+                android:scrollHorizontally="true"
+                />
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/bank"
                 android:padding="5dp"
-                android:textSize="14sp"
-                android:textColor="@color/black"/>
+                android:textSize="13sp"
+                android:textColor="@color/black"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                />
             <EditText
                 android:id="@+id/edt_bank"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:padding="5dp"
-                android:textSize="14sp"
-                android:textColor="@color/black"/>
-        </LinearLayout>
+                android:textSize="13sp"
+                android:textColor="@color/black"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/client_login_container"
+                android:layout_marginBottom="5dp"
+                android:singleLine="true"
+                android:scrollHorizontally="true"
+                />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_margin="5dp"
-            android:background="@drawable/client_login_container"
-            android:layout_height="wrap_content">
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/code"
                 android:padding="5dp"
-                android:textSize="14sp"
-                android:textColor="@color/black"/>
+                android:textSize="13sp"
+                android:textColor="@color/black"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                />
             <EditText
                 android:id="@+id/edt_code"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:padding="5dp"
-                android:textSize="14sp"
-                android:textColor="@color/black"/>
+                android:textSize="13sp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/black"
+                android:background="@drawable/client_login_container"
+                android:layout_marginBottom="5dp"
+                android:singleLine="true"
+                android:scrollHorizontally="true"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:background="@color/gray1"
+                android:orientation="vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="المورد الراقي لتقنية المعلومات /الراجحي "
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="158608010285807"
+                    android:textSize="13sp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="right|center_vertical"
+                    />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1.2px"
+                    android:background="@color/black"
+                    android:layout_margin="5dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="المورد الراقي لتقنية المعلومات – الاهلي "
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="14100000228807"
+                    android:gravity="right|center_vertical"
+                    android:textSize="13sp"
+                    android:layout_marginTop="5dp"
+                    />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:textColor="@color/black"
+                android:text="INFO@RAQYTECH.COM"
+                android:paddingTop="5dp"
+                android:paddingBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+
+                />
+
         </LinearLayout>
 
 
-    </LinearLayout>
+        </ScrollView>
+
         <Button
             android:id="@+id/btn_send"
             android:layout_width="match_parent"
@@ -157,7 +251,7 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
+
             android:layout_alignParentBottom="true"
             android:text="@string/send"/>
     </RelativeLayout>
-</ScrollView>

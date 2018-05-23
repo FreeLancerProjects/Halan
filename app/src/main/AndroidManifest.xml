@@ -10,10 +10,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission
         android:name="android.permission.GET_TASKS"
         tools:ignore="ProtectedPermissions" />
-
 
     <application
         android:name=".Services.MyApp"
@@ -42,9 +42,7 @@
             </intent-filter>
         </service>
         /////////////////////////////////////////////////
-        <activity android:name=".Activities.Activity_Client_Login">
-
-        </activity>
+        <activity android:name=".Activities.Activity_Client_Login" />
         <activity android:name=".Activities.Activity_Client_Register" />
         <activity android:name=".Activities.Activity_Driver_Register" />
         <activity android:name=".Activities.Activity_Driver_Register2" />
@@ -85,6 +83,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Activities.WebViewActivity" />
+        <activity android:name=".Activities.NearbyPlacesActivity"></activity>
     </application>
 
 </manifest>

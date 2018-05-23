@@ -1,10 +1,15 @@
 package com.semicolon.Halan.Activities;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -12,9 +17,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +36,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
+import com.semicolon.Halan.Models.AvailableDriversModel;
+import com.semicolon.Halan.Models.Finishied_Order_Model;
 import com.semicolon.Halan.Models.PlaceModel;
 import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.Models.UserModel;
@@ -38,12 +47,19 @@ import com.semicolon.Halan.Services.Preferences;
 import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
 import com.semicolon.Halan.SingleTone.Users;
+import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,8 +83,11 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
     private LatLng fromLatLng,toLatLng;
     private Preferences preferences;
     private UserModel userModel;
+    private List<String> drivers_ids;
+    private ProgressDialog dialog;
     Users users;
     private String userId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +95,13 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
         setContentView(R.layout.activity_driver_order_details);
         Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
-
+        EventBus.getDefault().register(this);
         users = Users.getInstance();
         preferences=new Preferences(this);
         users.getUserData(this);
         getDataFromIntent();
         initView();
+        CreateProgDialog();
         if (isServiceOk())
         {
             CheckPermission();
@@ -89,6 +109,18 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
 
     }
 
+    private void CreateProgDialog()
+    {
+        ProgressBar bar = new ProgressBar(this);
+        Drawable drawable = bar.getIndeterminateDrawable().mutate();
+        drawable.setColorFilter(ContextCompat.getColor(this,R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+        dialog = new ProgressDialog(this);
+        dialog.setMessage(getString(R.string.cancel_andSend));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(true);
+        dialog.setIndeterminateDrawable(drawable);
+
+    }
     private void getDataFromIntent() {
         Intent intent=getIntent();
 
@@ -132,6 +164,45 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
         driver_cost.setText(cost);
         accept.setOnClickListener(this);
         refuse.setOnClickListener(this);
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Driver_delivered_Order(Finishied_Order_Model finishied_order_model)
+    {
+        CreateCustomAlertDialog(finishied_order_model);
+    }
+
+    private void CreateCustomAlertDialog(final Finishied_Order_Model finishied_order_model) {
+        View view = LayoutInflater.from(this).inflate(R.layout.custom_alert_dialog,null);
+        CircleImageView driver_img = view.findViewById(R.id.driver_image);
+        TextView driver_name = view.findViewById(R.id.driver_name);
+        TextView order_details = view.findViewById(R.id.order_details);
+
+        Picasso.with(DriverOrderDetailsActivity.this).load(Uri.parse(Tags.ImgPath+finishied_order_model.getDriver_image())).into(driver_img);
+        driver_name.setText(finishied_order_model.getDriver_name());
+        order_details.setText(finishied_order_model.getOrder_details());
+        Button addRateBtn = view.findViewById(R.id.add_rate);
+        final AlertDialog alertDialog = new AlertDialog.Builder(DriverOrderDetailsActivity.this)
+                .setCancelable(false)
+                .setView(view)
+                .create();
+
+        alertDialog.show();
+        addRateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DriverOrderDetailsActivity.this,AddRateActivity.class);
+                intent.putExtra("driver_id",finishied_order_model.getDriver_id());
+                intent.putExtra("order_id",finishied_order_model.getOrder_id());
+                intent.putExtra("driver_name",finishied_order_model.getDriver_name());
+                intent.putExtra("driver_image",finishied_order_model.getDriver_image());
+                startActivity(intent);
+                alertDialog.dismiss();
+
+
+            }
+        });
 
     }
     private void initMap()
@@ -371,7 +442,7 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
     }
 
     private void SendRefuse() {
-
+        dialog.show();
         Map<String,String> map = new HashMap<>();
         map.put("action","2");
         map.put("message_id",messege_id);
@@ -389,8 +460,9 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
                 {
                     if (response.body().getSuccess()==1)
                     {
-                        Toast.makeText(DriverOrderDetailsActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();
-                        finish();
+                        ShowAvailable_Drivers();
+                        //Toast.makeText(DriverOrderDetailsActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();
+                        //finish();
 
                     }else
                     {
@@ -408,6 +480,162 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
         });
     }
 
+    private void ShowAvailable_Drivers()
+    {
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<List<AvailableDriversModel>> call = services.ShowAvailable_Drivers();
+        call.enqueue(new Callback<List<AvailableDriversModel>>() {
+            @Override
+            public void onResponse(Call<List<AvailableDriversModel>> call, Response<List<AvailableDriversModel>> response) {
+                if (response.isSuccessful())
+                {
+                    List<AvailableDriversModel> availableDriversModelList = response.body();
+                    getDrivers(availableDriversModelList);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AvailableDriversModel>> call, Throwable t) {
+                dialog.dismiss();
+                Log.e("Error",t.getMessage());
+                Toast.makeText(DriverOrderDetailsActivity.this, ""+getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+    }
+
+    private void getDrivers(List<AvailableDriversModel> availableDriversModelList) {
+        try
+        {
+            Map<String,Double> map = new HashMap<>();
+            List<Double> sortedArray = new ArrayList<>();
+            drivers_ids = new ArrayList<>();
+            for (int i=0;i<availableDriversModelList.size();i++)
+            {
+
+                AvailableDriversModel driversModel = availableDriversModelList.get(i);
+                if (client_lat!=0.0 || client_long!=0.0 &&
+                        driversModel.getUser_google_lat()!=null||!TextUtils.isEmpty(driversModel.getUser_google_lat()) ||
+                        driversModel.getUser_google_long()!=null||!TextUtils.isEmpty(driversModel.getUser_google_long()) )
+                {
+                    double dis = distance(client_lat,client_long,Double.parseDouble(driversModel.getUser_google_lat()),Double.parseDouble(driversModel.getUser_google_long()));
+                    map.put(driversModel.getDriver_id(),dis);
+                }
+
+            }
+            for (String key :map.keySet())
+            {
+                sortedArray.add(map.get(key));
+            }
+
+            Collections.sort(sortedArray);
+
+            if (sortedArray.size()<=6)
+            {
+                for (int i =0;i<sortedArray.size();i++)
+                {
+                    for (String key :map.keySet())
+                    {
+                        if (map.get(key)== sortedArray.get(i))
+                        {
+                            drivers_ids.add(key);
+                        }
+                    }
+                }
+                Log.e("iffff","<6");
+            }else
+            {
+                for (int i =0;i<6;i++)
+                {
+                    for (String key :map.keySet())
+                    {
+                        if (map.get(key)== sortedArray.get(i))
+                        {
+                            drivers_ids.add(key);
+                        }
+                    }
+                }
+
+               /* Map<String,String> datamap =new HashMap<>();
+                datamap.put("user_id",userModel.getUser_id());
+                datamap.put("client_location",myOrderModel.getClient_location());
+                datamap.put("market_location",myOrderModel.getMarket_location());
+                datamap.put("client_google_lat",String.valueOf(myOrderModel.getClient_google_lat()));
+                datamap.put("client_google_lang",String.valueOf(myOrderModel.getClient_google_lang()));
+                datamap.put("market_google_lat",String.valueOf(myOrderModel.getMarket_google_lat()));
+                datamap.put("market_google_lang",String.valueOf(myOrderModel.getMarket_google_lang()));
+                datamap.put("distance",String.valueOf(dist));
+                datamap.put("order_details",myOrderModel.getOrder_details());
+                datamap.put("total_cost",myOrderModel.getCost());*/
+
+                sendOrders(drivers_ids);
+
+                Log.e("iffff",">6");
+
+            }
+
+
+
+
+        }catch (IndexOutOfBoundsException e)
+        {
+            Log.e("error drivers","index < 0");
+        }
+    }
+    private void sendOrders(List<String> drivers_ids) {
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<ResponseModel> call = services.SendToOtherDriver(order_id,userModel.getUser_id(), drivers_ids);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful())
+                {
+                    if (response.body().getSuccess_order()==1)
+                    {
+                        dialog.dismiss();
+                        Toast.makeText(DriverOrderDetailsActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();                        finish();
+                    }else
+                    {
+                        Toast.makeText(DriverOrderDetailsActivity.this, R.string.order_notsent, Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        finish();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                dialog.dismiss();
+                Toast.makeText(DriverOrderDetailsActivity.this,getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();
+                Log.e("Error",t.getMessage());
+                finish();
+            }
+        });
+
+    }
+
+    private double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1))
+                * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1))
+                * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        return (dist);
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
     @Override
     public void UserDataSuccess(UserModel userModel) {
         this.userModel = userModel;
@@ -428,5 +656,11 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
 
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }
