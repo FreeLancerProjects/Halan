@@ -67,6 +67,29 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             />
+        <LinearLayout
+            android:id="@+id/no_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            >
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/search"
+                android:layout_gravity="center_horizontal"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/black"
+                android:text="@string/no_search_result"
+                />
+        </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>

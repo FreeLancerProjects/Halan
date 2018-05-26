@@ -190,9 +190,9 @@ public class IssueAbillActivity extends AppCompatActivity {
                     final TextView way_cost = view1.findViewById(R.id.way_cost);
                     final TextView total_cost = view1.findViewById(R.id.total_cost);
                     bill_cost.setText(issue_price.getText().toString());
-                    way_cost.setText(order_cost);
+                    way_cost.setText(order_cost +" ريال");
                     final double total = Double.parseDouble(issue_price.getText().toString().trim())+Double.parseDouble(order_cost.trim());
-                    total_cost.setText(String.valueOf(total));
+                    total_cost.setText(String.valueOf(total)+" ريال");
 
                     Log.e("costs",issue_price.getText().toString());
                     Log.e("costs",order_cost);

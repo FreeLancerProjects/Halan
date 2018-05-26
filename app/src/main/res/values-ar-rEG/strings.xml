@@ -194,14 +194,23 @@
     <string name="total_cost">إجمالي التكلفة</string>
     <string name="bill_cost">تكلفة الفاتورة</string>
     <string name="sent_photo">تم إرسال صورة لك</string>
-    <string name="cu_sn">اتصل بنا على حسابنا على اسناب شات</string>
-    <string name="cu_in">اتصل بنا على حسابنا على الانستقرام</string>
-    <string name="cu_fb">اتصل بنا على حسابنا على الفيس بوك</string>
-    <string name="cu_tw">اتصل بنا على حسابنا على تويتر</string>
+    <string name="cu_sn"> حسابنا على اسناب شات</string>
+    <string name="cu_in">حسابنا على الانستقرام</string>
+    <string name="cu_fb">حسابنا على الفيس بوك</string>
+    <string name="cu_tw">حسابنا على تويتر</string>
     <string name="nearby">الاقرب</string>
     <string name="nearby_place">الاقرب</string>
     <string name="enter_stroe">أدخل اسم المتجر</string>
     <string name="ent_ored_det">أدخل تفاصيل الطلب</string>
+    <string name="req_sent">تم إرسال طلبك بنجاح بإنتظار الموافقة علي طلبك</string>
+    <string name="ok">تم</string>
+    <string name="no_search_result">لا توجد نتائج البحث</string>
+    <string name="add_order_d">أضف تفاصيل الطلب هنا...</string>
+    <string name="detr_loc">تحديد موقع الاستلام</string>
+    <string name="send_order">إرسال الطلب</string>
+    <string name="csar">لايمكنك القيام بإرسال اي طلب حتى يتم الانتهاء من الطلب الحالي</string>
+    <string name="or_no_ex">الطلب غير موجود لقد تجاوز الطلب 5 دقائق</string>
+    <string name="ue">اسم المستخدم موجود بالفعل</string>
     <string-array name="gender">
         <item>ذكر</item>
         <item>انثى</item>

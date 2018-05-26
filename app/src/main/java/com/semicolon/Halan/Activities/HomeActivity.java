@@ -3,6 +3,7 @@ package com.semicolon.Halan.Activities;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,7 +44,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -181,9 +181,13 @@ public class HomeActivity extends AppCompatActivity
     private ProgressDialog dialog_logout;
     private String country_code="sa";
     private AutocompleteFilter filter=null;
-    private CheckBox checkBox;
+    //private CheckBox checkBox;
     private final int NEARBY_REQ=8525;
+    private Button nearbyBtn;
     private String myLocality="";
+    private NotificationManager manager;
+    private TextView alert_txt;
+    private static boolean isDeleted = false;
 
 
     @Override
@@ -194,7 +198,7 @@ public class HomeActivity extends AppCompatActivity
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
         connection = NetworkConnection.getInstance();
         dRef = FirebaseDatabase.getInstance().getReference();
-
+        manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         preferences = new Preferences(this);
         users = Users.getInstance();
         users.getUserData(this);
@@ -271,7 +275,6 @@ public class HomeActivity extends AppCompatActivity
             {
                 try {
                     search_view.setText(null);
-                    checkBox.setChecked(false);
                     double lat = data.getDoubleExtra("lat",0.0);
                     double lng = data.getDoubleExtra("lng",0.0);
                     String place_name = data.getStringExtra("name");
@@ -301,7 +304,6 @@ public class HomeActivity extends AppCompatActivity
 
             }else
                 {
-                    checkBox.setChecked(false);
 
                 }
 
@@ -435,10 +437,12 @@ public class HomeActivity extends AppCompatActivity
             public void onClick(View view) {
                 behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 not_data_cardview.setVisibility(View.GONE);
+                manager.cancel(1995);
             }
         });
         ///////////////////////////////////////////////////////////////
         bottom_sheet = findViewById(R.id.bottom_sheet);
+        bottom_sheet.setEnabled(false);
         not_rateBar = findViewById(R.id.not_rateBar);
         LayerDrawable drawable = (LayerDrawable) not_rateBar.getProgressDrawable();
         drawable.getDrawable(0).setColorFilter(ContextCompat.getColor(this,R.color.gray3), PorterDuff.Mode.SRC_ATOP);
@@ -446,20 +450,24 @@ public class HomeActivity extends AppCompatActivity
         drawable.getDrawable(1).setColorFilter(ContextCompat.getColor(this,R.color.rate), PorterDuff.Mode.SRC_ATOP);
         drawable.getDrawable(2).setColorFilter(ContextCompat.getColor(this,R.color.rate), PorterDuff.Mode.SRC_ATOP);
         behavior = BottomSheetBehavior.from(bottom_sheet);
+
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState)
                 {
                     case BottomSheetBehavior.STATE_EXPANDED:
-                        not_data_cardview.setVisibility(View.GONE);
+                       // not_data_cardview.setVisibility(View.GONE);
+                        manager.cancel(1995);
                         break;
                      case BottomSheetBehavior.STATE_HIDDEN:
-                         not_data_cardview.setVisibility(View.VISIBLE);
+
+                         //not_data_cardview.setVisibility(View.VISIBLE);
                          break;
                      case BottomSheetBehavior.STATE_DRAGGING:
-                         behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                         not_data_cardview.setVisibility(View.VISIBLE);
+                         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        // not_data_cardview.setVisibility(View.VISIBLE);
+                         manager.cancel(1995);
 
                          break;
                 }
@@ -470,7 +478,7 @@ public class HomeActivity extends AppCompatActivity
 
             }
         });
-
+        alert_txt = findViewById(R.id.alert_txt);
         not_rateBar_details = findViewById(R.id.not_rateBar_detail);
         LayerDrawable drawable2 = (LayerDrawable) not_rateBar_details.getProgressDrawable();
         drawable2.getDrawable(0).setColorFilter(ContextCompat.getColor(this,R.color.gray3), PorterDuff.Mode.SRC_ATOP);
@@ -494,19 +502,15 @@ public class HomeActivity extends AppCompatActivity
         not_accept_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                not_accept_btn.setEnabled(false);
-                not_refuse_btn.setEnabled(false);
-                Accept_order(clientLastOrderModel);
+                getLastOrder2(userModel.getUser_id(),"accept");
             }
         });
 
         not_refuse_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                not_accept_btn.setEnabled(false);
-                not_refuse_btn.setEnabled(false);
-
-                Refuse_order(clientLastOrderModel);
+                getLastOrder2(userModel.getUser_id(),"refuse");
+                Log.e("isdeleted2",isDeleted+"");
 
             }
         });
@@ -629,12 +633,12 @@ public class HomeActivity extends AppCompatActivity
                 if (toggleStatus== TriStateToggleButton.ToggleStatus.on)
                 {
                     preferences.UpdateSoundPref("on");
-                    Toast.makeText(HomeActivity.this, "on2", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HomeActivity.this, "Sound on", Toast.LENGTH_SHORT).show();
 
                 }else if (toggleStatus == TriStateToggleButton.ToggleStatus.off)
                 {
                     preferences.UpdateSoundPref("off");
-                    Toast.makeText(HomeActivity.this, "off2", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HomeActivity.this, "Sound off", Toast.LENGTH_SHORT).show();
 
 
                 }
@@ -653,7 +657,7 @@ public class HomeActivity extends AppCompatActivity
         });
         search_view = findViewById(R.id.search);
         search_view.setOnItemClickListener(itemClickListener);
-        checkBox = findViewById(R.id.checkbox);
+        nearbyBtn = findViewById(R.id.nearbyBtn);
         initFilter(country_code);
 
         search_view.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -671,35 +675,26 @@ public class HomeActivity extends AppCompatActivity
             }
         });
 
-        checkBox.setOnClickListener(new View.OnClickListener() {
+        nearbyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    if (checkBox.isChecked())
-                    {
-                        if (mylatLng!=null)
-                        {
-                            if (TextUtils.isEmpty(search_view.getText().toString()))
-                            {
-                                Toast.makeText(HomeActivity.this, R.string.enter_stroe, Toast.LENGTH_SHORT).show();
-                                checkBox.setChecked(false);
-                            }else
-                            {
-                                Intent intent = new Intent(HomeActivity.this,NearbyPlacesActivity.class);
-                                intent.putExtra("query",search_view.getText().toString());
-                                intent.putExtra("lat",mylatLng.latitude);
-                                intent.putExtra("lng",mylatLng.longitude);
-                                startActivityForResult(intent,NEARBY_REQ);
-                            }
 
-                        }else
-                            {
-                                checkBox.setChecked(false);
-
-                            }
-                        //Toast.makeText(HomeActivity.this, ""+search_view.getText().toString(), Toast.LENGTH_SHORT).show();
-
+                if (mylatLng != null) {
+                    if (TextUtils.isEmpty(search_view.getText().toString())) {
+                        Toast.makeText(HomeActivity.this, R.string.enter_stroe, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intent = new Intent(HomeActivity.this, NearbyPlacesActivity.class);
+                        intent.putExtra("query", search_view.getText().toString());
+                        intent.putExtra("lat", mylatLng.latitude);
+                        intent.putExtra("lng", mylatLng.longitude);
+                        startActivityForResult(intent, NEARBY_REQ);
                     }
+
                 }
+                //Toast.makeText(HomeActivity.this, ""+search_view.getText().toString(), Toast.LENGTH_SHORT).show();
+
+
+            }
 
         });
         apiClient = new GoogleApiClient
@@ -732,7 +727,12 @@ public class HomeActivity extends AppCompatActivity
                     {
                         Toast.makeText(HomeActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();
                         not_data_cardview.setVisibility(View.GONE);
-                        bottom_sheet.setVisibility(View.GONE);                    }else
+                        bottom_sheet.setVisibility(View.GONE);
+                        search_view.setEnabled(true);
+                        nearbyBtn.setEnabled(true);
+                        alert_txt.setVisibility(View.GONE);
+
+                    }else
                     {
                         not_accept_btn.setEnabled(true);
                         not_refuse_btn.setEnabled(true);
@@ -773,6 +773,9 @@ public class HomeActivity extends AppCompatActivity
                         Toast.makeText(HomeActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();
                         not_data_cardview.setVisibility(View.GONE);
                         bottom_sheet.setVisibility(View.GONE);
+                        search_view.setEnabled(true);
+                        nearbyBtn.setEnabled(true);
+                        alert_txt.setVisibility(View.GONE);
                         CreateChat();
                         //finish();
                     }else
@@ -871,8 +874,68 @@ public class HomeActivity extends AppCompatActivity
                     if (response.body().size()>0)
                     {
                         ClientLastOrderModel lastOrderModel = response.body().get(0);
-
+                        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                         UpdateLast_order_ui(lastOrderModel);
+                        isDeleted = false;
+                        Log.e("isdeleted3",isDeleted+"");
+
+
+                    }else
+                        {
+                            isDeleted =true;
+                            Log.e("isdeleted4",isDeleted+"");
+
+                        }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ClientLastOrderModel>> call, Throwable t) {
+                Toast.makeText(HomeActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("error",t.getMessage());
+                Toast.makeText(HomeActivity.this, R.string.something_haywire, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void getLastOrder2(String user_id, final String type)
+    {
+        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
+        Services services = retrofit.create(Services.class);
+        Call<List<ClientLastOrderModel>> call = services.getClient_LastOrder(user_id);
+        call.enqueue(new Callback<List<ClientLastOrderModel>>() {
+            @Override
+            public void onResponse(Call<List<ClientLastOrderModel>> call, Response<List<ClientLastOrderModel>> response) {
+
+                if (response.isSuccessful())
+                {
+                    if (response.body().size()>0)
+                    {
+                        if (type.equals("accept"))
+                        {
+                            not_accept_btn.setEnabled(false);
+                            not_refuse_btn.setEnabled(false);
+                            Accept_order(clientLastOrderModel);
+
+                        }else if (type.equals("refuse"))
+                        {
+                            not_accept_btn.setEnabled(false);
+                            not_refuse_btn.setEnabled(false);
+
+                            Refuse_order(clientLastOrderModel);
+                        }
+
+
+                    }else
+                    {
+                        bottom_sheet.setVisibility(View.GONE);
+                        search_view.setEnabled(true);
+                        nearbyBtn.setEnabled(true);
+                        alert_txt.setVisibility(View.GONE);
+                        Toast.makeText(HomeActivity.this, R.string.or_no_ex, Toast.LENGTH_LONG).show();
+                        return;
+
                     }
 
                 }
@@ -886,8 +949,9 @@ public class HomeActivity extends AppCompatActivity
             }
         });
     }
-    private void UpdateLast_order_ui(ClientLastOrderModel lastOrderModel)
+    private void UpdateLast_order_ui(final ClientLastOrderModel lastOrderModel)
     {
+
         Picasso.with(this).load(Uri.parse(Tags.ImgPath+lastOrderModel.getDriver_image())).into(not_driver_img);
         Picasso.with(this).load(Uri.parse(Tags.ImgPath+lastOrderModel.getDriver_image())).into(not_driver_img_details);
         not_driver_name.setText(lastOrderModel.getDriver_name());
@@ -900,10 +964,25 @@ public class HomeActivity extends AppCompatActivity
         not_driver_rate_details.setText(String.valueOf(lastOrderModel.getRate_evaluation()));
         not_order_details.setText(lastOrderModel.getOrder_details());
         not_date_details.setText(lastOrderModel.getOrder_date());
-        not_cost_details.setText(lastOrderModel.getOrder_cost());
-        not_data_cardview.setVisibility(View.VISIBLE);
+        not_cost_details.setText(lastOrderModel.getOrder_cost()+" ريال");
+        //not_data_cardview.setVisibility(View.VISIBLE);
         bottom_sheet.setVisibility(View.VISIBLE);
         this.clientLastOrderModel = lastOrderModel;
+        search_view.setEnabled(false);
+        search_view.setFocusable(false);
+        nearbyBtn.setEnabled(false);
+        alert_txt.setVisibility(View.VISIBLE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+            }
+        },3000);
+
+
+
+
 
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -959,6 +1038,7 @@ public class HomeActivity extends AppCompatActivity
         CreateCustomAlertDialog(finishied_order_model);
     }
 
+
     private void CreateCustomAlertDialog(final Finishied_Order_Model finishied_order_model) {
         View view = LayoutInflater.from(this).inflate(R.layout.custom_alert_dialog,null);
         CircleImageView driver_img = view.findViewById(R.id.driver_image);
@@ -1012,6 +1092,7 @@ public class HomeActivity extends AppCompatActivity
                         mMap.clear();
                         AddMarker(mylatLng,"");
                         search_view.setText("");
+                        txt_order.setText(null);
 
                     }else
                         {
@@ -1358,6 +1439,8 @@ public class HomeActivity extends AppCompatActivity
                         preferences.Update_UserState("");
                         preferences.ClearPref();
                         preferences.UpdateSoundPref("");
+                        manager.cancel(0);
+                        manager.cancel(1995);
                         Intent intent = new Intent(HomeActivity.this,Activity_Client_Login.class);
                         startActivity(intent);
                         finish();

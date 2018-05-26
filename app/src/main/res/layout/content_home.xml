@@ -10,18 +10,25 @@
     tools:showIn="@layout/app_bar_home"
 
     >
-
-    <fragment
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".Activities.HomeActivity"
         android:layout_alignParentTop="true"
         android:layout_above="@+id/order_container"
-        />
+        >
+
+        <fragment
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".Activities.HomeActivity"
+            />
+
+    </FrameLayout>
+
     <android.support.v7.widget.CardView
         android:id="@+id/not_data_cardview"
         android:layout_above="@id/order_container"
@@ -146,7 +153,7 @@
                 android:layout_height="55dp"
                 android:background="@color/gray3"
                 android:textColor="@color/white"
-                android:text="تحديد موقع الاستلام"
+                android:text="@string/detr_loc"
                 android:gravity="center_vertical"
                 android:paddingLeft="10dp"
                 android:drawableRight="@drawable/white_map_icon"
@@ -156,7 +163,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="تفاصيل الطلب"
+                android:text="@string/order_details"
                 android:paddingRight="10dp"
                 android:textStyle="bold"
                 android:layout_marginTop="5dp"
@@ -176,7 +183,7 @@
                 android:textColor="@color/gray2"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:hint="أضف تفاصيل الطلب هنا..."
+                android:hint="@string/add_order_d"
                 android:textColorHint="@color/gray2"
                 android:textSize="14sp"
 
@@ -188,7 +195,7 @@
                 android:layout_alignParentBottom="true"
                 android:background="@color/colorPrimary"
                 android:textColor="@color/white"
-                android:text="التالي"
+                android:text="@string/next"
                 android:textSize="16sp"
                 />
         </LinearLayout>
@@ -249,7 +256,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
                         android:paddingRight="20dp"
-                        android:text="تكلفه الطريق"
+                        android:text="@string/Cost_the_way"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
                         android:layout_alignParentRight="true"
@@ -297,7 +304,7 @@
                     android:layout_alignParentBottom="true"
                     android:background="@color/colorPrimary"
                     android:textColor="@color/white"
-                    android:text="إرسال الطلب"
+                    android:text="@string/send_order"
                     android:textSize="16sp"
                     />
             </LinearLayout>

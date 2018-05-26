@@ -120,12 +120,10 @@ public class Activity_Client_Register extends AppCompatActivity {
                 if (i==0)
                 {
                     c_gender=Tags.gender_male;
-                    Toast.makeText(Activity_Client_Register.this, ""+i+c_gender, Toast.LENGTH_SHORT).show();
 
                 }else if (i==1)
                 {
                     c_gender=Tags.gender_female;
-                    Toast.makeText(Activity_Client_Register.this, ""+i+c_gender, Toast.LENGTH_SHORT).show();
 
 
                 }
@@ -314,12 +312,18 @@ public class Activity_Client_Register extends AppCompatActivity {
                         startActivity(intent);
                         finish();
 
-                    }else
+                    }else if (response.body().getSuccess()==0)
                         {
                             dialog.dismiss();
 
                             Toast.makeText(Activity_Client_Register.this, R.string.regfailed, Toast.LENGTH_LONG).show();
                         }
+                    else if (response.body().getSuccess()==2)
+                    {
+                        dialog.dismiss();
+
+                        Toast.makeText(Activity_Client_Register.this, R.string.ue, Toast.LENGTH_LONG).show();
+                    }
                    /*
                     Intent intent = new Intent(Activity_Client_Register.this, Activity_Client_Login.class);
                     startActivity(intent);

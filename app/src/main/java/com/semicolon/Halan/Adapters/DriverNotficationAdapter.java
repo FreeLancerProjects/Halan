@@ -45,7 +45,7 @@ public class DriverNotficationAdapter extends RecyclerView.Adapter<DriverNotfica
 
         holder.client_location.setText(mmodel.getClient_location());
         holder.market_location.setText(mmodel.getMarket_location());
-        holder.cost.setText(mmodel.getOrder_driver_cost());
+        holder.cost.setText(mmodel.getOrder_driver_cost()+" ريال");
         holder.order_start_time.setText(mmodel.getOrder_date());
 
 

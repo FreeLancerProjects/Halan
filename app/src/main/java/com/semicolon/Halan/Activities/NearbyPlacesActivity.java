@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ public class NearbyPlacesActivity extends AppCompatActivity {
     private String query="";
     private double lat,lng;
     private ProgressBar progressBar;
+    private LinearLayout no_result;
 
 
     @Override
@@ -54,6 +56,7 @@ public class NearbyPlacesActivity extends AppCompatActivity {
 
 
     private void initView() {
+        no_result = findViewById(R.id.no_result);
         nearbyItemList = new ArrayList<>();
         progressBar = findViewById(R.id.progressBar);
         progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this,R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
@@ -70,6 +73,8 @@ public class NearbyPlacesActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
     }
 
     private void getDataFromIntent() {
@@ -107,7 +112,11 @@ public class NearbyPlacesActivity extends AppCompatActivity {
                         OrderData( response.body().getResults());
 
 
-                    }
+                    }else
+                        {
+                            progressBar.setVisibility(View.GONE);
+                            no_result.setVisibility(View.VISIBLE);
+                        }
                 }
             }
 

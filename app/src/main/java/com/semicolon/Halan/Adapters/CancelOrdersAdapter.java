@@ -48,7 +48,7 @@ public class CancelOrdersAdapter extends RecyclerView.Adapter<CancelOrdersAdapte
 
         holder.client_location.setText(mmodel.getClient_location());
         holder.market_location.setText(mmodel.getMarket_location());
-        holder.cost.setText(mmodel.getCost());
+        holder.cost.setText(mmodel.getCost()+" ريال");
 
         try {
             if (user_type.equals(Tags.Driver))

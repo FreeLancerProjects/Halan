@@ -299,8 +299,8 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
     private void CreateAlertDialog()
     {
         alertDialog = new AlertDialog.Builder(this)
-                .setMessage("تم إرسال طلبك بنجاح بإنتظار الموافقة علي طلبك")
-                .setPositiveButton("تم", new DialogInterface.OnClickListener() {
+                .setMessage(R.string.req_sent)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         finish();

@@ -201,14 +201,23 @@
     <string name="total_cost">Total cost</string>
     <string name="bill_cost">Bill cost</string>
     <string name="sent_photo">Photo sent to you</string>
-    <string name="cu_sn">Contact us on snapchat</string>
-    <string name="cu_in">Contact us on instagram</string>
-    <string name="cu_fb">Contact us on facebook</string>
-    <string name="cu_tw">Contact us on twitter</string>
+    <string name="cu_sn">snapchat</string>
+    <string name="cu_in">instagram</string>
+    <string name="cu_fb">facebook</string>
+    <string name="cu_tw">twitter</string>
     <string name="nearby">Nearby</string>
     <string name="nearby_place">Nearby</string>
     <string name="enter_stroe">Enter Store name</string>
     <string name="ent_ored_det">Enter order details</string>
+    <string name="req_sent">Request has been sent successfully</string>
+    <string name="ok">Ok</string>
+    <string name="no_search_result">There are no results</string>
+    <string name="add_order_d">Add order details here...</string>
+    <string name="detr_loc">Determine the location of the receipt</string>
+    <string name="send_order">Send order</string>
+    <string name="csar">Complete the current request to send another request</string>
+    <string name="or_no_ex">Order not exists</string>
+    <string name="ue">username already exist</string>
 
     <string-array name="gender">
         <item>Male</item>

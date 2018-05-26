@@ -51,7 +51,7 @@ public class MyOrdersAdapter extends RecyclerView.Adapter<MyOrdersAdapter.Holder
 
         holder.client_location.setText(mmodel.getClient_location());
         holder.market_location.setText(mmodel.getMarket_location());
-        holder.cost.setText(mmodel.getCost());
+        holder.cost.setText(mmodel.getCost()+" ريال");
         if (order_state.equals(Tags.current_order))
         {
             holder.order_start_time.setText(mmodel.getOrder_start_from_minute());

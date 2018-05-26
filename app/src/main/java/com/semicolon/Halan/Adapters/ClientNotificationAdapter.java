@@ -101,7 +101,7 @@ public class ClientNotificationAdapter extends RecyclerView.Adapter<ClientNotifi
             rate.setText(String.valueOf(model.getRate_evaluation()));
             date.setText(model.getOrder_date());
             driver_name.setText(model.getDriver_name());
-            cost.setText(model.getOrder_cost());
+            cost.setText(model.getOrder_cost()+" ريال");
 
             target = new Target() {
                 @Override

@@ -266,22 +266,22 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                 break;
             case R.id.tw:
                 Intent intent_tw = new Intent(UserProfileActivity.this,WebViewActivity.class);
-                intent_tw.putExtra("link","https://twitter.com/halnKSA_");
+                intent_tw.putExtra("link","https://twitter.com/halanKSA_");
                 startActivity(intent_tw);
                 break;
             case R.id.in:
                 Intent intent_in = new Intent(UserProfileActivity.this,WebViewActivity.class);
-                intent_in.putExtra("link","https://www.instagram.com/halnksa_/");
+                intent_in.putExtra("link","https://www.instagram.com/halanksa_/");
                 startActivity(intent_in);
                 break;
             case R.id.fb:
                 Intent intent_fb = new Intent(UserProfileActivity.this,WebViewActivity.class);
-                intent_fb.putExtra("link","https://www.facebook.com/Haln-%D8%AD%D8%A7%D9%84%D8%A7-375968289589678/");
+                intent_fb.putExtra("link","https://www.facebook.com/%D8%AD%D8%A7%D9%84%D8%A7-Halan-2069192519985690/");
                 startActivity(intent_fb);
                 break;
             case R.id.sn:
                 Intent intent_sn = new Intent(UserProfileActivity.this,WebViewActivity.class);
-                intent_sn.putExtra("link","https://www.snapchat.com/add/halanksa");
+                intent_sn.putExtra("link","https://www.snapchat.com/HalanKSA");
                 startActivity(intent_sn);
                 break;
 

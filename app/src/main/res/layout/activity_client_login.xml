@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true"
+    >
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,14 +15,23 @@
     tools:context="com.semicolon.Halan.Activities.Activity_Client_Login"
     android:background="@drawable/screen_gradient"
     >
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="130dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/logo"
+        />
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="10dp"
         app:cardBackgroundColor="@color/white"
-        android:layout_centerInParent="true"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
+        android:layout_below="@+id/logo"
+        android:layout_marginTop="10dp"
         >
 
         <LinearLayout
@@ -164,3 +180,4 @@
 
         />
 </RelativeLayout>
+</ScrollView>

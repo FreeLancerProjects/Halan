@@ -13,8 +13,8 @@
 
     <it.beppi.tristatetogglebutton_library.TriStateToggleButton
         android:id="@+id/toggleBtn"
-        android:layout_width="55dp"
-        android:layout_height="20dp"
+        android:layout_width="70dp"
+        android:layout_height="23dp"
         android:layout_gravity="left"
         app:tbIsMidSelectable="false"
         app:tbAnimate="true"
@@ -22,7 +22,8 @@
         app:tbDefaultStatus="on"
         app:tbOnColor="@color/black"
         app:tbOffColor="@color/offGreen"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="8dp"
         />
     <LinearLayout
         android:id="@+id/profileContainer"
@@ -30,9 +31,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:clickable="true"
-        android:layout_marginTop="5dp"
         android:orientation="vertical"
-
+        android:layout_marginTop="-8dp"
         >
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userImage"
@@ -49,7 +49,7 @@
             android:layout_marginTop="5dp"
             android:text="@string/profile_page"
             android:textStyle="bold"
-            android:textSize="15sp"
+            android:textSize="14sp"
             />
 
     </LinearLayout>

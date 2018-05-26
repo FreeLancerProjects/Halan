@@ -7,8 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,6 +23,7 @@ import com.semicolon.Halan.Activities.ChatActivity;
 import com.semicolon.Halan.Activities.ClientNotificationActivity;
 import com.semicolon.Halan.Activities.DriverNotificationActivity;
 import com.semicolon.Halan.Activities.DriverOrdersActivity;
+import com.semicolon.Halan.Activities.HomeActivity;
 import com.semicolon.Halan.Activities.MyOrdersActivity;
 import com.semicolon.Halan.Models.DriverAcceptModel;
 import com.semicolon.Halan.Models.Finishied_Order_Model;
@@ -303,10 +304,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Preferences preferences = new Preferences(MyFirebaseMessagingService.this);
                 final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 final NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
+                builder.setVibrate(new long[]{1000,1000,1000});
+                builder.setLights(Color.WHITE,3000,3000);
                 String state = pref.getSoundState();
                 if (state.equals("on"))
                 {
-                    builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+                    builder.setSound(Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.not));
+
 
                 }
 
@@ -395,16 +399,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                     @Override
                                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                         remoteViews2.setImageViewBitmap(R.id.user_image,bitmap);
-                                        Intent intent3 = new Intent(MyFirebaseMessagingService.this, ClientNotificationActivity.class);
+                                        Intent intent3 = new Intent(MyFirebaseMessagingService.this, HomeActivity.class);
                                         //startActivity(intent3);
                                         PendingIntent pendingIntent3 = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent3,PendingIntent.FLAG_UPDATE_CURRENT);
                                         builder.setContentIntent(pendingIntent3);
                                         builder.setSmallIcon(R.mipmap.ic_launcher);
-                                        builder.setAutoCancel(true);
+                                        builder.setAutoCancel(false);
                                         builder.setContent(remoteViews2);
-                                        builder.setContentTitle(map.get("title"));
-                                        builder.setContentText(map.get("message"));
-                                        manager.notify(0,builder.build());
+                                        builder.setOngoing(true);
+                                        manager.notify(1995,builder.build());
                                         EventBus.getDefault().post(new DriverAcceptModel(user_id));
                                     }
 
@@ -646,11 +649,57 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         },1000);
                         break;
                     case Tags.driver_finish_order:
+                        /*new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                final RemoteViews remoteViews7 = new RemoteViews(getPackageName(),R.layout.notification_layout);
+
+                                remoteViews7.setTextViewText(R.id.title,"طلب موافقة");
+                                remoteViews7.setTextViewText(R.id.content,"تم قبول طلبك من "+map.get("from_name"));
+
+                                final Target target = new Target() {
+                                    @Override
+                                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                        remoteViews7.setImageViewBitmap(R.id.user_image,bitmap);
+                                        Intent intent8 = new Intent(MyFirebaseMessagingService.this, HomeActivity.class);
+                                        //startActivity(intent2);
+                                        PendingIntent pendingIntent12 = PendingIntent.getActivity(getApplicationContext(),0,intent8,PendingIntent.FLAG_UPDATE_CURRENT);
+                                        builder.setContentIntent(pendingIntent12);
+                                        builder.setSmallIcon(R.mipmap.ic_launcher);
+                                        builder.setAutoCancel(false);
+                                        builder.setOngoing(true);
+                                        builder.setContent(remoteViews7);
+                                        manager.notify(1995,builder.build());
+                                        Log.e("imaaaaaaaaaagt","sssssssssssssss");
+                                    }
+
+                                    @Override
+                                    public void onBitmapFailed(Drawable errorDrawable) {
+
+                                    }
+
+                                    @Override
+                                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                                    }
+                                };
+                                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //Log.e("url",Tags.ImgPath+lastOrderModel.getDriver_image());
+                                        Picasso.with(getApplicationContext()).load(Uri.parse(Tags.ImgPath+map.get("from_image"))).into(target);
+
+                                    }
+                                },1);
+
+
+                            }
+                        },1000);
+*/
+
                         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                builder.setAutoCancel(true);
-                                manager.notify(0,builder.build());
                                 EventBus.getDefault().post(new Finishied_Order_Model(map.get("from_id").toString(),map.get("from_name").toString(),map.get("from_image").toString(),map.get("order_id").toString(),map.get("order_detals").toString()));
 
                             }

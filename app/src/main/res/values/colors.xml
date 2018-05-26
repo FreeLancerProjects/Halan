@@ -14,6 +14,8 @@
     <color name="offGreen">#1B5E20</color>
     <color name="whitegreen">#C8E6C9</color>
     <color name="rate">#FDD835</color>
+    <color name="colorPrimary_light">#2baa43</color>
+
 
 
 </resources>
