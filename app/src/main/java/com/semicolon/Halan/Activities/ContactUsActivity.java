@@ -5,13 +5,14 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -24,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.semicolon.Halan.Models.ContactModel;
 import com.semicolon.Halan.Models.Finishied_Order_Model;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
@@ -36,6 +38,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
@@ -45,10 +49,11 @@ import retrofit2.Response;
 public class ContactUsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText name, email, subject, message;
-    private Button call, send;
+    private Button send;
     private ProgressDialog dialog;
     private String phone;
-    private ImageView back;
+    private ImageView back,whatsBtn,callBtn;
+    private ContactModel contactModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +64,8 @@ public class ContactUsActivity extends AppCompatActivity implements View.OnClick
         EventBus.getDefault().register(this);
         initView();
         CreateProgressDialog();
-        getNumber();
+        Contacts();
+
 
     }
 
@@ -67,8 +73,8 @@ public class ContactUsActivity extends AppCompatActivity implements View.OnClick
 
         String cname = name.getText().toString();
         String cemail = email.getText().toString();
-        String csubject = subject.getText().toString();
-        String cmessage = message.getText().toString();
+        final String csubject = subject.getText().toString();
+        final String cmessage = message.getText().toString();
         if (TextUtils.isEmpty(cname) && TextUtils.isEmpty(cemail) && TextUtils.isEmpty(csubject) && TextUtils.isEmpty(cmessage)) {
             name.setError(getString(R.string.enter_username));
             email.setError(getString(R.string.enter_email));
@@ -106,6 +112,7 @@ public class ContactUsActivity extends AppCompatActivity implements View.OnClick
                         if (response.body().getSuccess() == 1) {
 
                             dialog.dismiss();
+                            sendMail(csubject,cmessage);
                             Toast.makeText(ContactUsActivity.this, R.string.data_send, Toast.LENGTH_SHORT).show();
                             finish();
 
@@ -134,12 +141,53 @@ public class ContactUsActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    private void sendMail(String csubject, String cmessage) {
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("message/rfc822");
+        if (contactModel!=null)
+        {
+            if (contactModel.getEmail()!=null||TextUtils.isEmpty(contactModel.getEmail()))
+            {
+                intent.putExtra(Intent.EXTRA_EMAIL,new String[]{contactModel.getEmail()});
+
+            }else
+                {
+                    intent.putExtra(Intent.EXTRA_EMAIL,new String[]{"info@raqytech.com"});
+
+                }
+        }
+        intent.putExtra(Intent.EXTRA_SUBJECT,csubject);
+        intent.putExtra(Intent.EXTRA_TEXT,cmessage);
+        PackageManager pm =getPackageManager();
+        List<ResolveInfo> matches = pm.queryIntentActivities(intent, 0);
+        ResolveInfo best = null;
+        for(ResolveInfo info : matches)
+        {
+            if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
+            {
+                best = info;
+
+            }
+        }
+
+        if (best != null)
+        {
+            intent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+
+        }
+
+        startActivity(intent);
+
+    }
+
     private void initView() {
         name = findViewById(R.id.edt_name);
         email = findViewById(R.id.edt_email);
         subject = findViewById(R.id.edt_subject);
         message = findViewById(R.id.edt_message);
-        call = findViewById(R.id.btn_call);
+        callBtn = findViewById(R.id.callBtn);
+        whatsBtn = findViewById(R.id.whatsBtn);
         send = findViewById(R.id.btn_send);
         back = findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
@@ -149,9 +197,18 @@ public class ContactUsActivity extends AppCompatActivity implements View.OnClick
             }
         });
 
-        call.setOnClickListener(this);
+        callBtn.setOnClickListener(this);
         send.setOnClickListener(this);
+        whatsBtn.setOnClickListener(this);
 
+        if (isWhatsApp_installed())
+        {
+            whatsBtn.setVisibility(View.VISIBLE);
+        }else
+            {
+                whatsBtn.setVisibility(View.INVISIBLE);
+
+            }
 
     }
 
@@ -160,7 +217,7 @@ public class ContactUsActivity extends AppCompatActivity implements View.OnClick
 
         switch (view.getId()) {
 
-            case R.id.btn_call:
+            case R.id.callBtn:
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone));
 
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -180,18 +237,53 @@ public class ContactUsActivity extends AppCompatActivity implements View.OnClick
                 SaveDataToServer();
 
                 break;
+            case R.id.whatsBtn:
+                contact(contactModel.getOur_phone_number());
+                break;
         }
 
     }
 
-    private void getNumber() {
+    private void contact(String phone) {
+
+        if (TextUtils.isEmpty(phone)||phone.equals("#")||phone==null||!Patterns.PHONE.matcher(phone).matches())
+        {
+            Toast.makeText(this, R.string.inv_phone, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (isWhatsApp_installed())
+        {
+            Uri uri = Uri.parse("smsto:"+phone);
+            Intent intent =new Intent(Intent.ACTION_SENDTO,uri);
+            intent.setPackage("com.whatsapp");
+            startActivity(intent.createChooser(intent,"via whatsapp"));
+        }
+
+
+
+}
+    private boolean isWhatsApp_installed()
+    {
+
+        PackageManager pm = getPackageManager();
+        try {
+            pm.getPackageInfo("com.whatsapp",PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void Contacts (){
 
         Services services = Api.getClient(Tags.BASE_URL).create(Services.class);
-        Call<UserModel> call = services.getNumber();
-        call.enqueue(new Callback<UserModel>() {
+        Call<ContactModel> call = services.getContacts();
+        call.enqueue(new Callback<ContactModel>() {
             @Override
-            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+            public void onResponse(Call<ContactModel> call, Response<ContactModel> response) {
                 if (response.isSuccessful()) {
+                    contactModel = response.body();
                  phone=response.body().getOur_phone_number();
                  Log.e("phone",phone);
                 } else {
@@ -202,7 +294,7 @@ public class ContactUsActivity extends AppCompatActivity implements View.OnClick
             }
 
             @Override
-            public void onFailure(Call<UserModel> call, Throwable t) {
+            public void onFailure(Call<ContactModel> call, Throwable t) {
                 Log.e("mmmmm", t.getMessage() + "");
                 dialog.dismiss();
                 Toast.makeText(ContactUsActivity.this, "" + getString(R.string.something_haywire), Toast.LENGTH_SHORT).show();

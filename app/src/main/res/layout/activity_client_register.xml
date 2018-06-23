@@ -163,59 +163,7 @@
                     />
 
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:background="@drawable/client_login_container"
-                android:layout_marginBottom="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                >
-                <FrameLayout
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:background="@drawable/circle_user_icon"
-                    android:layout_gravity="center"
-                    >
-                    <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/user"
-                        />
-                </FrameLayout>
-                <EditText
-                    android:id="@+id/user_age"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:hint="@string/age"
-                    android:paddingRight="10dp"
-                    android:paddingLeft="10dp"
-                    android:textColorHint="@color/gray2"
-                    android:background="@android:color/transparent"
-                    android:textColor="@color/gray3"
-                    android:textSize="12sp"
-                    android:maxLines="1"
-                    android:scrollHorizontally="true"
-                    android:textStyle="bold"
-                    />
 
-            </LinearLayout>
-            <Spinner
-                android:id="@+id/gender_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginBottom="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-
-                android:background="@drawable/client_login_container"
-                >
-
-            </Spinner>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

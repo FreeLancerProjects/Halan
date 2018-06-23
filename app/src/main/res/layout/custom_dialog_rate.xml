@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textColor="@color/colorPrimary"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:text="@string/add_rate2"
+
+
+        />
+    <RatingBar
+        android:id="@+id/alert_rateBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
+    <TextView
+        android:id="@+id/rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp"
+        android:text="0.0"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="8dp"
+        android:paddingTop="15dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="10dp"
+        >
+        <Button
+            android:id="@+id/addRateBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/home_bottom_item"
+            android:text="@string/add_rate2"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginRight="5dp"
+
+            />
+        <Button
+            android:id="@+id/cancelBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/home_bottom_item"
+            android:text="@string/cancel"
+            android:textColor="@color/colorPrimary"
+
+            />
+    </LinearLayout>
+
+</LinearLayout>

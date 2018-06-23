@@ -2,17 +2,23 @@ package com.semicolon.Halan.Activities;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.semicolon.Halan.Models.AboutUsModel;
 import com.semicolon.Halan.Models.Finishied_Order_Model;
+import com.semicolon.Halan.Models.RuleModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
 import com.semicolon.Halan.Services.Services;
@@ -23,8 +29,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
@@ -33,7 +37,9 @@ import retrofit2.Response;
 
 public class RulesActivity extends AppCompatActivity {
     private TextView title, content;
-
+    private LinearLayout container;
+    private ProgressBar progressBar;
+    private ImageView back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,26 +54,40 @@ public class RulesActivity extends AppCompatActivity {
     private void initView() {
         title = findViewById(R.id.txt_title);
         content = findViewById(R.id.txt_content);
-
+        container = findViewById(R.id.container);
+        progressBar = findViewById(R.id.progBar);
+        progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this,R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+        back = findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     private void GetDataFromServer() {
 
         Services services = Api.getClient(Tags.BASE_URL).create(Services.class);
-        Call<List<AboutUsModel>> call = services.GetAboutUs();
-        call.enqueue(new Callback<List<AboutUsModel>>() {
+        Call<RuleModel> call = services.getRules();
+        call.enqueue(new Callback<RuleModel>() {
             @Override
-            public void onResponse(Call<List<AboutUsModel>> call, Response<List<AboutUsModel>> response) {
+            public void onResponse(Call<RuleModel> call, Response<RuleModel> response) {
 
                 if (response.isSuccessful()) {
-                    title.setText(response.body().get(2).getTitle());
-                    content.setText(response.body().get(2).getContent());
+                    progressBar.setVisibility(View.GONE);
+                    container.setVisibility(View.VISIBLE);
+                    title.setText(response.body().getTitle());
+                    content.setText(response.body().getContent());
                 }
             }
 
             @Override
-            public void onFailure(Call<List<AboutUsModel>> call, Throwable t) {
+            public void onFailure(Call<RuleModel> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                container.setVisibility(View.GONE);
                 Log.e("error",t.getMessage());
+                Toast.makeText(RulesActivity.this,R.string.something_haywire, Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -40,6 +40,9 @@ public class Tags {
     public static final String update_phone="3";
     public static final String update_gender_="4";
     public static final String update_age_="5";
+    public static final String update_city="6";
+    public static final String update_country="7";
+
 
 
 

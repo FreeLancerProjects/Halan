@@ -61,8 +61,8 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
     private CircleImageView img_profile;
     private RelativeLayout container;
     private RatingBar rateBar;
-    private TextView rate,order_num,txt_name,txt_user_name,txt_email,txt_phone,txt_age,txt_gender;
-    private LinearLayout user_name_container,user_email_container,user_phone_container,user_age_container,user_gender_container;
+    private TextView rate,order_num,txt_name,txt_user_name,txt_email,txt_phone,txt_age,txt_gender,txt_city,txt_country;
+    private LinearLayout user_name_container,user_email_container,user_phone_container,user_age_container,user_gender_container,user_city_Container,user_country_Container;
     private Preferences preferences;
     private final int IMG_REQ = 100;
     private String enCodedImage;
@@ -71,7 +71,7 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
     private AlertDialog alertDialog;
     private String gender="",curr_gender="";
     private ProgressDialog dialog;
-    private LinearLayout fb,tw,in,sn;
+    private String my_gender="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,12 +95,40 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
 
     }
     private void UpdateUi(UserModel userModel) {
+        Log.e("city",userModel.getUser_city()+"");
+        Log.e("country",userModel.getUser_country()+"");
+        Log.e("age",userModel.getUser_age()+"");
+        Log.e("gender",userModel.getUser_gender()+"");
+        Log.e("name",userModel.getName()+"");
+
         if (userModel.getUser_type().equals(Tags.Client))
         {
             container.setVisibility(View.INVISIBLE);
+            user_age_container.setVisibility(View.GONE);
+            user_gender_container.setVisibility(View.GONE);
+            user_city_Container.setVisibility(View.GONE);
+            user_country_Container.setVisibility(View.GONE);
         }else if (userModel.getUser_type().equals(Tags.Driver))
         {
+            user_city_Container.setVisibility(View.VISIBLE);
             container.setVisibility(View.VISIBLE);
+            user_age_container.setVisibility(View.VISIBLE);
+            user_gender_container.setVisibility(View.VISIBLE);
+            txt_age.setText(userModel.getUser_age());
+            user_country_Container.setVisibility(View.VISIBLE);
+            txt_country.setText(userModel.getUser_country());
+            txt_city.setText(userModel.getUser_city());
+            if (userModel.getUser_gender().equals(Tags.gender_male))
+            {
+                txt_gender.setText(getString(R.string.male));
+                my_gender=Tags.gender_male;
+
+            }else if (userModel.getUser_gender().equals(Tags.gender_female))
+            {
+                txt_gender.setText(getString(R.string.female));
+                my_gender=Tags.gender_female;
+
+            }
 
         }
         rateBar.setEnabled(false);
@@ -110,18 +138,17 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
         order_num.setText(String.valueOf(userModel.getOrder_count()));
         txt_name.setText(userModel.getName());
         txt_user_name.setText(userModel.getUser_name());
-        txt_email.setText(userModel.getUser_email());
+        if (userModel.getUser_email().equals("0"))
+        {
+            txt_email.setText(R.string.no_email);
+
+        }else
+            {
+                txt_email.setText(userModel.getUser_email());
+
+            }
         txt_phone.setText(userModel.getUser_phone());
-        txt_age.setText(userModel.getUser_age());
-        if (userModel.getUser_gender().equals(Tags.gender_male))
-        {
-            txt_gender.setText(getString(R.string.male));
 
-        }else if (userModel.getUser_gender().equals(Tags.gender_female))
-        {
-            txt_gender.setText(getString(R.string.female));
-
-        }
         Picasso.with(this).load(Uri.parse(Tags.ImgPath + userModel.getUser_photo())).placeholder(R.drawable.user_profile).into(img_profile);
 
     }
@@ -143,31 +170,27 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
         txt_gender = findViewById(R.id.txt_gender);
         back = findViewById(R.id.back);
         img_profile=findViewById(R.id.img_profile);
+        txt_city = findViewById(R.id.txt_city);
+        txt_country = findViewById(R.id.txt_country);
 
-        fb =findViewById(R.id.fb);
-        tw = findViewById(R.id.tw);
-        in = findViewById(R.id.in);
-        sn = findViewById(R.id.sn);
+
 
         user_name_container = findViewById(R.id.user_name_Container);
         user_email_container= findViewById(R.id.user_email_Container);
         user_phone_container= findViewById(R.id.user_phone_Container);
         user_age_container  = findViewById(R.id.user_age_Container);
         user_gender_container = findViewById(R.id.user_gender_Container);
-
+        user_city_Container = findViewById(R.id.user_city_Container);
+        user_country_Container = findViewById(R.id.user_country_Container);
 
         user_name_container.setOnClickListener(this);
         user_email_container.setOnClickListener(this);
         user_phone_container.setOnClickListener(this);
         user_age_container.setOnClickListener(this);
         user_gender_container.setOnClickListener(this);
+        user_city_Container.setOnClickListener(this);
+        user_country_Container.setOnClickListener(this);
 
-
-
-        fb.setOnClickListener(this);
-        tw.setOnClickListener(this);
-        in.setOnClickListener(this);
-        sn.setOnClickListener(this);
         txt_name.setOnClickListener(this);
         img_profile.setOnClickListener(this);
 
@@ -264,6 +287,12 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                 updateUserData(Tags.update_gender_);
 
                 break;
+            case R.id.user_city_Container:
+                updateUserData(Tags.update_city);
+                break;
+            case R.id.user_country_Container:
+                updateUserData(Tags.update_country);
+                break;
             case R.id.tw:
                 Intent intent_tw = new Intent(UserProfileActivity.this,WebViewActivity.class);
                 intent_tw.putExtra("link","https://twitter.com/halanKSA_");
@@ -290,10 +319,24 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
 
     }
 
-    private void sendDataToServer(String id, String photo, String name, String user_name, String email , String phone, final String gender, String age)
+    private void sendDataToServer(String id, String photo, String name, String user_name, String email , String phone, final String gender, String age,String city,String country)
     {
+        Log.e("id",id);
+        Log.e("photo",photo);
+        Log.e("name",name);
+        Log.e("un",user_name);
+        Log.e("email",email);
+        Log.e("phone",phone);
+        Log.e("gender",gender);
+        Log.e("age",age);
+        Log.e("city",city);
+        Log.e("country",country);
+
         Services services= Api.getClient(Tags.BASE_URL).create(Services.class);
-        Call<UserModel> call=services.UpdateClient(id,user_name,phone,email,photo,name,age,gender);
+/*
+        Call<UserModel> call=services.UpdateClient(id,user_name,phone,email,photo,name,country,age,city,gender);
+*/
+        Call<UserModel> call=services.UpdateClient(id,"",user_name,name,phone,email,age,gender,city,country);
         call.enqueue(new Callback<UserModel>() {
             @Override
             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
@@ -301,11 +344,15 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                 {
                     if (response.body().getSuccess()==1){
 
+                        Log.e("age2",response.body().getUser_age());
+                        Log.e("name",response.body().getName());
+                        Log.e("city",response.body().getUser_city());
+                        Log.e("country",response.body().getUser_country());
 
                         preferences.UpdatePref(response.body());
                         users.setUserData(response.body());
+                        users.getUserData(UserProfileActivity.this);
                         UpdateUi(response.body());
-
                         dialog.dismiss();
                      //   Toast.makeText(UserProfileActivity.this, ""+userModel.getUser_name(), Toast.LENGTH_SHORT).show();
                      //   Log.e("name",userModel.getUser_name());
@@ -334,6 +381,7 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
         });
 
     }
+
     private void sendImageToServer()
     {
         CreateProgressDialog(getString(R.string.upd_photo));
@@ -341,7 +389,7 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
         enCodedImage = enCode(bitmap);
 
         Services services= Api.getClient(Tags.BASE_URL).create(Services.class);
-        Call<UserModel> call=services.UpdateClient(userModel.getUser_id(),userModel.getUser_name(),userModel.getUser_phone(),userModel.getUser_email(),enCodedImage,userModel.getName(),userModel.getUser_age(),userModel.getUser_gender());
+        Call<UserModel> call=services.UpdateClient(userModel.getUser_id(),userModel.getUser_name(),userModel.getUser_phone(),userModel.getUser_email(),enCodedImage,userModel.getName(),userModel.getUser_country(),userModel.getUser_age(),userModel.getUser_city(),userModel.getUser_gender());
         call.enqueue(new Callback<UserModel>() {
             @Override
             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
@@ -351,6 +399,7 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
 
                         preferences.UpdatePref(response.body());
                         users.setUserData(response.body());
+                        users.getUserData(UserProfileActivity.this);
                         UpdateUi(response.body());
 
                         // Toast.makeText(UserProfileActivity.this, ""+userModel.getUser_name(), Toast.LENGTH_SHORT).show();
@@ -410,7 +459,7 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                             {
                                 CreateProgressDialog(getString(R.string.upd_name));
 
-                                sendDataToServer(userModel.getUser_id(),"",et_name.getText().toString(),userModel.getUser_name(),userModel.getUser_email(),userModel.getUser_phone(),userModel.getUser_gender(),userModel.getUser_age());
+                                sendDataToServer(userModel.getUser_id(),"",et_name.getText().toString(),txt_user_name.getText().toString(),txt_email.getText().toString(),txt_phone.getText().toString(),my_gender,txt_age.getText().toString(),txt_city.getText().toString(),txt_country.getText().toString());
                                 alertDialog.dismiss();
                             }
                     }
@@ -451,7 +500,8 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                         {
                             CreateProgressDialog(getString(R.string.upd_un));
 
-                            sendDataToServer(userModel.getUser_id(),"",userModel.getName(),et_username.getText().toString(),userModel.getUser_email(),userModel.getUser_phone(),userModel.getUser_gender(),userModel.getUser_age());
+                            sendDataToServer(userModel.getUser_id(),"",txt_name.getText().toString(),et_username.getText().toString(),txt_email.getText().toString(),txt_phone.getText().toString(),my_gender,txt_age.getText().toString(),txt_city.getText().toString(),txt_country.getText().toString());
+
                             alertDialog.dismiss();
                         }
                     }
@@ -496,8 +546,8 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                         else
                         {
                             CreateProgressDialog(getString(R.string.upd_email));
+                            sendDataToServer(userModel.getUser_id(),"",txt_name.getText().toString(),txt_email.getText().toString(),et_email.getText().toString(),txt_phone.getText().toString(),my_gender,txt_age.getText().toString(),txt_city.getText().toString(),txt_country.getText().toString());
 
-                            sendDataToServer(userModel.getUser_id(),"",userModel.getName(),userModel.getUser_name(),et_email.getText().toString(),userModel.getUser_phone(),userModel.getUser_gender(),userModel.getUser_age());
                             alertDialog.dismiss();
                         }
                     }
@@ -540,8 +590,8 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                         else
                         {
                             CreateProgressDialog(getString(R.string.upd_phone));
+                            sendDataToServer(userModel.getUser_id(),"",txt_name.getText().toString(),txt_email.getText().toString(),txt_email.getText().toString(),et_phone.getPhoneNumber(),my_gender,txt_age.getText().toString(),txt_city.getText().toString(),txt_country.getText().toString());
 
-                            sendDataToServer(userModel.getUser_id(),"",userModel.getName(),userModel.getUser_name(),userModel.getUser_email(),et_phone.getPhoneNumber(),userModel.getUser_gender(),userModel.getUser_age());
                             alertDialog.dismiss();
                         }
                     }
@@ -582,8 +632,8 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                         else
                         {
                             CreateProgressDialog(getString(R.string.upd_age));
-
-                            sendDataToServer(userModel.getUser_id(),"",userModel.getName(),userModel.getUser_name(),userModel.getUser_email(),userModel.getUser_phone(),userModel.getUser_gender(),et_age.getText().toString());
+                            Log.e("age",et_age.getText().toString());
+                            sendDataToServer(userModel.getUser_id(),"",userModel.getName(),userModel.getUser_name(),userModel.getUser_email(),userModel.getUser_phone(),userModel.getUser_gender(),et_age.getText().toString(),userModel.getUser_city(),userModel.getUser_country());
                             alertDialog.dismiss();
                         }
                     }
@@ -663,7 +713,8 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                             {
                                 CreateProgressDialog(getString(R.string.upd_gender));
 
-                                sendDataToServer(userModel.getUser_id(),"",userModel.getName(),userModel.getUser_name(),userModel.getUser_email(),userModel.getUser_phone(),gender,userModel.getUser_age());
+                                sendDataToServer(userModel.getUser_id(),"",txt_name.getText().toString(),txt_email.getText().toString(),txt_email.getText().toString(),txt_phone.getText().toString(),gender,txt_age.getText().toString(),txt_city.getText().toString(),txt_country.getText().toString());
+
                                 alertDialog.dismiss();
                             }
 
@@ -682,6 +733,90 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
                         .setView(view_gender)
                         .create();
                 alertDialog.show();
+                break;
+            case Tags.update_city:
+                View view_city = LayoutInflater.from(this).inflate(R.layout.custom_dialog_update_txt,null);
+                TextView title_city = view_city.findViewById(R.id.title);
+                final EditText et_city = view_city.findViewById(R.id.et);
+                et_city.setInputType(InputType.TYPE_CLASS_TEXT);
+                Button city_updateBtn = view_city.findViewById(R.id.updateBtn);
+                Button city_cancelBtn = view_city.findViewById(R.id.cancelBtn);
+                city_updateBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (TextUtils.isEmpty(et_city.getText().toString()))
+                        {
+                            et_city.setError(getString(R.string.enter_city));
+                        }else if (txt_city.getText().toString().equals(et_city.getText().toString()))
+                        {
+
+                            Toast.makeText(UserProfileActivity.this, R.string.nochange, Toast.LENGTH_LONG).show();
+                        }
+                        else
+                        {
+                            CreateProgressDialog(getString(R.string.upd_city));
+                            sendDataToServer(userModel.getUser_id(),"",txt_name.getText().toString(),txt_email.getText().toString(),txt_email.getText().toString(),txt_phone.getText().toString(),my_gender,txt_age.getText().toString(),et_city.getText().toString(),txt_country.getText().toString());
+
+                            alertDialog.dismiss();
+                        }
+                    }
+                });
+                city_cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialog.dismiss();
+
+                    }
+                });
+                title_city.setText(R.string.edit_city);
+                alertDialog = new AlertDialog.Builder(this)
+                        .setCancelable(true)
+                        .setView(view_city)
+                        .create();
+                alertDialog.show();
+
+                break;
+            case Tags.update_country:
+                View view_country = LayoutInflater.from(this).inflate(R.layout.custom_dialog_update_txt,null);
+                TextView title_country = view_country.findViewById(R.id.title);
+                final EditText et_country = view_country.findViewById(R.id.et);
+                et_country.setInputType(InputType.TYPE_CLASS_TEXT);
+                Button country_updateBtn = view_country.findViewById(R.id.updateBtn);
+                Button country_cancelBtn = view_country.findViewById(R.id.cancelBtn);
+                country_updateBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (TextUtils.isEmpty(et_country.getText().toString()))
+                        {
+                            et_country.setError(getString(R.string.enter_country));
+                        }else if (txt_country.getText().toString().equals(et_country.getText().toString()))
+                        {
+
+                            Toast.makeText(UserProfileActivity.this, R.string.nochange, Toast.LENGTH_LONG).show();
+                        }
+                        else
+                        {
+                            CreateProgressDialog(getString(R.string.upd_count));
+                            sendDataToServer(userModel.getUser_id(),"",txt_name.getText().toString(),txt_email.getText().toString(),txt_email.getText().toString(),txt_phone.getText().toString(),my_gender,txt_age.getText().toString(),txt_city.getText().toString(),et_country.getText().toString());
+
+                            alertDialog.dismiss();
+                        }
+                    }
+                });
+                country_cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialog.dismiss();
+
+                    }
+                });
+                title_country.setText(R.string.edit_country);
+                alertDialog = new AlertDialog.Builder(this)
+                        .setCancelable(true)
+                        .setView(view_country)
+                        .create();
+                alertDialog.show();
+
                 break;
         }
     }
@@ -709,7 +844,7 @@ public class UserProfileActivity extends AppCompatActivity implements Users.User
     private String enCode(Bitmap bitmap)
     {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG,90,outputStream);
+        bitmap.compress(Bitmap.CompressFormat.PNG,90,outputStream);
         byte [] bytes = outputStream.toByteArray();
         return Base64.encodeToString(bytes,Base64.DEFAULT);
     }

@@ -14,14 +14,12 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,19 +45,17 @@ import retrofit2.Response;
 
 public class Activity_Client_Register extends AppCompatActivity {
     private CircleImageView c_image;
-    private EditText c_name,c_age,c_user_name,c_password,c_re_password,c_email;
+    private EditText c_name,c_user_name,c_password,c_re_password,c_email;
     private PhoneInputLayout c_phone;
     private Button c_registerBtn;
     private TextView c_login;
     private final int IMG_REQ = 100;
-    private String enCodedImage;
+    private String enCodedImage="";
     private Bitmap bitmap;
     private ProgressDialog dialog;
     private Users users;
     private Preferences preferences;
-    private Spinner gender_spinner;
-    private String [] gender;
-    private String c_gender;
+
 
 
 
@@ -80,11 +76,8 @@ public class Activity_Client_Register extends AppCompatActivity {
 
 
     private void initView() {
-        gender = getResources().getStringArray(R.array.gender);
         c_image = findViewById(R.id.image);
         c_name = findViewById(R.id.name);
-        c_age = findViewById(R.id.user_age);
-        gender_spinner = findViewById(R.id.gender_spinner);
         c_user_name = findViewById(R.id.user_name);
         c_phone = findViewById(R.id.phone);
         c_password = findViewById(R.id.password);
@@ -92,8 +85,8 @@ public class Activity_Client_Register extends AppCompatActivity {
         c_email = findViewById(R.id.email);
         c_registerBtn = findViewById(R.id.registerBtn);
         c_login = findViewById(R.id.login);
-
-        gender_spinner.setAdapter(new ArrayAdapter<String>(this,R.layout.spinner_item,gender));
+        c_phone.getTextInputLayout().getEditText().setHint(getString(R.string.phone));
+        c_phone.getTextInputLayout().getEditText().setTextSize(TypedValue.COMPLEX_UNIT_SP,12f);
         if (Locale.getDefault().getLanguage().equals("ar"))
         {
             c_phone.setGravity(Gravity.RIGHT);
@@ -104,36 +97,7 @@ public class Activity_Client_Register extends AppCompatActivity {
             c_re_password.setGravity(Gravity.CENTER_VERTICAL);
 
         }
-        if (gender_spinner.getSelectedItemPosition()==0)
-        {
-            c_gender=Tags.gender_male;
-        }
-        else if (gender_spinner.getSelectedItemPosition()==1)
-        {
-            c_gender=Tags.gender_female;
 
-        }
-        gender_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                if (i==0)
-                {
-                    c_gender=Tags.gender_male;
-
-                }else if (i==1)
-                {
-                    c_gender=Tags.gender_female;
-
-
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
         c_phone.setDefaultCountry("sa");
 
         c_login.setOnClickListener(new View.OnClickListener() {
@@ -164,18 +128,19 @@ public class Activity_Client_Register extends AppCompatActivity {
                 String mPassword1 = c_password.getText().toString();
                 String mPassword2 = c_re_password.getText().toString();
                 String mEmail = c_email.getText().toString();
-                String mAge = c_age.getText().toString();
                 String mName = c_name.getText().toString();
-                if (TextUtils.isEmpty(mName)&&TextUtils.isEmpty(mAge)&&TextUtils.isEmpty(mUser_name) && TextUtils.isEmpty(mPassword1) &&TextUtils.isEmpty(mPassword2) && TextUtils.isEmpty(mPhone) && TextUtils.isEmpty(mEmail) && bitmap==null)
+
+
+
+                if (TextUtils.isEmpty(mName)&&TextUtils.isEmpty(mUser_name) && TextUtils.isEmpty(mPassword1) &&TextUtils.isEmpty(mPassword2) && TextUtils.isEmpty(mPhone))
                 {
                     c_user_name.setError(getString(R.string.enter_username));
                     c_phone.getTextInputLayout().getEditText().setError(getString(R.string.enter_phone));
                     c_password.setError(getString(R.string.enter_password));
                     c_re_password.setError(getString(R.string.enter_password));
-                    c_email.setError(getString(R.string.enter_email));
+                    //c_email.setError(getString(R.string.enter_email));
                     c_name.setError(getString(R.string.enter_name));
-                    c_age.setError(getString(R.string.enter_age));
-                    Toast.makeText(Activity_Client_Register.this,getString(R.string.choose_image), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(Activity_Client_Register.this,getString(R.string.choose_image), Toast.LENGTH_LONG).show();
                 }
                 else if (TextUtils.isEmpty(mName))
                 {
@@ -191,26 +156,18 @@ public class Activity_Client_Register extends AppCompatActivity {
                     c_phone.getTextInputLayout().getEditText().setError(getString(R.string.inv_phone));
                     c_name.setError(null);
 
-                }else if (TextUtils.isEmpty(mEmail))
+                }else if (!TextUtils.isEmpty(mEmail)&&!Patterns.EMAIL_ADDRESS.matcher(mEmail).matches())
                 {
-                    c_email.setError(getString(R.string.enter_email));
-                    c_phone.getTextInputLayout().getEditText().setError(null);
-                }else if (!Patterns.EMAIL_ADDRESS.matcher(mEmail).matches())
-                {
+                   /* c_email.setError(getString(R.string.enter_email));
+                    c_phone.getTextInputLayout().getEditText().setError(null);*/
                     c_email.setError(getString(R.string.inv_email));
                     c_phone.getTextInputLayout().getEditText().setError(null);
-
-
-                }else if (TextUtils.isEmpty(mAge))
-                {
-                    c_age.setError(getString(R.string.enter_age));
-                    c_email.setError(null);
-
                 }
                 else if (TextUtils.isEmpty(mUser_name))
                 {
                     c_user_name.setError(getString(R.string.enter_username));
-                    c_age.setError(null);
+                    c_email.setError(null);
+
 
 
                 }else if (TextUtils.isEmpty(mPassword1))
@@ -228,15 +185,10 @@ public class Activity_Client_Register extends AppCompatActivity {
                     c_password.setError(null);
                     c_re_password.setText(null);
                     Toast.makeText(Activity_Client_Register.this, R.string.pass_notmatch, Toast.LENGTH_LONG).show();
-                }else if (bitmap==null)
-                {
-                    Toast.makeText(Activity_Client_Register.this,getString(R.string.choose_image), Toast.LENGTH_LONG).show();
-
-
                 }else
                     {
 
-                        saveToServerDB(mName,mAge,c_gender,mUser_name,mPassword1,mEmail,mPhone);
+                        saveToServerDB(mName,mUser_name,mPassword1,mEmail,mPhone);
                         //sendCodeValidation("");
 
                     }
@@ -285,11 +237,15 @@ public class Activity_Client_Register extends AppCompatActivity {
         }
     }
 
-    private void saveToServerDB(String mName, String mAge, String c_gender, String user_name, String pass, String email, String phone) {
-        enCode(bitmap);
+    private void saveToServerDB(String mName, String user_name, String pass, String email, String phone) {
+        if (bitmap!=null)
+        {
+            enCode(bitmap);
+
+        }
         dialog.show();
         Services services = Api.getClient(Tags.BASE_URL).create(Services.class);
-        Call<UserModel> userCall = services.userSignUp(mName,mAge,c_gender,user_name,pass,phone,email, FirebaseInstanceId.getInstance().getToken(),enCodedImage);
+        Call<UserModel> userCall = services.userSignUp(mName,user_name,pass,phone,email, FirebaseInstanceId.getInstance().getToken(),enCodedImage);
         userCall.enqueue(new Callback<UserModel>() {
             @Override
             public void onResponse(Call<UserModel> call, Response<UserModel> response) {

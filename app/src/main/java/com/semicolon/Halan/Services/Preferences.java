@@ -37,6 +37,8 @@ public class Preferences {
         editor.putString("user_token_id",userModel.getUser_token_id());
         editor.putString("user_photo",userModel.getUser_photo());
         editor.putString("user_city",userModel.getUser_city());
+        editor.putString("user_country",userModel.getUser_country());
+
         editor.putString("user_national_num",userModel.getUser_national_num());
         editor.putString("user_car_num",userModel.getUser_car_num());
         editor.putString("user_car_model",userModel.getUser_car_model());
@@ -73,6 +75,8 @@ public class Preferences {
         editor.putString("user_token_id",userModel.getUser_token_id());
         editor.putString("user_photo",userModel.getUser_photo());
         editor.putString("user_city",userModel.getUser_city());
+        editor.putString("user_country",userModel.getUser_country());
+
         editor.putString("user_national_num",userModel.getUser_national_num());
         editor.putString("user_car_num",userModel.getUser_car_num());
         editor.putString("user_car_model",userModel.getUser_car_model());
@@ -109,6 +113,8 @@ public class Preferences {
         editor.putString("user_token_id","");
         editor.putString("user_photo","");
         editor.putString("user_city","");
+        editor.putString("user_country","");
+
         editor.putString("user_national_num","");
         editor.putString("user_car_num","");
         editor.putString("user_car_model","");
@@ -142,7 +148,9 @@ public class Preferences {
        String  user_token_id= pref.getString("user_token_id","");
        String  user_photo= pref.getString("user_photo","");
        String  user_city= pref.getString("user_city","");
-       String  user_national_num= pref.getString("user_national_num","");
+        String  user_country= pref.getString("user_country","");
+
+        String  user_national_num= pref.getString("user_national_num","");
        String  user_car_num= pref.getString("user_car_num","");
        String  user_car_model= pref.getString("user_car_model","");
        String  user_car_color= pref.getString("user_car_color","");
@@ -171,6 +179,7 @@ public class Preferences {
        userModel.setUser_token_id(user_token_id);
        userModel.setUser_photo(user_photo);
        userModel.setUser_city(user_city);
+       userModel.setUser_country(user_country);
        userModel.setUser_national_num(user_national_num);
        userModel.setUser_car_num(user_car_num);
        userModel.setUser_car_model(user_car_model);

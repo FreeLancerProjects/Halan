@@ -328,7 +328,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         //startActivity(intent);
                         PendingIntent pendingIntent = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
                         builder.setContentIntent(pendingIntent);
-                      */  builder.setSmallIcon(R.mipmap.ic_launcher);
+                      */  builder.setSmallIcon(R.mipmap.ic_launcher2);
                         builder.setAutoCancel(true);
                         builder.setContentTitle(map.get("title"));
                         builder.setContentText(map.get("message"));
@@ -352,7 +352,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                         //startActivity(intent2);
                                         PendingIntent pendingIntent2 = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent2,PendingIntent.FLAG_UPDATE_CURRENT);
                                         builder.setContentIntent(pendingIntent2);
-                                        builder.setSmallIcon(R.mipmap.ic_launcher);
+                                        builder.setSmallIcon(R.mipmap.ic_launcher2);
                                         builder.setAutoCancel(true);
                                         builder.setContent(remoteViews1);
                                         builder.setContentTitle(map.get("title"));
@@ -403,7 +403,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                         //startActivity(intent3);
                                         PendingIntent pendingIntent3 = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent3,PendingIntent.FLAG_UPDATE_CURRENT);
                                         builder.setContentIntent(pendingIntent3);
-                                        builder.setSmallIcon(R.mipmap.ic_launcher);
+                                        builder.setSmallIcon(R.mipmap.ic_launcher2);
                                         builder.setAutoCancel(false);
                                         builder.setContent(remoteViews2);
                                         builder.setOngoing(true);
@@ -450,7 +450,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                         //startActivity(intent4);
                                         PendingIntent pendingIntent4 = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent4,PendingIntent.FLAG_UPDATE_CURRENT);
                                         builder.setContentIntent(pendingIntent4);
-                                        builder.setSmallIcon(R.mipmap.ic_launcher);
+                                        builder.setSmallIcon(R.mipmap.ic_launcher2);
                                         builder.setAutoCancel(true);
                                         builder.setContent(remoteViews3);
                                         builder.setContentTitle(map.get("title"));
@@ -499,7 +499,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                         //startActivity(intent3);
                                         PendingIntent pendingIntent5 = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent5,PendingIntent.FLAG_UPDATE_CURRENT);
                                         builder.setContentIntent(pendingIntent5);
-                                        builder.setSmallIcon(R.mipmap.ic_launcher);
+                                        builder.setSmallIcon(R.mipmap.ic_launcher2);
                                         builder.setAutoCancel(true);
                                         builder.setContent(remoteViews4);
                                         builder.setContentTitle(map.get("title"));
@@ -546,7 +546,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                         //startActivity(intent3);
                                         PendingIntent pendingIntent5 = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent6,PendingIntent.FLAG_UPDATE_CURRENT);
                                         builder.setContentIntent(pendingIntent5);
-                                        builder.setSmallIcon(R.mipmap.ic_launcher);
+                                        builder.setSmallIcon(R.mipmap.ic_launcher2);
                                         builder.setAutoCancel(true);
                                         builder.setContent(remoteViews5);
                                         builder.setContentTitle(map.get("title"));
@@ -619,7 +619,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                         //startActivity(intent2);
                                         PendingIntent pendingIntent2 = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent7,PendingIntent.FLAG_UPDATE_CURRENT);
                                         builder.setContentIntent(pendingIntent2);
-                                        builder.setSmallIcon(R.mipmap.ic_launcher);
+                                        builder.setSmallIcon(R.mipmap.ic_launcher2);
                                         builder.setAutoCancel(true);
                                         builder.setContent(remoteViews6);
                                         manager.notify(0,builder.build());

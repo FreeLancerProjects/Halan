@@ -44,6 +44,7 @@ import com.semicolon.Halan.SingleTone.Users;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,20 +52,24 @@ import retrofit2.Response;
 
 public class Activity_Driver_Register2 extends AppCompatActivity implements View.OnClickListener ,Users.UserData{
 
-    private String city,identety,vihile_number,car_color,car_model;
+    private String city,identety,vihile_number,car_color,car_model,mAge,mGender,country;
     private EditText e_car_model;
-    private TextView t_photo_car_form,t_license_photo,t_front_back_image;
-    private ImageView photo_car_form,license_photo,front_back_image;
+    private TextView t_photo_car_form,t_license_photo,t_front_image,t_back_image;
+    private ImageView photo_car_form,license_photo,front_image,back_image;
     private Preferences preferences;
     private Button register;
     private ImageView back;
+    private String encoded_user_image="";
     private AlertDialog alertDialog;
     private final int IMG_REQ1 = 100;
     private final int IMG_REQ2 = 200;
     private final int IMG_REQ3 = 300;
+    private final int IMG_REQ4 = 400;
+    private final int IMG_REQ5 = 500;
 
-    private String enCodedImage1,enCodedImage2,enCodedImage3;
-    private Bitmap bitmap1,bitmap2,bitmap3;
+    private CircleImageView image;
+    private String enCodedImage1,enCodedImage2,enCodedImage3,enCodedImage4;
+    private Bitmap bitmap1,bitmap2,bitmap3,bitmap4,user_bitmap;
     private UserModel userModel;
     private Users users;
     private ProgressDialog dialog;
@@ -115,28 +120,39 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
     }
 
     private void initView() {
+        image = findViewById(R.id.image);
         back = findViewById(R.id.back);
         e_car_model=findViewById(R.id.car_model);
         t_photo_car_form=findViewById(R.id.photo_car_form);
         t_license_photo=findViewById(R.id.license_photo);
-        t_front_back_image=findViewById(R.id.front_back_image);
+        t_front_image=findViewById(R.id.front_image);
+        t_back_image=findViewById(R.id.back_image);
 
         photo_car_form=findViewById(R.id.img_photo_car_form);
         license_photo=findViewById(R.id.img_license_photo);
-        front_back_image=findViewById(R.id.img_front_back_image);
+        front_image=findViewById(R.id.img_front);
+        back_image=findViewById(R.id.img_back);
 
         register=findViewById(R.id.regiser_Btn);
         register.setOnClickListener(this);
         t_photo_car_form.setOnClickListener(this);
         t_license_photo.setOnClickListener(this);
-        t_front_back_image.setOnClickListener(this);
+        t_front_image.setOnClickListener(this);
+        t_back_image.setOnClickListener(this);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(intent.createChooser(intent,getString(R.string.choose_image)),IMG_REQ5);
+            }
+        });
 
 
     }
@@ -178,11 +194,14 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
 
         Intent intent=getIntent();
 
-        if (!intent.equals(null)){
+        if (intent!=null){
+            country = intent.getStringExtra("country");
             city=intent.getStringExtra("city");
             identety=intent.getStringExtra("identity");
             vihile_number=intent.getStringExtra("vihile_number");
             car_color=intent.getStringExtra("car_color");
+            mAge= intent.getStringExtra("age");
+            mGender =intent.getStringExtra("gender");
 
         }else
         {
@@ -208,11 +227,16 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
                 intent2.setType("image/*");
                 startActivityForResult(intent2.createChooser(intent2,getString(R.string.choose_image)),IMG_REQ2);
                 break;
-            case R.id.front_back_image:
+            case R.id.front_image:
                 Intent intent3 = new Intent(Intent.ACTION_GET_CONTENT);
                 intent3.setType("image/*");
                 startActivityForResult(intent3.createChooser(intent3,getString(R.string.choose_image)),IMG_REQ3);
             break;
+            case R.id.back_image:
+                Intent intent4 = new Intent(Intent.ACTION_GET_CONTENT);
+                intent4.setType("image/*");
+                startActivityForResult(intent4.createChooser(intent4,getString(R.string.choose_image)),IMG_REQ4);
+                break;
         }
 
     }
@@ -236,19 +260,35 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
             Toast.makeText(Activity_Driver_Register2.this,getString(R.string.choose_image), Toast.LENGTH_LONG).show();
             e_car_model.setError(null);
 
-        }else {
+        }else if (bitmap4==null){
+            Toast.makeText(Activity_Driver_Register2.this,getString(R.string.choose_image), Toast.LENGTH_LONG).show();
+            e_car_model.setError(null);
+
+        }else if (userModel.getUser_photo().equals("0")&&user_bitmap==null)
+        {
+            Toast.makeText(this,getString(R.string.choose_image), Toast.LENGTH_LONG).show();
+        }
+        else {
             CreateProgressDialog();
             dialog.show();
             enCode1(bitmap1);
             enCode2(bitmap2);
             enCode3(bitmap3);
+            enCode4(bitmap4);
+            if (user_bitmap!=null)
+            {
+                enCode5(user_bitmap);
+            }else
+                {
+                    encoded_user_image="";
+                }
             String lat = String.valueOf(myLatLng.latitude);
             String lng = String.valueOf(myLatLng.longitude);
             Log.e("latLng",""+myLatLng.latitude);
             Log.e("latLng",""+myLatLng.longitude);
 
             Services services= Api.getClient(Tags.BASE_URL).create(Services.class);
-        Call<UserModel> call=services.driverSignIn(userModel.getUser_id(),city,identety,car_model,vihile_number,car_color,enCodedImage1,enCodedImage2,enCodedImage3,lat,lng);
+        Call<UserModel> call=services.driverSignIn(userModel.getUser_id(),encoded_user_image,city,mAge,mGender,country,identety,car_model,vihile_number,car_color,enCodedImage1,enCodedImage2,enCodedImage3,enCodedImage4,lat,lng);
         call.enqueue(new Callback<UserModel>() {
             @Override
             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
@@ -258,8 +298,8 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
                     if (response.body().getSuccess()==1){
                         UserModel userModel=response.body();
                         Log.e("mmmm",userModel.getUser_id()+city+identety+car_model+car_color+enCodedImage1+enCodedImage2+enCodedImage3);
-                        preferences.UpdatePref(userModel);
-                        users.setUserData(userModel);
+                        /*preferences.UpdatePref(userModel);
+                        users.setUserData(userModel);*/
                         dialog.dismiss();
                         alertDialog.show();
 
@@ -345,7 +385,33 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
             try {
                 bitmap3= BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
 
-                front_back_image.setImageBitmap(bitmap3);
+                front_image.setImageBitmap(bitmap3);
+
+                //enCode(bitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        else if (requestCode==IMG_REQ4 && resultCode == RESULT_OK && data!=null)
+        {
+            Uri uri = data.getData();
+            try {
+                bitmap4= BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+
+                back_image.setImageBitmap(bitmap4);
+
+                //enCode(bitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        else if (requestCode==IMG_REQ5 && resultCode == RESULT_OK && data!=null)
+        {
+            Uri uri = data.getData();
+            try {
+                user_bitmap= BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+
+                image.setImageBitmap(user_bitmap);
 
                 //enCode(bitmap);
             } catch (FileNotFoundException e) {
@@ -410,9 +476,39 @@ public class Activity_Driver_Register2 extends AppCompatActivity implements View
         return enCodedImage3;
     }
 
+    private String enCode4(Bitmap bitmap)
+    {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,90,outputStream);
+        byte [] bytes = outputStream.toByteArray();
+
+        enCodedImage4 = Base64.encodeToString(bytes,Base64.DEFAULT);
+
+        return enCodedImage4;
+    }
+
+    private String enCode5(Bitmap bitmap)
+    {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,90,outputStream);
+        byte [] bytes = outputStream.toByteArray();
+
+        encoded_user_image = Base64.encodeToString(bytes,Base64.DEFAULT);
+
+        return encoded_user_image;
+    }
+
     @Override
     public void UserDataSuccess(UserModel userModel) {
         this.userModel=userModel;
+        if (userModel.getUser_photo().equals("0"))
+        {
+            image.setVisibility(View.VISIBLE);
+        }else
+            {
+                image.setVisibility(View.GONE);
+
+            }
 
     }
 }

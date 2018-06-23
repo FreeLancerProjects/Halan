@@ -444,22 +444,7 @@ public class DriverOrdersActivity extends AppCompatActivity
 
                 builder.show();
                 break;
-            case R.id.contact:
-                Intent intent1 = new Intent(this, ContactUsActivity.class);
-                startActivity(intent1);
-                break;
-            case R.id.pay:
-                Intent intent2 = new Intent(this, PayActivity.class);
-                startActivity(intent2);
-                break;
-            case R.id.notification:
-                Intent intent = new Intent(this,DriverNotificationActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.rule:
-                Intent intent3 = new Intent(this,RulesActivity.class);
-                startActivity(intent3);
-                break;
+
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;

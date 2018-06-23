@@ -51,6 +51,7 @@
                         android:background="@color/colorPrimary_light"
                         android:src="@drawable/small_logo"
                         android:layout_centerVertical="true"
+                        android:scaleType="fitXY"
 
                         />
 
@@ -152,12 +153,12 @@
             android:paddingBottom="5dp"
             android:paddingRight="15dp"
             android:paddingLeft="15dp"
-            android:textSize="9sp"
+            android:textSize="10sp"
             android:textColor="@color/white"
             android:text="@string/csar"
             android:layout_alignParentBottom="true"
             android:singleLine="true"
-            android:visibility="gone"
+            android:visibility="invisible"
             android:textStyle="bold"
             />
     </RelativeLayout>

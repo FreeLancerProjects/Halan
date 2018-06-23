@@ -17,6 +17,7 @@ public class UserModel {
     private String user_token_id;
     private String user_photo;
     private String user_city;
+    private String user_country;
     private String user_national_num;
     private String user_car_num     ;
     private String user_car_model   ;
@@ -174,6 +175,16 @@ public class UserModel {
         this.user_city = user_city;
     }
 
+
+
+    public String getUser_country() {
+        return user_country;
+    }
+
+    public void setUser_country(String user_country) {
+        this.user_country = user_country;
+    }
+
     public String getUser_national_num() {
         return user_national_num;
     }
@@ -270,6 +281,7 @@ public class UserModel {
         this.rate_evaluation = rate_evaluation;
     }
 
+
     public int getStars_evaluation() {
         return stars_evaluation;
     }
@@ -277,6 +289,7 @@ public class UserModel {
     public void setStars_evaluation(int stars_evaluation) {
         this.stars_evaluation = stars_evaluation;
     }
+
 
     public int getOrder_count() {
         return order_count;

@@ -51,7 +51,17 @@
 
             >
 
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                app:civ_border_color="@color/colorPrimary"
+                app:civ_border_width="1.5px"
+                android:src="@drawable/user_profile"
+                android:layout_marginTop="10dp"
 
+                />
 
                 <EditText
                     android:id="@+id/car_model"
@@ -65,8 +75,8 @@
                     android:paddingLeft="10dp"
                     android:textColorHint="@color/gray2"
                     android:textColor="@color/gray3"
-                    android:textSize="12sp"
-                    android:layout_marginTop="20dp"
+                    android:textSize="11sp"
+                    android:layout_marginTop="10dp"
                     android:maxLines="1"
                     android:scrollHorizontally="true"
                     android:textStyle="bold"
@@ -102,7 +112,7 @@
                     android:paddingLeft="10dp"
                     android:textColorHint="@color/gray2"
                     android:textColor="@color/gray3"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:maxLines="1"
                     android:scrollHorizontally="true"
                     android:textStyle="bold"
@@ -146,12 +156,12 @@
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:lines="2"
-                    android:hint="@string/license_photo"
+                    android:hint="@string/ident_photo"
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
                     android:textColorHint="@color/gray2"
                     android:textColor="@color/gray3"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:maxLines="1"
                     android:scrollHorizontally="true"
                     android:textStyle="bold"
@@ -188,19 +198,19 @@
                 android:layout_marginRight="15dp"
                 >
                 <TextView
-                    android:id="@+id/front_back_image"
+                    android:id="@+id/front_image"
                     android:layout_width="0dp"
                     android:layout_weight=".7"
                     android:layout_height="wrap_content"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:lines="2"
-                    android:hint="@string/front_back_image"
+                    android:hint="@string/front_image"
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
                     android:textColorHint="@color/gray2"
                     android:textColor="@color/gray3"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:maxLines="1"
                     android:scrollHorizontally="true"
                     android:textStyle="bold"
@@ -212,7 +222,7 @@
 
                     />
                 <ImageView
-                    android:id="@+id/img_front_back_image"
+                    android:id="@+id/img_front"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
@@ -226,7 +236,54 @@
             </LinearLayout>
 
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:background="@drawable/client_login_container"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                >
+                <TextView
+                    android:id="@+id/back_image"
+                    android:layout_width="0dp"
+                    android:layout_weight=".7"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:lines="2"
+                    android:hint="@string/back_image"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:textColorHint="@color/gray2"
+                    android:textColor="@color/gray3"
+                    android:textSize="11sp"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical"
 
+                    android:background="@android:color/transparent"
+
+
+
+                    />
+                <ImageView
+                    android:id="@+id/img_back"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/uploadphoto"
+                    android:scaleType="centerCrop"
+                    android:layout_marginLeft="5dp"
+                    />
+
+
+
+            </LinearLayout>
 
 
             <LinearLayout

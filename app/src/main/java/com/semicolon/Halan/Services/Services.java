@@ -1,13 +1,17 @@
 package com.semicolon.Halan.Services;
 
-import com.semicolon.Halan.Models.AboutUsModel;
+import com.semicolon.Halan.Models.AppRateModel;
 import com.semicolon.Halan.Models.AvailableDriversModel;
+import com.semicolon.Halan.Models.BankAccountModel;
 import com.semicolon.Halan.Models.ClientLastOrderModel;
 import com.semicolon.Halan.Models.ClientNotificationModel;
+import com.semicolon.Halan.Models.ContactModel;
 import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.Models.NearbyModel;
 import com.semicolon.Halan.Models.PlaceModel;
+import com.semicolon.Halan.Models.PolicyModel;
 import com.semicolon.Halan.Models.ResponseModel;
+import com.semicolon.Halan.Models.RuleModel;
 import com.semicolon.Halan.Models.TotalCostModel;
 import com.semicolon.Halan.Models.UserModel;
 
@@ -34,8 +38,6 @@ public interface Services {
     @FormUrlEncoded
     @POST("Api/ClientRegistration")
     Call<UserModel> userSignUp(@Field("user_full_name") String name,
-                               @Field("user_age") String age,
-                               @Field("user_gender") String gender,
                                @Field("user_name") String user_name,
                                @Field("user_pass") String user_pass,
                                @Field("user_phone") String user_phone,
@@ -54,7 +56,11 @@ public interface Services {
     @FormUrlEncoded
     @POST("Api/DriverRegistration/{user_id}")
     Call<UserModel> driverSignIn(@Path("user_id") String user_id,
+                                 @Field("user_photo") String photo,
                                  @Field("user_city") String user_city ,
+                                 @Field("user_age") String age,
+                                 @Field("user_gender") String gender,
+                                 @Field("user_country") String country,
                                  @Field("user_national_num") String user_national_num ,
                                  @Field("user_car_model") String user_car_model ,
                                  @Field("user_car_num") String user_car_num,
@@ -62,20 +68,25 @@ public interface Services {
                                  @Field("user_car_form") String user_car_form ,
                                  @Field("user_car_license") String user_car_license  ,
                                  @Field("user_car_photo") String user_car_photo,
+                                 @Field("user_car_behind_photo") String user_car_photo2,
                                  @Field("user_google_lat") String user_google_lat,
                                  @Field("user_google_long") String user_google_long);
 
     @FormUrlEncoded
     @POST("Api/UpdateClient/{user_id}")
     Call<UserModel> UpdateClient(@Path("user_id") String user_id,
+                                 @Field("user_photo") String user_photo,
                                  @Field("user_name") String user_name,
+                                 @Field("user_full_name") String name,
                                  @Field("user_phone") String user_phone,
                                  @Field("user_email") String user_email,
-                                 @Field("user_photo") String user_photo,
-                                 @Field("user_full_name") String name,
                                  @Field("user_age") String user_age,
-                                 @Field("user_gender") String user_gender
-    );
+                                 @Field("user_gender") String user_gender,
+                                 @Field("user_city") String user_city,
+                                 @Field("user_country") String country
+                                 );
+
+
 
 
     @GET()
@@ -105,7 +116,7 @@ public interface Services {
     );
 
     @GET("Api/ContactUs")
-    Call<UserModel> getNumber ();
+    Call<ContactModel> getContacts ();
 
     @FormUrlEncoded
     @POST("Api/UpdateLocation/{driver_id}")
@@ -173,8 +184,11 @@ public interface Services {
     @POST("Api/DriverEvaluate/{order_id_fk}")
     Call<ResponseModel> sendDriverEvaluate(@Path("order_id_fk") String order_id_fk,@FieldMap Map<String,String> map);
 
-    @GET("Api/AboutUs")
-    Call<List<AboutUsModel>> GetAboutUs();
+    @GET("Api/AboutApp")
+    Call<PolicyModel> GetAboutUs();
+
+    @GET("Api/TermsAndConditions")
+    Call<RuleModel> getRules();
 
     @FormUrlEncoded
     @POST("Api/SendToNewDrivers")
@@ -232,4 +246,19 @@ public interface Services {
 
     @GET()
     Call<NearbyModel> getNearbyPlaces(@Url String url);
+
+    @GET("Api/AppEvaluation/{user_id}")
+    Call<AppRateModel> getApp_Evaluation(@Path("user_id") String user_id);
+
+    @FormUrlEncoded
+    @POST("Api/AppEvaluation/{user_id}")
+    Call<AppRateModel> setApp_Evaluation(@Path("user_id") String user_id,@Field("app_evaluation")String app_evaluation);
+
+    @GET("Api/BankAccounts")
+    Call<List<BankAccountModel>> getBankAccounts();
+
+    @GET("Api/PolicyApp")
+    Call<PolicyModel> getPolicy();
+
+
 }

@@ -118,7 +118,6 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import it.beppi.tristatetogglebutton_library.TriStateToggleButton;
-import me.anwarshahriar.calligrapher.Calligrapher;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -188,14 +187,15 @@ public class HomeActivity extends AppCompatActivity
     private NotificationManager manager;
     private TextView alert_txt;
     private static boolean isDeleted = false;
+    private LinearLayout l_more,l_myorder,l_notification,l_me;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Calligrapher calligrapher = new Calligrapher(this);
-        calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
+       /* Calligrapher calligrapher = new Calligrapher(this);
+        calligrapher.setFont(this, "JannaLT-Regular.ttf", true);*/
         connection = NetworkConnection.getInstance();
         dRef = FirebaseDatabase.getInstance().getReference();
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -499,6 +499,51 @@ public class HomeActivity extends AppCompatActivity
         not_cost_details = findViewById(R.id.not_cost_details);
         not_accept_btn = findViewById(R.id.not_accept);
         not_refuse_btn = findViewById(R.id.not_refuse);
+        l_more = findViewById(R.id.more);
+        l_myorder = findViewById(R.id.myorder);
+        l_notification = findViewById(R.id.notification);
+        l_me = findViewById(R.id.me);
+
+
+        l_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(HomeActivity.this,AppContactsActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+        l_myorder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent2=new Intent(HomeActivity.this,MyOrdersActivity.class);
+                startActivity(intent2);
+            }
+        });
+        l_notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (userModel.getUser_type().equals(Tags.Client))
+                {
+                    Intent intent = new Intent(HomeActivity.this,ClientNotificationActivity.class);
+                    startActivity(intent);
+                }else
+                {
+                    Intent intent = new Intent(HomeActivity.this,DriverNotificationActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
+        l_me.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this,MyAccountActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
         not_accept_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -697,6 +742,9 @@ public class HomeActivity extends AppCompatActivity
             }
 
         });
+
+
+
         apiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -730,7 +778,7 @@ public class HomeActivity extends AppCompatActivity
                         bottom_sheet.setVisibility(View.GONE);
                         search_view.setEnabled(true);
                         nearbyBtn.setEnabled(true);
-                        alert_txt.setVisibility(View.GONE);
+                        alert_txt.setVisibility(View.INVISIBLE);
 
                     }else
                     {
@@ -775,7 +823,7 @@ public class HomeActivity extends AppCompatActivity
                         bottom_sheet.setVisibility(View.GONE);
                         search_view.setEnabled(true);
                         nearbyBtn.setEnabled(true);
-                        alert_txt.setVisibility(View.GONE);
+                        alert_txt.setVisibility(View.INVISIBLE);
                         CreateChat();
                         //finish();
                     }else
@@ -932,7 +980,7 @@ public class HomeActivity extends AppCompatActivity
                         bottom_sheet.setVisibility(View.GONE);
                         search_view.setEnabled(true);
                         nearbyBtn.setEnabled(true);
-                        alert_txt.setVisibility(View.GONE);
+                        alert_txt.setVisibility(View.INVISIBLE);
                         Toast.makeText(HomeActivity.this, R.string.or_no_ex, Toast.LENGTH_LONG).show();
                         return;
 
@@ -1336,14 +1384,14 @@ public class HomeActivity extends AppCompatActivity
                     new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.g_map)).position(latLng)
 
             );
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,11f));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,13f));
         }else
             {
                 mMap.addMarker(
                         new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.g_map)).position(latLng).title(title)
 
                 );
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,11f));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,13f));
             }
 
     }
@@ -1379,44 +1427,7 @@ public class HomeActivity extends AppCompatActivity
 
                 builder.show();
                 break;
-            case R.id.contact:
-                Intent intent1=new Intent(this,ContactUsActivity.class);
-                startActivity(intent1);
-                break;
-            case R.id.pay:
-                if (userModel.getUser_type().equals(Tags.Driver))
-                {
 
-                    Intent intent2=new Intent(this,PayActivity.class);
-                    startActivity(intent2);
-                }else
-                    {
-                        CreateAlertDialog2(getString(R.string.serv_aval_drivers));
-                        builder2.show();
-                    }
-
-                break;
-            case R.id.orders:
-                Intent intent2=new Intent(this,MyOrdersActivity.class);
-                startActivity(intent2);
-
-                break;
-            case R.id.notification:
-                if (userModel.getUser_type().equals(Tags.Client))
-                {
-                    Intent intent = new Intent(HomeActivity.this,ClientNotificationActivity.class);
-                    startActivity(intent);
-                }else
-                    {
-                        Intent intent = new Intent(HomeActivity.this,DriverNotificationActivity.class);
-                        startActivity(intent);
-                    }
-
-                    break;
-            case R.id.rule:
-                Intent intent3 = new Intent(HomeActivity.this,RulesActivity.class);
-                startActivity(intent3);
-                break;
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
