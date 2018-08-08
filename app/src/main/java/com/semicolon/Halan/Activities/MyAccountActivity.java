@@ -2,23 +2,21 @@ package com.semicolon.Halan.Activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,8 +36,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class MyAccountActivity extends AppCompatActivity implements Users.UserData,View.OnClickListener{
-    private RatingBar ratingBar;
-    private TextView app_rate,order_num;
+   // private RatingBar ratingBar;
+    private TextView order_num;
     private LinearLayout myorder,rule,share,send_prob,pay,aboutApp,politics;
     private Button add_rateBtn;
     private CircleImageView user_image;
@@ -57,10 +55,10 @@ public class MyAccountActivity extends AppCompatActivity implements Users.UserDa
         users =Users.getInstance();
         users.getUserData(this);
         CreateProgressDialog();
-        getAppEvaluation();
+        //getAppEvaluation();
     }
 
-    private void getAppEvaluation() {
+    /*private void getAppEvaluation() {
         Retrofit retrofit = Api.getClient(Tags.BASE_URL);
         Services services = retrofit.create(Services.class);
         Call<AppRateModel> call = services.getApp_Evaluation(userModel.getUser_id());
@@ -80,15 +78,15 @@ public class MyAccountActivity extends AppCompatActivity implements Users.UserDa
                 Log.e("Error",t.getMessage());
             }
         });
-    }
+    }*/
 
     private void initView() {
-        ratingBar = findViewById(R.id.rateBar);
+       /* ratingBar = findViewById(R.id.rateBar);
         LayerDrawable drawable = (LayerDrawable) ratingBar.getProgressDrawable();
         drawable.getDrawable(0).setColorFilter(ContextCompat.getColor(this,R.color.gray2), PorterDuff.Mode.SRC_ATOP);
         drawable.getDrawable(1).setColorFilter(ContextCompat.getColor(this,R.color.rate2), PorterDuff.Mode.SRC_ATOP);
         drawable.getDrawable(2).setColorFilter(ContextCompat.getColor(this,R.color.rate2), PorterDuff.Mode.SRC_ATOP);
-
+*/
         order_num = findViewById(R.id.order_num);
         myorder = findViewById(R.id.myorder);
         rule = findViewById(R.id.rule);
@@ -97,7 +95,7 @@ public class MyAccountActivity extends AppCompatActivity implements Users.UserDa
         politics = findViewById(R.id.politics);
         send_prob = findViewById(R.id.send_prob);
         pay = findViewById(R.id.pay);
-        app_rate = findViewById(R.id.app_rate);
+        //app_rate = findViewById(R.id.app_rate);
         user_image = findViewById(R.id.user_image);
         add_rateBtn = findViewById(R.id.add_rateBtn);
         view = findViewById(R.id.view);
@@ -114,14 +112,27 @@ public class MyAccountActivity extends AppCompatActivity implements Users.UserDa
         aboutApp.setOnClickListener(this);
         politics.setOnClickListener(this);
         pay.setOnClickListener(this);
-        ratingBar.setEnabled(false);
-        ratingBar.setFocusable(false);
+       /* ratingBar.setEnabled(false);
+        ratingBar.setFocusable(false);*/
         add_rateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Uri uri = Uri.parse("market://details?id=" + getPackageName());
+                Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                        Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                        Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                try {
+                    startActivity(goToMarket);
+                } catch (ActivityNotFoundException e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://play.google.com/store/apps/details?id=" + getPackageName())));
+                }
+
                // dialog.show();
                // AddApp_Rate();
-                View v  = LayoutInflater.from(MyAccountActivity.this).inflate(R.layout.custom_dialog_rate,null);
+               /* View v  = LayoutInflater.from(MyAccountActivity.this).inflate(R.layout.custom_dialog_rate,null);
                 Button addRateBtn = v.findViewById(R.id.addRateBtn);
                 Button cancel = v.findViewById(R.id.cancelBtn);
                 final RatingBar ratingBar = v.findViewById(R.id.alert_rateBar);
@@ -161,7 +172,7 @@ public class MyAccountActivity extends AppCompatActivity implements Users.UserDa
                         rate.setText(String.valueOf(v));
                     }
                 });
-
+*/
 
             }
         });

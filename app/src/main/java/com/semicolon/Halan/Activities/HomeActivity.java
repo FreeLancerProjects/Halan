@@ -1714,7 +1714,11 @@ public class HomeActivity extends AppCompatActivity
                         && driversModel.getUser_google_long()!=null||!TextUtils.isEmpty(driversModel.getUser_google_long()))
                 {
                     double dis = distance(mylatLng.latitude,mylatLng.longitude,Double.parseDouble(driversModel.getUser_google_lat()),Double.parseDouble(driversModel.getUser_google_long()));
-                    map.put(driversModel.getDriver_id(),dis);
+                    if (dis<=50)
+                    {
+                        map.put(driversModel.getDriver_id(),dis);
+
+                    }
                 }
                 /*Log.e("ana",mylatLng.latitude+"_"+mylatLng.longitude);
                 Log.e("drivers",driversModel.getUser_google_lat()+"_"+driversModel.getUser_google_long());
@@ -1728,20 +1732,22 @@ public class HomeActivity extends AppCompatActivity
 
             Collections.sort(sortedArray);
 
-            if (sortedArray.size()<=6)
+            if (sortedArray.size()>0)
             {
-                for (int i =0;i<sortedArray.size();i++)
+                if (sortedArray.size()<=6)
                 {
-                    for (String key :map.keySet())
+                    for (int i =0;i<sortedArray.size();i++)
                     {
-                        if (map.get(key)== sortedArray.get(i))
+                        for (String key :map.keySet())
                         {
-                            drivers_ids.add(key);
+                            if (map.get(key)== sortedArray.get(i))
+                            {
+                                drivers_ids.add(key);
+                            }
                         }
                     }
-                }
-                Log.e("iffff","<6");
-            }else
+                    Log.e("iffff","<6");
+                }else
                 {
                     for (int i =0;i<6;i++)
                     {
@@ -1757,6 +1763,12 @@ public class HomeActivity extends AppCompatActivity
                     Log.e("iffff",">6");
 
                 }
+
+            }else if(sortedArray.size()==0)
+            {
+                Toast.makeText(this, R.string.no_driver_near, Toast.LENGTH_SHORT).show();
+            }
+
 
 
 

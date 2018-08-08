@@ -96,7 +96,8 @@ public class NearbyPlacesActivity extends AppCompatActivity {
     }
 
     private void getNearbyPlaces(String query, double lat, double lng) {
-        String Url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lng+"&radius=50000&name="+query+"&key=AIzaSyAxeE8tdOORtoR8pHwSi_EozkgvYu0Q220";
+        String server_key=getString(R.string.google_maps_key);
+        String Url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lng+"&radius=50000&name="+query+"&key="+server_key;
         Retrofit retrofit = Api.getClient(Tags.PLACE_URL);
         Services services = retrofit.create(Services.class);
         Call<NearbyModel> call = services.getNearbyPlaces(Url);

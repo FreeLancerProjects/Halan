@@ -5,10 +5,10 @@ package com.semicolon.Halan.Services;
  */
 
 public class Tags {
-    public static final String BASE_URL = "http://fekraapp.semicolonsoft.com/hala/";
+    public static final String BASE_URL = "http://halan.net/";
     public static final String Map_BaseUrl ="https://maps.googleapis.com/";
     public static final String PLACE_URL ="https://maps.googleapis.com/";
-    public static final String ImgPath  = "http://fekraapp.semicolonsoft.com/hala/uploads/images/";
+    public static final String ImgPath  = BASE_URL+"uploads/images/";
     public static final String Driver="1";
     public static final String Client="2";
     public static final String login="login";

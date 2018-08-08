@@ -664,7 +664,12 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
                         driversModel.getUser_google_long()!=null||!TextUtils.isEmpty(driversModel.getUser_google_long()) )
                 {
                     double dis = distance(client_latLng.latitude,client_latLng.longitude,Double.parseDouble(driversModel.getUser_google_lat()),Double.parseDouble(driversModel.getUser_google_long()));
-                    map.put(driversModel.getDriver_id(),dis);
+
+                    if (dis<=50)
+                    {
+                        map.put(driversModel.getDriver_id(),dis);
+
+                    }
                 }
 
             }
@@ -675,31 +680,33 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
 
             Collections.sort(sortedArray);
 
-            if (sortedArray.size()<=6)
+            if (sortedArray.size()>0)
             {
-                for (int i =0;i<sortedArray.size();i++)
+                if (sortedArray.size()<=6)
                 {
-                    for (String key :map.keySet())
+                    for (int i =0;i<sortedArray.size();i++)
                     {
-                        if (map.get(key)== sortedArray.get(i))
+                        for (String key :map.keySet())
                         {
-                            drivers_ids.add(key);
+                            if (map.get(key)== sortedArray.get(i))
+                            {
+                                drivers_ids.add(key);
+                            }
                         }
                     }
-                }
-                Log.e("iffff","<6");
-            }else
-            {
-                for (int i =0;i<6;i++)
+                    Log.e("iffff","<6");
+                }else
                 {
-                    for (String key :map.keySet())
+                    for (int i =0;i<6;i++)
                     {
-                        if (map.get(key)== sortedArray.get(i))
+                        for (String key :map.keySet())
                         {
-                            drivers_ids.add(key);
+                            if (map.get(key)== sortedArray.get(i))
+                            {
+                                drivers_ids.add(key);
+                            }
                         }
                     }
-                }
 
                /* Map<String,String> datamap =new HashMap<>();
                 datamap.put("user_id",userModel.getUser_id());
@@ -713,11 +720,17 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
                 datamap.put("order_details",myOrderModel.getOrder_details());
                 datamap.put("total_cost",myOrderModel.getCost());*/
 
-                sendOrders(drivers_ids);
+                    sendOrders(drivers_ids);
 
-                Log.e("iffff",">6");
+                    Log.e("iffff",">6");
+
+                }
+            }else if(sortedArray.size()==0)
+            {
+                Toast.makeText(this, R.string.no_driver_near, Toast.LENGTH_SHORT).show();
 
             }
+
 
 
 

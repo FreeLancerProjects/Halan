@@ -11,7 +11,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import com.semicolon.Halan.R;
 
-public class SplachActivity extends AppCompatActivity implements AnimationListener {
+public class SplashActivity extends AppCompatActivity implements AnimationListener {
 
     ImageView imgPoster;
     Animation animSlideUp;

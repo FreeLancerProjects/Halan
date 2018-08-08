@@ -1,10 +1,5 @@
 <resources>
-    <string name="google_maps_key"> AIzaSyAdyH6oTKLIRo6UudRk75YPbBs_6umhqTs </string>
-    <!--<string name="google_maps_key"> AIzaSyA_DsjDmJV3Y7p2FmMYX16TSNVNsM6KaEc </string>-->
-
-    <string name="place_nearby_key1">AIzaSyDWNDPYtBks7FSHNU_NYCOxuOoQCBqURdk</string>
-
-
+    <string name="google_maps_key">AIzaSyAGTVPCr5h3gRH83Q66UWbgRETpx1CrfGY</string>
     <string name="app_name">7alan</string>
     <string name="driver">Driver</string>
     <string name="client">Client</string>
@@ -145,6 +140,8 @@
     <string name="rate_notadded">rate not added try again later</string>
     <string name="failed">failed</string>
     <string name="respons_send_todriver">Your response was sent to the driver</string>
+    <string name="respons_send_toclient">Your response was sent to the client</string>
+
     <string name="respons_not_send">Your response not send try again later</string>
     <string name="data_send">Data Sent Successfully</string>
     <string name="sending">sending data...</string>
@@ -238,6 +235,7 @@
     <string name="upd_count">Updating country...</string>
     <string name="upd_city">Updating city...</string>
     <string name="no_email">There is no email address</string>
+    <string name="no_driver_near">There are no drivers near the store</string>
 
     <string-array name="gender">
         <item>Male</item>

@@ -6,8 +6,8 @@ android {
         applicationId "com.semicolon.Halan"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.2"
         //multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -18,7 +18,18 @@ android {
             consumerProguardFiles 'lib-proguard-rules.txt'
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
     }
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+
     repositories {
         maven { url "https://jitpack.io" }
 

@@ -1,9 +1,6 @@
 <resources>
-    <string name="google_maps_key"> AIzaSyAdyH6oTKLIRo6UudRk75YPbBs_6umhqTs </string>
+    <string name="google_maps_key">AIzaSyAGTVPCr5h3gRH83Q66UWbgRETpx1CrfGY</string>
     <!--<string name="google_maps_key"> AIzaSyA_DsjDmJV3Y7p2FmMYX16TSNVNsM6KaEc </string>-->
-
-    <string name="place_nearby_key1">AIzaSyDWNDPYtBks7FSHNU_NYCOxuOoQCBqURdk</string>
-
     <string name="app_name">حالا</string>
     <string name="driver">السائق</string>
     <string name="client">العميل</string>
@@ -132,7 +129,7 @@
     <string name="no_btn">لا أريد</string>
     <string name="driver_name">اسم السائق</string>
     <string name="delivery_time">وقت التسليم</string>
-    <string name="delete_order_must_in_5">حزف الطلب للعميل يكون خلال 5 دقائق من الطلب</string>
+    <string name="delete_order_must_in_5">حذف الطلب للعميل يكون خلال 5 دقائق من الطلب</string>
     <string name="client_name">إسم العميل</string>
     <string name="type"> يكتب الان...</string>
     <string name="img_sav">تم حفظ الصورة</string>
@@ -140,6 +137,7 @@
     <string name="rate_notadded">لم تم إرسال التقييم حاول مره أخرى لاحقا</string>
     <string name="failed">فشل</string>
     <string name="respons_send_todriver">تم إرسال ردك بنحاج</string>
+    <string name="respons_send_toclient">تم إرسال ردك الي العميل بنحاج</string>
     <string name="respons_not_send">لم تم إرسال ردك حاول مره أخرى لاحقا</string>
     <string name="data_send">تم إرسال البيانات بنجاح</string>
     <string name="sending">جار الارسال...</string>
@@ -233,6 +231,7 @@
     <string name="upd_count">جار تعديل الدولة</string>
     <string name="upd_city">جار تعديل المدينة</string>
     <string name="no_email">لا يوجد بريد الكتروني</string>
+    <string name="no_driver_near">لايوجد سائقين قريبين من المتجر</string>
     <string-array name="gender">
         <item>ذكر</item>
         <item>انثى</item>
