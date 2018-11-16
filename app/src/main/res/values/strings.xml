@@ -1,4 +1,5 @@
 <resources>
+    <!--<string name="google_maps_key">AIzaSyAGTVPCr5h3gRH83Q66UWbgRETpx1CrfGY</string>-->
     <string name="google_maps_key">AIzaSyAGTVPCr5h3gRH83Q66UWbgRETpx1CrfGY</string>
     <string name="app_name">7alan</string>
     <string name="driver">Driver</string>
@@ -236,6 +237,7 @@
     <string name="upd_city">Updating city...</string>
     <string name="no_email">There is no email address</string>
     <string name="no_driver_near">There are no drivers near the store</string>
+    <string name="msg_not_sent">Message not sent</string>
 
     <string-array name="gender">
         <item>Male</item>

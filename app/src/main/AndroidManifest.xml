@@ -68,7 +68,9 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".Activities.ClientNotificationActivity" />
         <activity android:name=".Activities.DriverNotificationActivity" />
-        <activity android:name=".Activities.ChatActivity" />
+        <activity android:name=".Activities.ChatActivity"
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity android:name=".Activities.OrderDeliveryActivity" />
         <activity android:name=".Activities.AddRateActivity" />
         <activity android:name=".Activities.ClientOrderDetailsActivity" />

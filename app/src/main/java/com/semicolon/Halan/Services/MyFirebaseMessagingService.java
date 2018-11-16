@@ -19,7 +19,6 @@ import android.widget.RemoteViews;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.semicolon.Halan.Activities.ChatActivity;
 import com.semicolon.Halan.Activities.ClientNotificationActivity;
 import com.semicolon.Halan.Activities.DriverNotificationActivity;
 import com.semicolon.Halan.Activities.DriverOrdersActivity;
@@ -27,6 +26,8 @@ import com.semicolon.Halan.Activities.HomeActivity;
 import com.semicolon.Halan.Activities.MyOrdersActivity;
 import com.semicolon.Halan.Models.DriverAcceptModel;
 import com.semicolon.Halan.Models.Finishied_Order_Model;
+import com.semicolon.Halan.Models.MessageModel;
+import com.semicolon.Halan.Models.TypingModel;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.SingleTone.Users;
@@ -54,7 +55,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         final Map<String,String> map = remoteMessage.getData();
         for (String key:map.keySet())
         {
-            Log.e("data",map.get(key));
+            Log.e(key+"_",map.get(key));
 
         }
         long not_time = remoteMessage.getSentTime();
@@ -226,27 +227,45 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     {
                         SharedPreferences spRef = this.getSharedPreferences("chat_id",MODE_PRIVATE);
                         String chat_id = spRef.getString("chat_id","");
+                        Log.e("chat_id",chat_id);
                         //com.semicolon.Halan.Activities.ChatActivity
                         ActivityManager am = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
                         String curr_class = am.getRunningTasks(1).get(0).topActivity.getClassName();
                         String user_id = preferences.getString("user_id","");
                         String user_type = preferences.getString("user_type","");
                         Log.e("curclass",curr_class);
-                        String from_id = map.get("curr_id");
-
-                        Log.e("curr_id",user_id);
-                        Log.e("chat_id",from_id);
+                        String from_id = map.get("from_user_id");
 
                         if (curr_class.equals("com.semicolon.Halan.Activities.ChatActivity"))
                         {
                             if (!user_id.equals(from_id))
                             {
+                                Log.e("77","77");
                                 if (!TextUtils.isEmpty(chat_id))
                                 {
-                                    if (!map.get("chat_id").equals(chat_id))
+                                    if (map.get("from_user_id").equals(chat_id))
                                     {
+                                        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm aa");
+                                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd");
+
+                                        String time = timeFormat.format(new Date(not_time));
+                                        String date = dateFormat.format(new Date(not_time));
                                         Log.e("mm","mmmmm");
-                                        CreateNotification(user_id,map,not_time,pref);
+                                        String room_id = map.get("room_id");
+                                        String image = map.get("image");
+                                        String from_name = map.get("from_name");
+                                        String frm_id = map.get("from_user_id");
+                                        String from_type = map.get("from_type");
+                                        String from_image = map.get("from_photo");
+                                        String to_name = map.get("to_name");
+                                        String to_id = map.get("'to_user_id");
+                                        String to_type = map.get("to_type");
+                                        String to_image = map.get("to_photo");
+                                        String msg = map.get("message");
+                                        String msg_type = map.get("name_message_type");
+                                        MessageModel messageModel = new MessageModel(room_id,image,from_name,frm_id,from_type,from_image,to_name,to_id,to_type,to_image,date,time,msg_type,msg);
+                                        EventBus.getDefault().post(messageModel);
+                                        //CreateNotification(user_id,map,not_time,pref);
                                     }else
                                     {
                                         if (!curr_class.equals("com.semicolon.Halan.Activities.ChatActivity"))
@@ -258,7 +277,49 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                                 }
 
-                            }
+                            }else
+                                {
+                                    Log.e("88","88");
+
+                                    if (!TextUtils.isEmpty(chat_id))
+                                    {
+                                        Log.e("99","99");
+
+                                        if (map.get("from_user_id").equals(chat_id))
+                                        {
+                                            Log.e("100","100");
+
+                                            SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm aa");
+                                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd");
+
+                                            String time = timeFormat.format(new Date(not_time));
+                                            String date = dateFormat.format(new Date(not_time));
+                                            Log.e("mm","mmmmm");
+                                            String room_id = map.get("room_id");
+                                            String image = map.get("image");
+                                            String from_name = map.get("from_name");
+                                            String frm_id = map.get("from_user_id");
+                                            String from_type = map.get("from_type");
+                                            String from_image = map.get("from_photo");
+                                            String to_name = map.get("to_name");
+                                            String to_id = map.get("'to_user_id");
+                                            String to_type = map.get("to_type");
+                                            String to_image = map.get("to_photo");
+                                            String msg = map.get("message");
+                                            String msg_type = map.get("message_type");
+                                            MessageModel messageModel = new MessageModel(room_id,image,from_name,frm_id,from_type,from_image,to_name,to_id,to_type,to_image,date,time,msg_type,msg);
+
+                                            EventBus.getDefault().post(messageModel);
+                                            //CreateNotification(user_id,map,not_time,pref);
+                                        }else {
+                                            if (!curr_class.equals("com.semicolon.Halan.Activities.ChatActivity")) {
+                                                CreateNotification(user_id, map, not_time, pref);
+
+                                            }
+
+                                        }
+                                    }
+                                    }
 
                         }else
                             {
@@ -272,7 +333,102 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                     }
                 }
-            }else if (not_type.equals(Tags.driver_finish_order))
+
+            }else if (not_type.equals(Tags.not_typing))
+            {
+                if (session!=null || !TextUtils.isEmpty(session))
+                {
+                    if (session.equals(Tags.login))
+                    {
+                        SharedPreferences spRef = this.getSharedPreferences("chat_id",MODE_PRIVATE);
+                        String chat_id = spRef.getString("chat_id","");
+                        Log.e("chat_id",chat_id);
+                        //com.semicolon.Halan.Activities.ChatActivity
+                        ActivityManager am = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+                        String curr_class = am.getRunningTasks(1).get(0).topActivity.getClassName();
+                        String user_id = preferences.getString("user_id","");
+                        String user_type = preferences.getString("user_type","");
+                        Log.e("curclass",curr_class);
+                        String from_id = map.get("from_user_id");
+
+                        Log.e("curr_id",user_id);
+                        Log.e("chat_id",from_id);
+
+                        if (curr_class.equals("com.semicolon.Halan.Activities.ChatActivity"))
+                        {
+                            if (!user_id.equals(from_id))
+                            {
+                                Log.e("77","77");
+                                if (!TextUtils.isEmpty(chat_id))
+                                {
+                                    if (map.get("from_user_id").equals(chat_id))
+                                    {
+                                        //String room_id = map.get("room_id");
+                                        String typing_value = map.get("typing_value");
+                                        TypingModel typingModel = new TypingModel(typing_value);
+                                        EventBus.getDefault().post(typingModel);
+                                    }
+
+                                }
+
+                            }else
+                            {
+                                Log.e("88","88");
+
+                                if (!TextUtils.isEmpty(chat_id))
+                                {
+                                    Log.e("99","99");
+
+                                    if (map.get("from_user_id").equals(chat_id))
+                                    {
+                                        Log.e("100","100");
+
+                                        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm aa");
+                                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd");
+
+                                        String time = timeFormat.format(new Date(not_time));
+                                        String date = dateFormat.format(new Date(not_time));
+                                        Log.e("mm","mmmmm");
+                                        String room_id = map.get("room_id");
+                                        String image = map.get("image");
+                                        String from_name = map.get("from_name");
+                                        String frm_id = map.get("from_user_id");
+                                        String from_type = map.get("from_type");
+                                        String from_image = map.get("from_photo");
+                                        String to_name = map.get("to_name");
+                                        String to_id = map.get("'to_user_id");
+                                        String to_type = map.get("to_type");
+                                        String to_image = map.get("to_photo");
+                                        String msg = map.get("message");
+                                        String msg_type = map.get("message_type");
+                                        MessageModel messageModel = new MessageModel(room_id,image,from_name,frm_id,from_type,from_image,to_name,to_id,to_type,to_image,date,time,msg_type,msg);
+
+                                        EventBus.getDefault().post(messageModel);
+                                        //CreateNotification(user_id,map,not_time,pref);
+                                    }else {
+                                        if (!curr_class.equals("com.semicolon.Halan.Activities.ChatActivity")) {
+                                            CreateNotification(user_id, map, not_time, pref);
+
+                                        }
+
+                                    }
+                                }
+                            }
+
+                        }else
+                        {
+                            if (!user_id.equals(from_id))
+                            {
+                                Log.e("tt","tttt");
+
+                                CreateNotification(user_id,map,not_time,pref);
+                            }
+                        }
+
+                    }
+                }
+            }
+            else if (not_type.equals(Tags.driver_finish_order))
             {
                 if (session!=null || !TextUtils.isEmpty(session))
                 {
@@ -323,12 +479,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 {
                     case Tags.nottype_driverAccept:
 
-                        /*Intent intent = new Intent(MyFirebaseMessagingService.this, HomeActivity.class);
+                        Intent intent = new Intent(MyFirebaseMessagingService.this, HomeActivity.class);
                         //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                         //startActivity(intent);
                         PendingIntent pendingIntent = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
                         builder.setContentIntent(pendingIntent);
-                      */  builder.setSmallIcon(R.mipmap.ic_launcher2);
+                        builder.setSmallIcon(R.mipmap.ic_launcher2);
                         builder.setAutoCancel(true);
                         builder.setContentTitle(map.get("title"));
                         builder.setContentText(map.get("message"));
@@ -582,8 +738,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             @Override
                             public void run() {
                                 final RemoteViews remoteViews6 = new RemoteViews(getPackageName(),R.layout.notification_layout);
-                                String title = String.valueOf(map.get("chat_type"));
-                                String content_type = map.get("content_type");
+                                String title = String.valueOf(map.get("from_type"));
+                                String content_type = map.get("name_message_type");
                                 Log.e("chaaaaaaaaaaaaaaat","chaaaat");
                                 if (title.equals(Tags.Driver))
                                 {
@@ -596,7 +752,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                     }
                                 if (content_type.equals(Tags.txt_content_type))
                                 {
-                                    remoteViews6.setTextViewText(R.id.content,map.get("content"));
+                                    remoteViews6.setTextViewText(R.id.content,map.get("message"));
 
                                 }else
                                     {
@@ -607,18 +763,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                     @Override
                                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                         remoteViews6.setImageViewBitmap(R.id.user_image,bitmap);
-                                        Intent intent7 = new Intent(MyFirebaseMessagingService.this, ChatActivity.class);
-                                        intent7.putExtra("curr_id",map.get("chat_id"));
-                                        intent7.putExtra("chat_id",map.get("curr_id"));
-                                        intent7.putExtra("curr_type",map.get("chat_type"));
-                                        intent7.putExtra("chat_type",map.get("curr_type"));
-                                        intent7.putExtra("curr_photo",map.get("chat_photo"));
-                                        intent7.putExtra("chat_photo",map.get("curr_photo"));
-                                        intent7.putExtra("order_id",map.get("order_id"));
-
-                                        //startActivity(intent2);
-                                        PendingIntent pendingIntent2 = PendingIntent.getActivity(MyFirebaseMessagingService.this,0,intent7,PendingIntent.FLAG_UPDATE_CURRENT);
-                                        builder.setContentIntent(pendingIntent2);
                                         builder.setSmallIcon(R.mipmap.ic_launcher2);
                                         builder.setAutoCancel(true);
                                         builder.setContent(remoteViews6);
@@ -639,7 +783,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Picasso.with(MyFirebaseMessagingService.this).load(Uri.parse(Tags.ImgPath+map.get("chat_photo"))).into(target);
+                                        Picasso.with(MyFirebaseMessagingService.this).load(Uri.parse(Tags.ImgPath+map.get("from_photo"))).into(target);
 
                                     }
                                 },1);
@@ -649,10 +793,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         },1000);
                         break;
                     case Tags.driver_finish_order:
-                        /*new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                final RemoteViews remoteViews7 = new RemoteViews(getPackageName(),R.layout.notification_layout);
+                                final RemoteViews remoteViews7 = new RemoteViews(getPackageName(), R.layout.notification_layout);
 
                                 remoteViews7.setTextViewText(R.id.title,"طلب موافقة");
                                 remoteViews7.setTextViewText(R.id.content,"تم قبول طلبك من "+map.get("from_name"));
@@ -665,7 +809,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                         //startActivity(intent2);
                                         PendingIntent pendingIntent12 = PendingIntent.getActivity(getApplicationContext(),0,intent8,PendingIntent.FLAG_UPDATE_CURRENT);
                                         builder.setContentIntent(pendingIntent12);
-                                        builder.setSmallIcon(R.mipmap.ic_launcher);
+                                        builder.setSmallIcon(R.mipmap.ic_launcher2);
                                         builder.setAutoCancel(false);
                                         builder.setOngoing(true);
                                         builder.setContent(remoteViews7);
@@ -695,7 +839,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                             }
                         },1000);
-*/
+
 
                         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                             @Override
@@ -716,6 +860,5 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
        Preferences preferences = new Preferences(this);
        preferences.Update_UserState(Tags.Driver);
     }
-
 
 }

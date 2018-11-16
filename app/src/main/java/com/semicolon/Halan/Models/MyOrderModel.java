@@ -33,6 +33,11 @@ public class MyOrderModel implements Serializable{
     private String client_photo;
     private String client_id;
     private String client_email;
+    private String room_id;
+
+    public String getRoom_id() {
+        return room_id;
+    }
 
     public String getClient_location() {
         return client_location;

@@ -42,12 +42,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.PolyUtil;
 import com.semicolon.Halan.Models.AvailableDriversModel;
 import com.semicolon.Halan.Models.Finishied_Order_Model;
@@ -96,7 +90,6 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
     private LatLng client_latLng,market_latLng;
     private double dist;
     private AlertDialog alertDialog,cancelAlertDialog;
-    private DatabaseReference dRef;
     private String curr_id,chat_id;
     private String curr_type,chat_type;
     private String curr_img,chat_img;
@@ -118,7 +111,6 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
         EventBus.getDefault().register(this);
         users = Users.getInstance();
         users.getUserData(this);
-        dRef = FirebaseDatabase.getInstance().getReference();
         initView();
         getDataFromIntent();
         Create_AlertDialog();
@@ -265,7 +257,7 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
         chatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Create_typing();
+                Create_Chat(myOrderModel.getRoom_id());
 
             }
         });
@@ -338,7 +330,22 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
         dialog.setIndeterminateDrawable(drawable);
 
     }
-    private void Create_typing() {
+    private void Create_Chat(String room_id) {
+
+        Intent intent = new Intent(OrderDeliveryActivity.this, ChatActivity.class);
+        intent.putExtra("curr_id", curr_id);
+        intent.putExtra("chat_id", chat_id);
+        intent.putExtra("curr_type", curr_type);
+        intent.putExtra("chat_type", chat_type);
+        intent.putExtra("curr_photo", curr_img);
+        intent.putExtra("chat_photo", chat_img);
+        intent.putExtra("order_cost",order_cost);
+        intent.putExtra("order_id", myOrderModel.getOrder_id());
+        intent.putExtra("room_id",room_id);
+        intent.putExtra("order_details",myOrderModel.getOrder_details());
+        startActivity(intent);
+        finish();
+/*
         dRef.child("typing").child(curr_id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -396,6 +403,7 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
 
             }
         });
+*/
     }
 
 

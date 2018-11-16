@@ -2,10 +2,10 @@ package com.semicolon.Halan.Adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +21,6 @@ import com.semicolon.Halan.Services.Tags;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -40,15 +38,14 @@ public class Message_Adapter extends RecyclerView.Adapter {
 
     private Context context;
     private List<MessageModel> messageModelList;
-    private ChatModel chatModel;
-    private Target target,target2;
     private ChatActivity activity;
+    private ChatModel chatModel;
 
     public Message_Adapter(Context context, List<MessageModel> messageModelList, ChatModel chatModel) {
         this.context = context;
         this.activity = (ChatActivity) context;
         this.messageModelList = messageModelList;
-        this.chatModel = chatModel;
+        this.chatModel =chatModel;
     }
 
     @Override
@@ -123,29 +120,8 @@ public class Message_Adapter extends RecyclerView.Adapter {
         {
             Log.e("right","txtright");
 
-            target = new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
-                    user_image.setImageBitmap(bitmap);
-
-
-                }
-
-                @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
-
-                }
-
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                }
-            };
-
-            Picasso.with(context).load(Uri.parse(Tags.ImgPath+chatModel.getCurr_img())).into(target);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm aa");
-            String date = dateFormat.format(new Date(messageModel.getMessage_time()));
+            Picasso.with(context).load(Uri.parse(Tags.ImgPath+chatModel.getCurr_image())).into(user_image);
 
             if (chatModel.getCurr_type().equals(Tags.Client))
             {
@@ -157,7 +133,7 @@ public class Message_Adapter extends RecyclerView.Adapter {
 
             }
             msg.setText(messageModel.getMessage());
-            time.setText(date);
+            time.setText(messageModel.getMessage_time());
         }
     }
     public class myViewHolder_txtLeft extends RecyclerView.ViewHolder{
@@ -174,33 +150,10 @@ public class Message_Adapter extends RecyclerView.Adapter {
         public void BindData(final MessageModel messageModel)
         {
             Log.e("left","txtleft");
-            target = new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            user_image.setImageBitmap(bitmap);
-
-
-
-
-                }
-
-                @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
-
-                }
-
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                }
-            };
-            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm aa");
-            String date = dateFormat.format(new Date(messageModel.getMessage_time()));
 
             if (chatModel.getChat_type().equals(Tags.Client))
             {
                 user_type.setText("عميل");
-                Log.e("sssss","sssssssss");
             }else
             {
                 user_type.setText("سائق");
@@ -208,14 +161,14 @@ public class Message_Adapter extends RecyclerView.Adapter {
 
             }
             msg.setText(messageModel.getMessage());
-            time.setText(date);
-            Log.e("chatImage",chatModel.getChat_img());
-            Picasso.with(context).load(Uri.parse(Tags.ImgPath+chatModel.getChat_img())).into(target);
+            time.setText(messageModel.getMessage_time());
+            Picasso.with(context).load(Uri.parse(Tags.ImgPath+chatModel.getChat_image())).into(user_image);
 
         }
     }
 
     public class myViewHolder_imgRight extends RecyclerView.ViewHolder implements View.OnClickListener{
+        Target target;
         CircleImageView user_image;
         TextView time,msg;
         ImageView img,downLoad_btn;
@@ -234,19 +187,23 @@ public class Message_Adapter extends RecyclerView.Adapter {
         {
             Log.e("right","imgr");
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm aa");
-            String date = dateFormat.format(new Date(messageModel.getMessage_time()));
-
-            if (!TextUtils.isEmpty(messageModel.getMessage()))
+            if (!messageModel.getMessage().equals("0"))
             {
+                msg.setVisibility(View.VISIBLE);
                 msg.setText(messageModel.getMessage());
-            }
-            time.setText(date);
+            }else
+                {
+                    msg.setVisibility(View.GONE);
+                }
+            time.setText(messageModel.getMessage_time());
+
+            Picasso.with(context).load(Uri.parse(Tags.ImgPath+chatModel.getCurr_image())).into(user_image);
+            Log.e("Image_url",Tags.ImgPath+messageModel.getImage());
 
             target = new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    user_image.setImageBitmap(bitmap);
+                    img.setImageBitmap(resizeBitmap(bitmap));
                 }
 
                 @Override
@@ -259,37 +216,19 @@ public class Message_Adapter extends RecyclerView.Adapter {
 
                 }
             };
-
-            Picasso.with(context).load(Uri.parse(Tags.ImgPath+chatModel.getCurr_img())).into(target);
-
-            target2 = new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    img.setImageBitmap(bitmap);
-                }
-
-                @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
-
-                }
-
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                }
-            };
-
-            Picasso.with(context).load(Uri.parse(messageModel.getImage())).into(target2);
+            Picasso.with(context).load(Uri.parse(Tags.ImgPath+messageModel.getImage())).into(target);
 
         }
 
         @Override
         public void onClick(View view) {
             MessageModel messageModel = messageModelList.get(getAdapterPosition());
-            activity.setPosTodownloadImage(messageModel.getImage());
+            activity.setPosTodownloadImage(Tags.ImgPath+messageModel.getImage());
         }
     }
     public class myViewHolder_imgLeft extends RecyclerView.ViewHolder implements View.OnClickListener{
+        private Target target;
+
         CircleImageView user_image;
         TextView time,msg;
         ImageView img,downLoad_btn;
@@ -308,18 +247,25 @@ public class Message_Adapter extends RecyclerView.Adapter {
         {
             Log.e("left","imgleft");
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm aa");
-            String date = dateFormat.format(new Date(messageModel.getMessage_time()));
 
-            time.setText(date);
-            if (!TextUtils.isEmpty(messageModel.getMessage()))
+            time.setText(messageModel.getMessage_time());
+            if (!messageModel.getMessage().equals("0"))
             {
+                msg.setVisibility(View.VISIBLE);
                 msg.setText(messageModel.getMessage());
+            }else
+            {
+                msg.setVisibility(View.GONE);
             }
+            Picasso.with(context).load(Uri.parse(Tags.ImgPath+chatModel.getChat_image())).into(user_image);
+
+
+            Log.e("Image_url",Tags.ImgPath+messageModel.getImage());
+
             target = new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    user_image.setImageBitmap(bitmap);
+                    img.setImageBitmap(resizeBitmap(bitmap));
                 }
 
                 @Override
@@ -332,34 +278,14 @@ public class Message_Adapter extends RecyclerView.Adapter {
 
                 }
             };
-
-            Picasso.with(context).load(Uri.parse(Tags.ImgPath+chatModel.getChat_img())).into(target);
-
-            target2 = new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    img.setImageBitmap(bitmap);
-                }
-
-                @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
-
-                }
-
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                }
-            };
-
-            Picasso.with(context).load(Uri.parse(messageModel.getImage())).into(target2);
+            Picasso.with(context).load(Uri.parse(Tags.ImgPath+messageModel.getImage())).into(target);
 
         }
 
         @Override
         public void onClick(View view) {
             MessageModel messageModel = messageModelList.get(getAdapterPosition());
-            activity.setPosTodownloadImage(messageModel.getImage());
+            activity.setPosTodownloadImage(Tags.ImgPath+messageModel.getImage());
 
         }
     }
@@ -387,5 +313,18 @@ public class Message_Adapter extends RecyclerView.Adapter {
             }
 
 
+    }
+
+
+    private Bitmap resizeBitmap(Bitmap bitmap)
+    {
+        int maxWidth = 480;
+        int maxHeight=720;
+
+        float scale = Math.min(((float)maxHeight / bitmap.getWidth()), ((float)maxWidth / bitmap.getHeight()));
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale,scale);
+        Bitmap bitmap1 = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);
+        return bitmap1;
     }
 }

@@ -11,6 +11,8 @@ public class ResponseModel {
     private String message;
     private int success_order;
     private int notification_success;
+    private int success_send;
+    private String room_id;
 
     public ResponseModel() {
     }
@@ -68,5 +70,13 @@ public class ResponseModel {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getRoom_id() {
+        return room_id;
+    }
+
+    public int getSuccess_send() {
+        return success_send;
     }
 }

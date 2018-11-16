@@ -11,8 +11,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/user_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_marginRight="10dp"
@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_toRightOf="@+id/user_image"
+        android:gravity="left|center_vertical"
 
         >
         <TextView
@@ -40,8 +41,6 @@
         app:cardBackgroundColor="@color/gray1"
         app:cardCornerRadius="5dp"
         >
-
-
 
             <TextView
                 android:id="@+id/msg"

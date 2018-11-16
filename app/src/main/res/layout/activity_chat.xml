@@ -48,30 +48,68 @@
 
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recView"
-        android:layout_below="@+id/appBar"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/typing"
+        android:layout_below="@+id/appBar"
+        android:layout_above="@+id/typing_container"
 
         >
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
 
-    </android.support.v7.widget.RecyclerView>
-    <TextView
-        android:id="@+id/typing"
+            >
+
+        </android.support.v7.widget.RecyclerView>
+        <ProgressBar
+            android:id="@+id/progBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/typing_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/msgContainer"
-        android:textSize="16sp"
-        android:text="typing....."
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:visibility="invisible"
-        android:layout_marginTop="5dp"
 
-
-        />
+        >
+        <LinearLayout
+            android:id="@+id/ll_typing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="8dp"
+            android:gravity="left|center_vertical"
+            android:paddingBottom="5dp"
+            android:visibility="gone"
+            >
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/chat_image_circle"
+                android:layout_width="25dp"
+                android:layout_height="25dp" 
+                app:civ_border_width="1dp"
+                app:civ_border_color="@color/gray1"
+                android:src="@drawable/user_profile"
+                />
+            <pl.tajchert.waitingdots.DotsTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="28sp"
+                android:textColor="@color/gray3"
+                app:autoplay="true"
+                app:period="1000"
+                android:layout_marginLeft="5dp"
+                />
+        </LinearLayout>
+    </FrameLayout>
+    
+    
     <LinearLayout
         android:id="@+id/msgContainer"
         android:layout_width="match_parent"
@@ -104,6 +142,7 @@
             android:paddingRight="5dp"
             android:paddingLeft="5dp"
             android:singleLine="true"
+            android:textSize="14sp"
             android:scrollHorizontally="true"
 
             />

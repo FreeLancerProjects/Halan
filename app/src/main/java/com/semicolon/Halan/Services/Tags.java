@@ -25,7 +25,7 @@ public class Tags {
     public static final String notdriver_cancel_order="driver_cancel_order";
     public static final String txt_content_type="text";
     public static final String img_content_type="image";
-    public static final String chat="chat";
+    public static final String chat="send_message";
     public static final String driver_finish_order="driver_finish_order";
     public static final String current_order="0";
     public static final String prev_order="1";
@@ -42,6 +42,10 @@ public class Tags {
     public static final String update_age_="5";
     public static final String update_city="6";
     public static final String update_country="7";
+
+    public static final String  typing = "1";
+    public static final String  end_typing="2";
+    public static final String not_typing="typing";
 
 
 

@@ -1,7 +1,5 @@
-
-        package com.semicolon.Halan.Adapters;
-
-        import android.content.Context;
+ package com.semicolon.Halan.Adapters;
+import android.content.Context;
 import android.graphics.Typeface;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;

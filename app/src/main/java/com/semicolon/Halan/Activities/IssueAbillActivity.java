@@ -24,18 +24,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.semicolon.Halan.Models.Finishied_Order_Model;
+import com.semicolon.Halan.Models.MessageModel;
 import com.semicolon.Halan.Models.ResponseModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
+import com.semicolon.Halan.Services.Common;
 import com.semicolon.Halan.Services.Services;
 import com.semicolon.Halan.Services.Tags;
 import com.squareup.picasso.Picasso;
@@ -46,11 +40,11 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.anwarshahriar.calligrapher.Calligrapher;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -64,14 +58,13 @@ public class IssueAbillActivity extends AppCompatActivity {
     private final int CAM_REQ= 2353;
     private Bitmap bitmap;
     private String encoded_image;
-    private String order_id,curr_id,chat_id,curr_type,chat_type,curr_img,chat_img,order_cost,order_details;
+    private String order_id,curr_id,chat_id,curr_type,chat_type,curr_img,chat_img,order_cost,order_details,room_id;
     private ProgressDialog dialog;
-    private DatabaseReference dRef;
-    private StorageReference sRef;
     byte [] image_bytes;
     private AlertDialog.Builder builder;
     private TextView cost;
     private AlertDialog alertDialog;
+    private Uri uri=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +72,6 @@ public class IssueAbillActivity extends AppCompatActivity {
         setContentView(R.layout.activity_issue_abill);
         Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);
-        dRef = FirebaseDatabase.getInstance().getReference();
-        sRef = FirebaseStorage.getInstance().getReference();
         EventBus.getDefault().register(this);
         initView();
         getDataFromIntent();
@@ -151,6 +142,7 @@ public class IssueAbillActivity extends AppCompatActivity {
             chat_img =intent.getStringExtra("chat_image");
             order_cost = intent.getStringExtra("order_cost");
             order_details = intent.getStringExtra("order_details");
+            room_id = intent.getStringExtra("room_id");
             cost.setText(order_cost);
 
 
@@ -204,8 +196,9 @@ public class IssueAbillActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
 
+                            alertDialog.dismiss();
 
-                            Send_Bill(issue_price.getText().toString(),order_cost,String.valueOf(total));
+                            Send_Bill(uri,issue_price.getText().toString(),order_cost,String.valueOf(total),room_id);
                             issue_price.setError(null);
                         }
                     });
@@ -263,7 +256,7 @@ public class IssueAbillActivity extends AppCompatActivity {
         });
 
     }
-    private void Send_Bill(final String price, final String way_cost, final String total_cost) {
+    private void Send_Bill(final Uri uri, final String price, final String way_cost, final String total_cost, final String room_id) {
         dialog.show();
 
         Retrofit retrofit = Api.getClient(Tags.BASE_URL);
@@ -278,9 +271,8 @@ public class IssueAbillActivity extends AppCompatActivity {
                 {
                     if (response.body().getSuccess()==1)
                     {
-                        UploadImage(image_bytes,price,way_cost,total_cost);
+                        DataToSend(uri,price,way_cost,total_cost,room_id);
                         //DataToSend("");
-                        dialog.dismiss();
 
                     }else
                         {
@@ -302,17 +294,8 @@ public class IssueAbillActivity extends AppCompatActivity {
         });
     }
 
-    private void UploadImage(byte[] image_bytes, final String price, final String way_cost, final String total_cost) {
-        DatabaseReference reference = dRef.child("Upload").child("Images").push();
-        String push = reference.getKey();
-        sRef.child("Upload").child("Images").child(push).putBytes(image_bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                DataToSend(downloadUrl.toString(),price,way_cost,total_cost);
-                Log.e("uri",downloadUrl+"");
-            }
-        });
+    private void UploadImage(Uri uri, final String price, final String way_cost, final String total_cost,String room_id) {
+
     }
 
     private void Select_Image(int req) {
@@ -335,10 +318,11 @@ public class IssueAbillActivity extends AppCompatActivity {
         if (requestCode == IMG_REQ && resultCode == RESULT_OK && data !=null)
         {
             Uri uri = data.getData();
+            this.uri = uri;
             try {
                 bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
                 bill_img.setImageBitmap(bitmap);
-                encodeImage(bitmap);
+               // encodeImage(bitmap);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -364,90 +348,40 @@ public class IssueAbillActivity extends AppCompatActivity {
 
     }
 
-    private void DataToSend(String msg,String price,String way_cost,String total_cost)
+    private void DataToSend(Uri uri,String price,String way_cost,String total_cost,String room_id)
     {
-        String curr_ref = "messages/"+curr_id+"/"+chat_id;
-        String chat_ref = "messages/"+chat_id+"/"+curr_id;
-        DatabaseReference reference = dRef.child("messages").child(curr_id).child(chat_id).push();
-        String push = reference.getKey();
-        Map dataMap = new HashMap();
+        String MSG ="الطلب= "+order_details+"\n" +"تلكفة الفاتورة= "+price+"\n"+"تكلفة الطريق= "+way_cost+"\n"+"إجمالي الفاتورة= "+total_cost;
 
-        if (TextUtils.isEmpty(way_cost) && TextUtils.isEmpty(total_cost))
-        {
-            String MSG = getString(R.string.sent_photo);
-            dataMap.put("message",MSG);
-            dataMap.put("image",msg);
-            dataMap.put("from_id",curr_id);
-            dataMap.put("to_id",chat_id);
-            dataMap.put("from_type",curr_type);
-            dataMap.put("to_type",chat_type);
-            dataMap.put("from_photo",curr_img);
-            dataMap.put("to_photo",chat_img);
-            dataMap.put("message_type",Tags.img_msg_type);
-            dataMap.put("message_time", ServerValue.TIMESTAMP);
-        }else
-            {
-                String MSG ="الطلب= "+order_details+"\n" +"تلكفة الفاتورة= "+price+"\n"+"تكلفة الطريق= "+way_cost+"\n"+"إجمالي الفاتورة= "+total_cost;
-                dataMap.put("message",MSG);
-                dataMap.put("image",msg);
-                dataMap.put("from_id",curr_id);
-                dataMap.put("to_id",chat_id);
-                dataMap.put("from_type",curr_type);
-                dataMap.put("to_type",chat_type);
-                dataMap.put("from_photo",curr_img);
-                dataMap.put("to_photo",chat_img);
-                dataMap.put("message_type",Tags.img_msg_type);
-                dataMap.put("message_time", ServerValue.TIMESTAMP);
-            }
+        RequestBody from_id_part = Common.getRequestBodyFromData(curr_id, "text/plain");
+        RequestBody to_id_part = Common.getRequestBodyFromData(chat_id, "text/plain");
+        RequestBody msg_part = Common.getRequestBodyFromData(MSG, "text/plain");
 
+        RequestBody msg_type_part = Common.getRequestBodyFromData(Tags.img_content_type, "text/plain");
+        MultipartBody.Part image_part = Common.getMultipart(this,uri);
 
+        Api.getClient(Tags.BASE_URL)
+                .create(Services.class)
+                .sendMessage_image(room_id,from_id_part,to_id_part,msg_part,msg_type_part,image_part)
+                .enqueue(new Callback<MessageModel>() {
+                    @Override
+                    public void onResponse(Call<MessageModel> call, Response<MessageModel> response) {
+                        if (response.isSuccessful())
+                        {
+                            if (response.body().getSuccess_send()==1)
+                            {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        }
+                    }
 
-        Map pushMap = new HashMap();
-        pushMap.put(curr_ref+"/"+push,dataMap);
-        pushMap.put(chat_ref+"/"+push,dataMap);
+                    @Override
+                    public void onFailure(Call<MessageModel> call, Throwable t) {
+                        Log.e("error",t.getMessage());
+                        Toast.makeText(IssueAbillActivity.this, R.string.msg_not_sent, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-        dRef.updateChildren(pushMap).addOnSuccessListener(new OnSuccessListener() {
-            @Override
-            public void onSuccess(Object o) {
-                pushNotification("",Tags.img_content_type);
-                finish();
-                dialog.dismiss();
-                Log.e("vvvvvv","vvvvv_img");
-
-
-            }
-        });
-    }
-    private void pushNotification(String msg,String content_type) {
-
-       /* Log.e("ci",curr_id);
-        Log.e("ci",chat_id);
-        Log.e("ci",curr_type);
-        Log.e("ci",chat_type);
-        Log.e("ci",curr_img);
-        Log.e("ci",chat_img);
-        Log.e("ci",order_id);
-        Log.e("ci",msg);*/
-
-        Retrofit retrofit = Api.getClient(Tags.BASE_URL);
-        Services services = retrofit.create(Services.class);
-        Call<ResponseModel> call = services.PushNotification(chat_id,curr_id,chat_id,curr_type,chat_type,curr_img,chat_img,order_id,curr_type,msg,content_type,Tags.chat);
-        call.enqueue(new Callback<ResponseModel>() {
-            @Override
-            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
-
-                if (response.isSuccessful())
-                {
-                    Log.e("ssss",response.body().getNotification_success()+"");
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseModel> call, Throwable t) {
-                Log.e("error",t.getMessage());
-            }
-        });
     }
 
     @Override

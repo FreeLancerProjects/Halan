@@ -6,6 +6,7 @@ import com.semicolon.Halan.Models.BankAccountModel;
 import com.semicolon.Halan.Models.ClientLastOrderModel;
 import com.semicolon.Halan.Models.ClientNotificationModel;
 import com.semicolon.Halan.Models.ContactModel;
+import com.semicolon.Halan.Models.MessageModel;
 import com.semicolon.Halan.Models.MyOrderModel;
 import com.semicolon.Halan.Models.NearbyModel;
 import com.semicolon.Halan.Models.PlaceModel;
@@ -18,12 +19,17 @@ import com.semicolon.Halan.Models.UserModel;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Url;
 
@@ -261,4 +267,24 @@ public interface Services {
     Call<PolicyModel> getPolicy();
 
 
+    @GET("Chating/ChatRoom/{room_id}")
+    Call<List<MessageModel>> getAllMessage(@Path("room_id") String room_id);
+
+    @FormUrlEncoded
+    @POST("Chating/SendMessage/{room_id}")
+    Call<MessageModel> sendMessage_text(@Path("room_id") String room_id,@FieldMap Map<String,String> map);
+
+    @Multipart
+    @POST("Chating/SendMessage/{room_id}")
+    Call<MessageModel> sendMessage_image(@Path("room_id") String room_id,
+                                          @Part("from_id")RequestBody from_id,
+                                          @Part("to_id")RequestBody to_id,
+                                          @Part("message")RequestBody message,
+                                          @Part("message_type")RequestBody message_type,
+                                          @Part MultipartBody.Part image_part
+                                          );
+
+    @FormUrlEncoded
+    @POST("Chating/Typing/{room_id}")
+    Call<ResponseBody> typing(@Path("room_id") String room_id,@FieldMap Map<String,String> map);
 }

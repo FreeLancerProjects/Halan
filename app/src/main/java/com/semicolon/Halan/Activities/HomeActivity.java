@@ -76,13 +76,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.maps.android.PolyUtil;
 import com.semicolon.Halan.Adapters.PlaceAutocompleteAdapter;
@@ -176,7 +170,6 @@ public class HomeActivity extends AppCompatActivity
     private TextView not_driver_name,not_driver_name_details,not_time,not_time_details,not_driver_rate,not_driver_rate_details,not_order_details,not_date_details,not_cost_details;
     private Button not_accept_btn,not_refuse_btn;
     private ClientLastOrderModel clientLastOrderModel;
-    private DatabaseReference dRef;
     private ProgressDialog dialog_logout;
     private String country_code="sa";
     private AutocompleteFilter filter=null;
@@ -197,7 +190,6 @@ public class HomeActivity extends AppCompatActivity
        /* Calligrapher calligrapher = new Calligrapher(this);
         calligrapher.setFont(this, "JannaLT-Regular.ttf", true);*/
         connection = NetworkConnection.getInstance();
-        dRef = FirebaseDatabase.getInstance().getReference();
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         preferences = new Preferences(this);
         users = Users.getInstance();
@@ -816,15 +808,19 @@ public class HomeActivity extends AppCompatActivity
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 if (response.isSuccessful())
                 {
+                    Log.e("response",response.body().getMessage()+"");
+
                     if (response.body().getSuccess()==1)
                     {
+                        Log.e("response",response.body().getMessage()+"");
                         Toast.makeText(HomeActivity.this, R.string.respons_send_todriver, Toast.LENGTH_LONG).show();
                         not_data_cardview.setVisibility(View.GONE);
                         bottom_sheet.setVisibility(View.GONE);
                         search_view.setEnabled(true);
                         nearbyBtn.setEnabled(true);
                         alert_txt.setVisibility(View.INVISIBLE);
-                        CreateChat();
+                        String room_id = response.body().getRoom_id();
+                        CreateChat(room_id);
                         //finish();
                     }else
                     {
@@ -846,7 +842,18 @@ public class HomeActivity extends AppCompatActivity
         });
     }
 
-    private void CreateChat() {
+    private void CreateChat(String room_id) {
+        Intent intent = new Intent(HomeActivity.this, ChatActivity.class);
+        intent.putExtra("curr_id", userModel.getUser_id());
+        intent.putExtra("chat_id", clientLastOrderModel.getDriver_id_fk());
+        intent.putExtra("curr_type", userModel.getUser_type());
+        intent.putExtra("chat_type", Tags.Driver);
+        intent.putExtra("curr_photo", userModel.getUser_photo());
+        intent.putExtra("chat_photo", clientLastOrderModel.getDriver_image());
+        intent.putExtra("order_id", clientLastOrderModel.getOrder_id());
+        intent.putExtra("room_id",room_id);
+        startActivity(intent);
+/*
         dRef.child("typing").child(userModel.getUser_id()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -897,6 +904,7 @@ public class HomeActivity extends AppCompatActivity
 
             }
         });
+*/
         /*Intent intent = new Intent(OrderDeliveryActivity.this, ChatActivity.class);
         intent.putExtra("curr_id", curr_id);
         intent.putExtra("chat_id", chat_id);
