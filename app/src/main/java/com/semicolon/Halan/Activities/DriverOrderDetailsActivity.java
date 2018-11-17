@@ -33,6 +33,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
@@ -249,6 +250,11 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
         if (googleMap!=null)
         {
             mMap = googleMap;
+            mMap = googleMap;
+            mMap.setIndoorEnabled(true);
+            mMap.setTrafficEnabled(false);
+            mMap.setBuildingsEnabled(true);
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this,R.raw.maps));
             try
             {
                 if (isGranted)
@@ -296,7 +302,7 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
         String Dest   = String.valueOf(tolatLng.latitude)+","+String.valueOf(tolatLng.longitude);
         Log.e("origin",Origin);
         Log.e("dest",Dest);
-        String server_key=getString(R.string.google_maps_key);
+        String server_key="AIzaSyArjmbYWTWZhDFFtPOLRLKYwjtBDkOEGrY";
         String url = "https://maps.googleapis.com/maps/api/directions/json?origin="+Origin+"&destination="+Dest+"&key="+server_key;
         Call<PlaceModel> call = services.getDirection(url);
         call.enqueue(new Callback<PlaceModel>() {
@@ -390,14 +396,14 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
                     new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.g_map)).position(latLng)
 
             );
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,11f));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15.6f));
         }else
         {
             mMap.addMarker(
                     new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.g_map)).position(latLng).title(title)
 
             );
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,11f));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15.6f));
         }
 
     }

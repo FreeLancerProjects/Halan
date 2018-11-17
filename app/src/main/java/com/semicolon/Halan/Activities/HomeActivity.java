@@ -73,6 +73,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -1310,6 +1311,10 @@ public class HomeActivity extends AppCompatActivity
     {
         if (googleMap != null) {
             mMap = googleMap;
+            mMap.setIndoorEnabled(true);
+            mMap.setTrafficEnabled(false);
+            mMap.setBuildingsEnabled(true);
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this,R.raw.maps));
                 getDeviceLocation();
         }
     }
@@ -1392,14 +1397,14 @@ public class HomeActivity extends AppCompatActivity
                     new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.g_map)).position(latLng)
 
             );
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,13f));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15.6f));
         }else
             {
                 mMap.addMarker(
                         new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.g_map)).position(latLng).title(title)
 
                 );
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,13f));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15.6f));
             }
 
     }
@@ -1602,7 +1607,7 @@ public class HomeActivity extends AppCompatActivity
         String Dest   = String.valueOf(latLng.latitude)+","+String.valueOf(latLng.longitude);
         Log.e("origin",Origin);
         Log.e("dest",Dest);
-        String server_key=getString(R.string.google_maps_key);
+        String server_key="AIzaSyArjmbYWTWZhDFFtPOLRLKYwjtBDkOEGrY";
         String url = "https://maps.googleapis.com/maps/api/directions/json?origin="+Origin+"&destination="+Dest+"&key="+server_key;
         Call<PlaceModel> call = services.getDirection(url);
         call.enqueue(new Callback<PlaceModel>() {
