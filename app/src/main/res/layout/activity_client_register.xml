@@ -109,17 +109,40 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 >
-                <com.lamudi.phonefield.PhoneInputLayout
-                    android:id="@+id/phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                <FrameLayout
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/circle_user_icon"
                     android:layout_gravity="center"
-                    android:background="@android:color/transparent"
                     >
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/call"
+                        android:padding="2dp"
+                        />
+                </FrameLayout>
+                <EditText
+                    android:id="@+id/edt_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:inputType="phone"
+                    android:hint="@string/phone"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:textColorHint="@color/gray2"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/gray3"
+                    android:textSize="12sp"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:textStyle="bold"
 
-                </com.lamudi.phonefield.PhoneInputLayout>
+                    />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

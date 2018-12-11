@@ -861,58 +861,63 @@ public class OrderDeliveryActivity extends AppCompatActivity implements Users.Us
                 if (response.isSuccessful())
                 {
                     PlaceModel placeModel = response.body();
-                    try {
-                        Log.e("pl",placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText());
-                        Log.e("p2",placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText());
-                        String d = placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText();
-                        String d2="";
-                        if (d.contains(","))
+
+                    if (placeModel!=null&&placeModel.getRoutes().size()>0)
+                    {
+                        try {
+                            Log.e("pl",placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText());
+                            Log.e("p2",placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText());
+                            String d = placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText();
+                            String d2="";
+                            if (d.contains(","))
+                            {
+                                d2 = d.replaceAll(",","");
+                            }else
+                            {
+                                d2=d;
+                            }
+                            String spilit_dist [] =d2.split(" ");
+                            dist = Double.parseDouble(spilit_dist[0]);
+                        }catch (NullPointerException e)
                         {
-                            d2 = d.replaceAll(",","");
-                        }else
+                            dist = distance(client_latLng.latitude,client_latLng.longitude,market_latLng.latitude,market_latLng.longitude);
+                            //Toast.makeText(OrderDeliveryActivity.this, "dist2"+dist, Toast.LENGTH_SHORT).show();
+
+                        }catch (IndexOutOfBoundsException e)
                         {
-                            d2=d;
+                            Toast.makeText(OrderDeliveryActivity.this, "empty data", Toast.LENGTH_SHORT).show();
                         }
-                        String spilit_dist [] =d2.split(" ");
-                        dist = Double.parseDouble(spilit_dist[0]);
-                    }catch (NullPointerException e)
-                    {
-                        dist = distance(client_latLng.latitude,client_latLng.longitude,market_latLng.latitude,market_latLng.longitude);
-                        //Toast.makeText(OrderDeliveryActivity.this, "dist2"+dist, Toast.LENGTH_SHORT).show();
+                        String durat = placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText();
+                        List<String> polylines = new ArrayList<>();
+                        List<PlaceModel.Steps> stepsModelList =placeModel.getRoutes().get(0).getLegs().get(0).getSteps();
 
-                    }catch (IndexOutOfBoundsException e)
-                    {
-                        Toast.makeText(OrderDeliveryActivity.this, "empty data", Toast.LENGTH_SHORT).show();
-                    }
-                    String durat = placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText();
-                    List<String> polylines = new ArrayList<>();
-                    List<PlaceModel.Steps> stepsModelList =placeModel.getRoutes().get(0).getLegs().get(0).getSteps();
-
-                    AddMarker(client_latLng,durat);
-                    AddMarker(market_latLng,durat);
+                        AddMarker(client_latLng,durat);
+                        AddMarker(market_latLng,durat);
                     /*mMap.addMarker(
                             new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.g_map)).position(new LatLng(mylatLng.latitude,mylatLng.longitude)).title(durat)
 
                     );*/
 
-                    for (int i=0;i<stepsModelList.size();i++)
-                    {
-                        polylines.add(stepsModelList.get(i).getPolyline().getPoints());
+                        for (int i=0;i<stepsModelList.size();i++)
+                        {
+                            polylines.add(stepsModelList.get(i).getPolyline().getPoints());
+                        }
+
+
+                        for (int i=0;i<polylines.size();i++)
+                        {
+                            PolylineOptions options = new PolylineOptions();
+                            options.width(5);
+                            options.color(Color.BLACK);
+                            options.addAll(PolyUtil.decode(polylines.get(i)));
+                            options.geodesic(true);
+                            mMap.addPolyline(options);
+                            Log.e("polyline",""+PolyUtil.decode(polylines.get(i)));
+
+                        }
+
+
                     }
-
-
-                    for (int i=0;i<polylines.size();i++)
-                    {
-                        PolylineOptions options = new PolylineOptions();
-                        options.width(5);
-                        options.color(Color.BLACK);
-                        options.addAll(PolyUtil.decode(polylines.get(i)));
-                        options.geodesic(true);
-                        mMap.addPolyline(options);
-                        Log.e("polyline",""+PolyUtil.decode(polylines.get(i)));
-
-                    }
-
 
                 }
             }

@@ -167,6 +167,7 @@
                 android:hint="@string/add_order_d"
                 android:textColorHint="@color/gray2"
                 android:textSize="14sp"
+                android:minHeight="50dp"
 
                 />
             <Button

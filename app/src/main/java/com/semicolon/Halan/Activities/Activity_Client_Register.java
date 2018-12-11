@@ -1,5 +1,6 @@
 package com.semicolon.Halan.Activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,8 +15,8 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
-import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.lamudi.phonefield.PhoneInputLayout;
 import com.semicolon.Halan.Models.UserModel;
 import com.semicolon.Halan.R;
 import com.semicolon.Halan.Services.Api;
@@ -46,7 +46,7 @@ import retrofit2.Response;
 public class Activity_Client_Register extends AppCompatActivity {
     private CircleImageView c_image;
     private EditText c_name,c_user_name,c_password,c_re_password,c_email;
-    private PhoneInputLayout c_phone;
+    private EditText edt_phone;
     private Button c_registerBtn;
     private TextView c_login;
     private final int IMG_REQ = 100;
@@ -79,18 +79,14 @@ public class Activity_Client_Register extends AppCompatActivity {
         c_image = findViewById(R.id.image);
         c_name = findViewById(R.id.name);
         c_user_name = findViewById(R.id.user_name);
-        c_phone = findViewById(R.id.phone);
+        edt_phone = findViewById(R.id.edt_phone);
         c_password = findViewById(R.id.password);
         c_re_password = findViewById(R.id.retype_password);
         c_email = findViewById(R.id.email);
         c_registerBtn = findViewById(R.id.registerBtn);
         c_login = findViewById(R.id.login);
-        c_phone.getTextInputLayout().getEditText().setHint(getString(R.string.phone));
-        c_phone.getTextInputLayout().getEditText().setTextSize(TypedValue.COMPLEX_UNIT_SP,12f);
         if (Locale.getDefault().getLanguage().equals("ar"))
         {
-            c_phone.setGravity(Gravity.RIGHT);
-            c_phone.setGravity(Gravity.CENTER_VERTICAL);
             c_password.setGravity(Gravity.RIGHT);
             c_password.setGravity(Gravity.CENTER_VERTICAL);
             c_re_password.setGravity(Gravity.RIGHT);
@@ -98,7 +94,6 @@ public class Activity_Client_Register extends AppCompatActivity {
 
         }
 
-        c_phone.setDefaultCountry("sa");
 
         c_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,7 +119,7 @@ public class Activity_Client_Register extends AppCompatActivity {
 
                 //sendCodeValidation("");
                 String mUser_name = c_user_name.getText().toString();
-                String mPhone = c_phone.getPhoneNumber();
+                String mPhone = edt_phone.getText().toString();
                 String mPassword1 = c_password.getText().toString();
                 String mPassword2 = c_re_password.getText().toString();
                 String mEmail = c_email.getText().toString();
@@ -132,10 +127,14 @@ public class Activity_Client_Register extends AppCompatActivity {
 
 
 
-                if (TextUtils.isEmpty(mName)&&TextUtils.isEmpty(mUser_name) && TextUtils.isEmpty(mPassword1) &&TextUtils.isEmpty(mPassword2) && TextUtils.isEmpty(mPhone))
+                if (TextUtils.isEmpty(mName)
+                        && TextUtils.isEmpty(mUser_name)
+                        && TextUtils.isEmpty(mPassword1)
+                        &&TextUtils.isEmpty(mPassword2)
+                        && TextUtils.isEmpty(mPhone)&&mPhone.length()>6&&mPhone.length()<13)
                 {
                     c_user_name.setError(getString(R.string.enter_username));
-                    c_phone.getTextInputLayout().getEditText().setError(getString(R.string.enter_phone));
+                    edt_phone.setError(getString(R.string.enter_phone));
                     c_password.setError(getString(R.string.enter_password));
                     c_re_password.setError(getString(R.string.enter_password));
                     //c_email.setError(getString(R.string.enter_email));
@@ -148,12 +147,12 @@ public class Activity_Client_Register extends AppCompatActivity {
 
                 }else if (TextUtils.isEmpty(mPhone))
                 {
-                    c_phone.getTextInputLayout().getEditText().setError(getString(R.string.enter_phone));
+                    edt_phone.setError(getString(R.string.enter_phone));
                     c_name.setError(null);
 
-                }else if (!c_phone.isValid())
+                }else if (mPhone.length()<6||mPhone.length()>=13)
                 {
-                    c_phone.getTextInputLayout().getEditText().setError(getString(R.string.inv_phone));
+                    edt_phone.setError(getString(R.string.inv_phone));
                     c_name.setError(null);
 
                 }else if (!TextUtils.isEmpty(mEmail)&&!Patterns.EMAIL_ADDRESS.matcher(mEmail).matches())
@@ -161,7 +160,7 @@ public class Activity_Client_Register extends AppCompatActivity {
                    /* c_email.setError(getString(R.string.enter_email));
                     c_phone.getTextInputLayout().getEditText().setError(null);*/
                     c_email.setError(getString(R.string.inv_email));
-                    c_phone.getTextInputLayout().getEditText().setError(null);
+                    edt_phone.setError(getString(R.string.enter_phone));
                 }
                 else if (TextUtils.isEmpty(mUser_name))
                 {
@@ -213,6 +212,31 @@ public class Activity_Client_Register extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
     }
 
+
+    private void CreateAlertDialog(String msg)
+    {
+        final AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .create();
+        View view = LayoutInflater.from(this).inflate(R.layout.custom_dialog,null);
+        TextView tv_msg = view.findViewById(R.id.tv_msg);
+        Button done_btn = view.findViewById(R.id.doneBtn);
+        tv_msg.setText(msg);
+        done_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                    alertDialog.dismiss();
+
+
+            }
+        });
+
+        alertDialog.getWindow().getAttributes().windowAnimations = R.style.custom_dialog;
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.setView(view);
+        alertDialog.show();
+    }
     private void sendCodeValidation(String Phonenumber)
     {
 

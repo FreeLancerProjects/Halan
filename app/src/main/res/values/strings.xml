@@ -238,6 +238,9 @@
     <string name="no_email">There is no email address</string>
     <string name="no_driver_near">There are no drivers near the store</string>
     <string name="msg_not_sent">Message not sent</string>
+    <string name="ok2">Ok</string>
+    <string name="pl_lgn">Please log in or create new account</string>
+    <string name="skip">Skip</string>
 
     <string-array name="gender">
         <item>Male</item>

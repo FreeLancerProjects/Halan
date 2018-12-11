@@ -196,10 +196,14 @@ public class HomeActivity extends AppCompatActivity
         users = Users.getInstance();
         users.getUserData(this);
         initView();
-        EventBus.getDefault().register(this);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        UpdateToken();
+        if (userModel!=null)
+        {
+            EventBus.getDefault().register(this);
+            UpdateToken();
+        }
+
         OpenGps();
         CreateProgressDialog();
 
@@ -334,18 +338,25 @@ public class HomeActivity extends AppCompatActivity
     protected void onStart()
     {
         super.onStart();
+
         users = Users.getInstance();
         users.getUserData(this);
-        try {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    getLastOrder(userModel.getUser_id());
 
-                }
-            },1500);
-        }catch (NullPointerException e)
-        {}
+        if (userModel!=null)
+        {
+            try {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        getLastOrder(userModel.getUser_id());
+
+                    }
+                },1500);
+            }catch (NullPointerException e)
+            {}
+        }
+
+
 
 
 
@@ -356,21 +367,25 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        String user_state = getSharedPreferences("user",MODE_PRIVATE).getString("state","");
-        if (user_state.equals(Tags.Driver))
+        if (userModel!=null)
         {
-            try
+            String user_state = getSharedPreferences("user",MODE_PRIVATE).getString("state","");
+            if (user_state.equals(Tags.Driver))
             {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        CreateNotAlertDialog();
-                        notalertDialog.show();
+                try
+                {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            CreateNotAlertDialog();
+                            notalertDialog.show();
 
-                    }
-                },500);
-            }catch (NullPointerException e)
-            {
+                        }
+                    },500);
+                }catch (NullPointerException e)
+                {
+
+                }
 
             }
 
@@ -510,29 +525,54 @@ public class HomeActivity extends AppCompatActivity
         l_myorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent2=new Intent(HomeActivity.this,MyOrdersActivity.class);
-                startActivity(intent2);
+                if (userModel!=null)
+                {
+                    Intent intent2=new Intent(HomeActivity.this,MyOrdersActivity.class);
+                    startActivity(intent2);
+                }else
+                    {
+                        CreateAlertDialogUserLoginOrRegister(getString(R.string.pl_lgn));
+                    }
+
             }
         });
         l_notification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (userModel.getUser_type().equals(Tags.Client))
+
+                if (userModel!=null)
                 {
-                    Intent intent = new Intent(HomeActivity.this,ClientNotificationActivity.class);
-                    startActivity(intent);
+                    if (userModel.getUser_type().equals(Tags.Client))
+                    {
+                        Intent intent = new Intent(HomeActivity.this,ClientNotificationActivity.class);
+                        startActivity(intent);
+                    }else
+                    {
+                        Intent intent = new Intent(HomeActivity.this,DriverNotificationActivity.class);
+                        startActivity(intent);
+                    }
                 }else
-                {
-                    Intent intent = new Intent(HomeActivity.this,DriverNotificationActivity.class);
-                    startActivity(intent);
-                }
+                    {
+                        CreateAlertDialogUserLoginOrRegister(getString(R.string.pl_lgn));
+
+                    }
+
+
             }
         });
         l_me.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this,MyAccountActivity.class);
-                startActivity(intent);
+                if (userModel!=null)
+                {
+                    Intent intent = new Intent(HomeActivity.this,MyAccountActivity.class);
+                    startActivity(intent);
+                }else
+                    {
+                        CreateAlertDialogUserLoginOrRegister(getString(R.string.pl_lgn));
+
+                    }
+
             }
         });
 
@@ -540,15 +580,23 @@ public class HomeActivity extends AppCompatActivity
         not_accept_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getLastOrder2(userModel.getUser_id(),"accept");
+                if (userModel!=null)
+                {
+                    getLastOrder2(userModel.getUser_id(),"accept");
+
+                }
             }
         });
 
         not_refuse_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getLastOrder2(userModel.getUser_id(),"refuse");
-                Log.e("isdeleted2",isDeleted+"");
+                if (userModel!=null)
+                {
+                    getLastOrder2(userModel.getUser_id(),"refuse");
+                    Log.e("isdeleted2",isDeleted+"");
+                }
+
 
             }
         });
@@ -611,29 +659,42 @@ public class HomeActivity extends AppCompatActivity
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e("from",from);
-                Log.e("to",to);
-                Log.e("my",mylatLng.latitude+"");
-                Log.e("to lat",latLng.latitude+"");
-                Log.e("ids",drivers_ids.size()+"");
-                Log.e("dis",distn);
-                Log.e("id",userModel.getUser_id());
-                Log.e("details",order_details);
-                Log.e("Cost",cost.getText().toString());
 
-                Map<String,String> map =new HashMap<>();
-                map.put("user_id",userModel.getUser_id());
-                map.put("client_location",to);
-                map.put("market_location",from);
-                map.put("client_google_lat",String.valueOf(mylatLng.latitude));
-                map.put("client_google_lang",String.valueOf(mylatLng.longitude));
-                map.put("market_google_lat",String.valueOf(latLng.latitude));
-                map.put("market_google_lang",String.valueOf(latLng.longitude));
-                map.put("distance",distn);
-                map.put("order_details",order_details);
-                map.put("total_cost",cost.getText().toString());
 
-                sendOrders(map,drivers_ids);
+                if (userModel!=null)
+                {
+                    Log.e("from",from);
+                    Log.e("to",to);
+                    Log.e("my",mylatLng.latitude+"");
+                    Log.e("to lat",latLng.latitude+"");
+                    Log.e("ids",drivers_ids.size()+"");
+                    Log.e("dis",distn);
+                    Log.e("id",userModel.getUser_id());
+                    Log.e("details",order_details);
+                    Log.e("Cost",cost.getText().toString());
+
+                    Map<String,String> map =new HashMap<>();
+                    map.put("user_id",userModel.getUser_id());
+                    map.put("client_location",to);
+                    map.put("market_location",from);
+                    map.put("client_google_lat",String.valueOf(mylatLng.latitude));
+                    map.put("client_google_lang",String.valueOf(mylatLng.longitude));
+                    map.put("market_google_lat",String.valueOf(latLng.latitude));
+                    map.put("market_google_lang",String.valueOf(latLng.longitude));
+                    map.put("distance",distn);
+                    map.put("order_details",order_details);
+                    map.put("total_cost",cost.getText().toString());
+
+                    sendOrders(map,drivers_ids);
+
+                }else
+                    {
+                        CreateAlertDialogUserLoginOrRegister(getString(R.string.pl_lgn));
+
+                    }
+
+
+
 
 
 
@@ -687,9 +748,17 @@ public class HomeActivity extends AppCompatActivity
         profileContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(HomeActivity.this,UserProfileActivity.class);
-                startActivity(intent);
-                drawer.closeDrawer(GravityCompat.START);
+                if (userModel!=null)
+                {
+                    Intent intent=new Intent(HomeActivity.this,UserProfileActivity.class);
+                    startActivity(intent);
+                    drawer.closeDrawer(GravityCompat.START);
+                }else
+                    {
+                        CreateAlertDialogUserLoginOrRegister(getString(R.string.pl_lgn));
+
+                    }
+
 
             }
         });
@@ -717,18 +786,26 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
-                if (mylatLng != null) {
-                    if (TextUtils.isEmpty(search_view.getText().toString())) {
-                        Toast.makeText(HomeActivity.this, R.string.enter_stroe, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Intent intent = new Intent(HomeActivity.this, NearbyPlacesActivity.class);
-                        intent.putExtra("query", search_view.getText().toString());
-                        intent.putExtra("lat", mylatLng.latitude);
-                        intent.putExtra("lng", mylatLng.longitude);
-                        startActivityForResult(intent, NEARBY_REQ);
+                if (userModel!=null)
+                {
+                    if (mylatLng != null) {
+                        if (TextUtils.isEmpty(search_view.getText().toString())) {
+                            Toast.makeText(HomeActivity.this, R.string.enter_stroe, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Intent intent = new Intent(HomeActivity.this, NearbyPlacesActivity.class);
+                            intent.putExtra("query", search_view.getText().toString());
+                            intent.putExtra("lat", mylatLng.latitude);
+                            intent.putExtra("lng", mylatLng.longitude);
+                            startActivityForResult(intent, NEARBY_REQ);
+                        }
+
+                    }
+                }else
+                    {
+                        CreateAlertDialogUserLoginOrRegister(getString(R.string.pl_lgn));
+
                     }
 
-                }
                 //Toast.makeText(HomeActivity.this, ""+search_view.getText().toString(), Toast.LENGTH_SHORT).show();
 
 
@@ -1217,6 +1294,28 @@ public class HomeActivity extends AppCompatActivity
 
 
     }
+    private void CreateAlertDialogUserLoginOrRegister(String msg)
+    {
+        final AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .create();
+        View view = LayoutInflater.from(this).inflate(R.layout.custom_dialog,null);
+        TextView tv_msg = view.findViewById(R.id.tv_msg);
+        Button done_btn = view.findViewById(R.id.doneBtn);
+        tv_msg.setText(msg);
+        done_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+
+            }
+        });
+
+        alertDialog.getWindow().getAttributes().windowAnimations = R.style.custom_dialog;
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.setView(view);
+        alertDialog.show();
+    }
     private void UpdateUI(UserModel userModel)
     {
 
@@ -1424,21 +1523,38 @@ public class HomeActivity extends AppCompatActivity
             case R.id.home:
                 break;
             case R.id.register:
-                if (userModel.getUser_type().equals(Tags.Client))
+                if (userModel!=null)
                 {
-                    Intent intent=new Intent(this,Activity_Driver_Register.class);
-                    startActivity(intent);
-                }else
+                    if (userModel.getUser_type().equals(Tags.Client))
+                    {
+                        Intent intent=new Intent(this,Activity_Driver_Register.class);
+                        startActivity(intent);
+                    }else
                     {
                         CreateAlertDialog2(getString(R.string.already_driver));
                         builder2.show();
                     }
+                }else
+                    {
+                        CreateAlertDialogUserLoginOrRegister(getString(R.string.pl_lgn));
+
+                    }
+
 
                 break;
             case R.id.logout:
-                CreateAlertDialog();
+                if (userModel!=null)
+                {
+                    CreateAlertDialog();
 
-                builder.show();
+                    builder.show();
+                }else
+                    {
+                        Intent intent = new Intent(HomeActivity.this,Activity_Client_Login.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
                 break;
 
         }
@@ -1615,62 +1731,67 @@ public class HomeActivity extends AppCompatActivity
             public void onResponse(Call<PlaceModel> call, Response<PlaceModel> response) {
                 if (response.isSuccessful())
                 {
+
                     PlaceModel placeModel = response.body();
-                    try {
-                    Log.e("pl",placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText());
-                    Log.e("p2",placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText());
-                        String d = placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText();
-                        String d2="";
-                        if (d.contains(","))
-                        {
-                           d2 = d.replaceAll(",","");
-                        }else
+                    if (placeModel!=null&&placeModel.getRoutes().size()>0)
+                    {
+                        try {
+                            Log.e("pl",placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText());
+                            Log.e("p2",placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText());
+                            String d = placeModel.getRoutes().get(0).getLegs().get(0).getDistance().getText();
+                            String d2="";
+                            if (d.contains(","))
+                            {
+                                d2 = d.replaceAll(",","");
+                            }else
                             {
                                 d2=d;
                             }
-                        String spilit_dist [] =d2.split(" ");
-                                dist = Double.parseDouble(spilit_dist[0]);
-                    }catch (NullPointerException e)
-                    {
-                        dist = distance(mylatLng.latitude,mylatLng.longitude,latLng.latitude,latLng.longitude);
-                        Toast.makeText(HomeActivity.this, "dist2"+dist, Toast.LENGTH_SHORT).show();
+                            String spilit_dist [] =d2.split(" ");
+                            dist = Double.parseDouble(spilit_dist[0]);
+                        }catch (NullPointerException e)
+                        {
+                            dist = distance(mylatLng.latitude,mylatLng.longitude,latLng.latitude,latLng.longitude);
+                            Toast.makeText(HomeActivity.this, "dist2"+dist, Toast.LENGTH_SHORT).show();
 
-                    }catch (IndexOutOfBoundsException e)
-                    {
-                        Toast.makeText(HomeActivity.this, "empty data", Toast.LENGTH_SHORT).show();
-                    }
-                    String durat = placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText();
-                    List<String> polylines = new ArrayList<>();
-                    List<PlaceModel.Steps> stepsModelList =placeModel.getRoutes().get(0).getLegs().get(0).getSteps();
+                        }catch (IndexOutOfBoundsException e)
+                        {
+                            Toast.makeText(HomeActivity.this, "empty data", Toast.LENGTH_SHORT).show();
+                        }
+                        String durat = placeModel.getRoutes().get(0).getLegs().get(0).getDuration().getText();
+                        List<String> polylines = new ArrayList<>();
+                        List<PlaceModel.Steps> stepsModelList =placeModel.getRoutes().get(0).getLegs().get(0).getSteps();
 
-                    AddMarker(mylatLng,durat);
-                    AddMarker(latLng,durat);
+                        AddMarker(mylatLng,durat);
+                        AddMarker(latLng,durat);
                     /*mMap.addMarker(
                             new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.g_map)).position(new LatLng(mylatLng.latitude,mylatLng.longitude)).title(durat)
 
                     );*/
 
-                    for (int i=0;i<stepsModelList.size();i++)
-                    {
-                        polylines.add(stepsModelList.get(i).getPolyline().getPoints());
+                        for (int i=0;i<stepsModelList.size();i++)
+                        {
+                            polylines.add(stepsModelList.get(i).getPolyline().getPoints());
+                        }
+
+
+                        for (int i=0;i<polylines.size();i++)
+                        {
+                            PolylineOptions options = new PolylineOptions();
+                            options.width(5);
+                            options.color(Color.BLACK);
+                            options.addAll(PolyUtil.decode(polylines.get(i)));
+                            options.geodesic(true);
+                            mMap.addPolyline(options);
+                            Log.e("polyline",""+PolyUtil.decode(polylines.get(i)));
+
+                        }
+
+                        dialog.dismiss();
+                        locContainer.setVisibility(View.VISIBLE);
+                        ShowAvailable_Drivers();
                     }
 
-
-                    for (int i=0;i<polylines.size();i++)
-                    {
-                        PolylineOptions options = new PolylineOptions();
-                        options.width(5);
-                        options.color(Color.BLACK);
-                        options.addAll(PolyUtil.decode(polylines.get(i)));
-                        options.geodesic(true);
-                        mMap.addPolyline(options);
-                        Log.e("polyline",""+PolyUtil.decode(polylines.get(i)));
-
-                    }
-
-                    dialog.dismiss();
-                    locContainer.setVisibility(View.VISIBLE);
-                    ShowAvailable_Drivers();
                 }
             }
 
@@ -1796,6 +1917,7 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void getCostByDistance(String distance) {
+        Log.e("dist",distance);
         Retrofit retrofit = Api.getClient(Tags.BASE_URL);
         Services services = retrofit.create(Services.class);
         Call<TotalCostModel> call = services.getCostByDistance(distance);

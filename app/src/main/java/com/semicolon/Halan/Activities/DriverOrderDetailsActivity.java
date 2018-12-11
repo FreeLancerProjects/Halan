@@ -311,7 +311,7 @@ public class DriverOrderDetailsActivity extends AppCompatActivity implements OnM
                 if (response.isSuccessful())
                 {
                     PlaceModel placeModel = response.body();
-                    if (placeModel.getRoutes().size()>0)
+                    if (placeModel!=null&&placeModel.getRoutes().size()>0)
                     {
                         try {
 

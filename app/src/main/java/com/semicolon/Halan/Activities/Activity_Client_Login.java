@@ -36,7 +36,7 @@ import retrofit2.Response;
 public class Activity_Client_Login extends AppCompatActivity {
     private EditText user_name,password;
     private Button loginBtn;
-    private TextView forget_password,newAccount;
+    private TextView forget_password,newAccount,tv_skip;
     private ProgressDialog pDialog;
     private Users users;
     private Preferences preferences;
@@ -89,7 +89,7 @@ public class Activity_Client_Login extends AppCompatActivity {
         loginBtn = findViewById(R.id.loginBtn);
         forget_password = findViewById(R.id.forget_password);
         newAccount = findViewById(R.id.newAccount);
-
+        tv_skip = findViewById(R.id.tv_skip);
         if (Locale.getDefault().getLanguage().equals("ar"))
         {
             password.setGravity(Gravity.RIGHT);
@@ -157,6 +157,15 @@ public class Activity_Client_Login extends AppCompatActivity {
 
                 }
 
+            }
+        });
+
+        tv_skip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Activity_Client_Login.this,HomeActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 

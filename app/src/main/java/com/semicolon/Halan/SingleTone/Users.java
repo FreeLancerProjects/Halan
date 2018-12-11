@@ -7,7 +7,7 @@ import com.semicolon.Halan.Models.UserModel;
  */
 
 public class Users {
-    private static Users instance;
+    private static Users instance=null;
     private static UserData interface_userData;
     private UserModel userModel;
     private Users(){}

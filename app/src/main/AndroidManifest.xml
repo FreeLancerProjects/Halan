@@ -42,10 +42,21 @@
             </intent-filter>
         </service>
         /////////////////////////////////////////////////
-        <activity android:name=".Activities.Activity_Client_Login" />
-        <activity android:name=".Activities.Activity_Client_Register" />
-        <activity android:name=".Activities.Activity_Driver_Register" />
-        <activity android:name=".Activities.Activity_Driver_Register2" />
+        <activity android:name=".Activities.Activity_Client_Login"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            />
+        <activity android:name=".Activities.Activity_Client_Register"
+            android:windowSoftInputMode="stateAlwaysHidden"
+
+            />
+        <activity android:name=".Activities.Activity_Driver_Register"
+            android:windowSoftInputMode="stateAlwaysHidden"
+
+            />
+        <activity android:name=".Activities.Activity_Driver_Register2"
+            android:windowSoftInputMode="stateAlwaysHidden"
+
+            />
         <activity
             android:name=".Activities.Activity_PhoneCodeValidation"
             android:windowSoftInputMode="stateAlwaysHidden" />

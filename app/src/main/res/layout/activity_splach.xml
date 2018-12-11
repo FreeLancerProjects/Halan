@@ -10,7 +10,9 @@
         android:layout_height="match_parent"
         android:layout_marginTop="-20dp"
         android:fitsSystemWindows="true"
-        android:src="@drawable/splashimg" />
+        android:src="@drawable/splashimg"
+        android:scaleType="fitXY"
+        />
 
 
 </FrameLayout>

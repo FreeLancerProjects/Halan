@@ -233,6 +233,9 @@
     <string name="no_email">لا يوجد بريد الكتروني</string>
     <string name="no_driver_near">لايوجد سائقين قريبين من المتجر</string>
     <string name="msg_not_sent">تعزر لم يتم ارسال الرسالة</string>
+    <string name="ok2">حسنا</string>
+    <string name="pl_lgn">برجاء تسجيل الدخول او إنشاء حساب جديد</string>
+    <string name="skip">تخطى</string>
     <string-array name="gender">
         <item>ذكر</item>
         <item>انثى</item>
